@@ -180,13 +180,28 @@ textarea.inp{resize:vertical}
 
 <!-- ═══ PRODUTOS ══════════════════════════ -->
 <div id="pg-produtos" class="pg">
-  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:18px">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;flex-wrap:wrap;gap:8px">
     <div>
       <h2 style="font-size:17px;font-weight:800">Meus Produtos</h2>
       <p id="p-count" style="font-size:12px;color:var(--txt2)">0 produto(s)</p>
     </div>
-    <button class="btn bp" onclick="abrirProduto()">＋ Adicionar</button>
+    <button class="btn bp" onclick="abrirProduto()">＋ Adicionar Manual</button>
   </div>
+
+  <!-- BARRINHA DE ADIÇÃO AUTOMÁTICA POR LINK -->
+  <div class="card" style="margin-bottom:18px;padding:12px;background:var(--bg3);border:1px dashed var(--c1)">
+    <div style="font-weight:800;font-size:12px;margin-bottom:4px;display:flex;align-items:center;gap:6px;color:var(--c1)">
+      ⚡ Adicionar Produto Automático por Link
+    </div>
+    <p style="font-size:11px;color:var(--txt2);margin-bottom:10px">
+      Cole qualquer link de afiliado (Shopee, Mercado Livre, Hotmart, Amazon, Cakto, Eduzz) que preenchemos o nome e a plataforma automaticamente!
+    </p>
+    <div style="display:flex;gap:6px">
+      <input class="inp" id="auto-link-inp" placeholder="Cole o link aqui (https://...)" style="margin-bottom:0;flex:1;font-size:12px" onkeydown="if(event.key==='Enter')adicionarProdutoPorLinkRapido()">
+      <button class="btn bp" onclick="adicionarProdutoPorLinkRapido()" style="white-space:nowrap;padding:8px 14px;font-size:11px">✨ Adicionar</button>
+    </div>
+  </div>
+
   <div id="lista-prod">
     <div class="eb">
       <div style="font-size:44px;margin-bottom:10px">📦</div>
@@ -615,7 +630,7 @@ textarea.inp{resize:vertical}
     <input type="hidden" id="p-edit-id">
     <div class="g2">
       <div class="c2"><label class="lbl">Nome *</label><input class="inp" id="p-nome" placeholder="Ex: Fone Bluetooth TWS"></div>
-      <div class="c2"><label class="lbl">Link de Afiliado *</label><input class="inp" id="p-url" placeholder="https://..."></div>
+      <div class="c2"><label class="lbl">Link de Afiliado *</label><input class="inp" id="p-url" placeholder="https://..." oninput="processarLinkNoModal(this.value)"></div>
       <div class="c2"><label class="lbl">Descrição breve</label><input class="inp" id="p-desc" placeholder="Ex: Sem fio, cancelamento de ruído"></div>
       <div><label class="lbl">Plataforma</label>
         <select class="inp" id="p-plat">
@@ -824,6 +839,183 @@ function fecharOverlay(e){
   }
 }
 
+// ═══ EXTRATOR AUTOMÁTICO DE DADOS DE LINK ═════════════════════
+function extrairDadosDoLink(urlStr) {
+  if (!urlStr) return { nome: '', plataforma: 'outro', emoji: '🔗', tipo: 'fisico' };
+  
+  let cleanUrl = urlStr.trim();
+  if (!cleanUrl.startsWith('http://') && !cleanUrl.startsWith('https://')) {
+    cleanUrl = 'https://' + cleanUrl;
+  }
+
+  let platform = 'outro';
+  let emoji = '🛍️';
+  let tipo = 'fisico';
+  let nome = '';
+
+  const lower = cleanUrl.toLowerCase();
+
+  if (lower.includes('shopee') || lower.includes('shope.ee')) {
+    platform = 'shopee';
+    emoji = '🛍️';
+  } else if (lower.includes('mercadolivre') || lower.includes('mercadolibre') || lower.includes('ml.br')) {
+    platform = 'mercadolivre';
+    emoji = '🛒';
+  } else if (lower.includes('hotmart')) {
+    platform = 'hotmart';
+    emoji = '🔥';
+    tipo = 'curso';
+  } else if (lower.includes('cakto')) {
+    platform = 'cakto';
+    emoji = '⚡';
+    tipo = 'digital';
+  } else if (lower.includes('amazon') || lower.includes('amzn.')) {
+    platform = 'amazon';
+    emoji = '📦';
+  } else if (lower.includes('eduzz') || lower.includes('nutror')) {
+    platform = 'eduzz';
+    emoji = '💡';
+    tipo = 'curso';
+  } else if (lower.includes('shein')) {
+    platform = 'outro';
+    emoji = '👗';
+  } else if (lower.includes('aliexpress')) {
+    platform = 'outro';
+    emoji = '📱';
+  } else if (lower.includes('kiwify')) {
+    platform = 'outro';
+    emoji = '🥝';
+    tipo = 'digital';
+  } else if (lower.includes('braip')) {
+    platform = 'outro';
+    emoji = '🚀';
+  }
+
+  try {
+    const urlObj = new URL(cleanUrl);
+    let pathSegments = urlObj.pathname.split('/').filter(p => p.length > 0);
+    const ignoreSegments = ['dp', 'p', 'product', 'produtos', 'item', 'checkout', 'pt-br', 'marketplace', 'buy', 'affiliate', 'ref'];
+    
+    let candidate = '';
+    
+    for (let seg of pathSegments) {
+      let decoded = decodeURIComponent(seg);
+      decoded = decoded.replace(/\.html?$/i, '');
+      decoded = decoded.replace(/-i\.\d+\.\d+$/i, '');
+      decoded = decoded.replace(/^[A-Z0-9]+-/i, '');
+      decoded = decoded.replace(/-[A-Z0-9_]+$/i, '');
+      decoded = decoded.replace(/_[Jj][Mm]$/, '');
+
+      if (decoded.length > 3 && !/^\d+$/.test(decoded) && !ignoreSegments.includes(decoded.toLowerCase())) {
+        candidate = decoded;
+        break;
+      }
+    }
+
+    if (candidate) {
+      let titleWords = candidate
+        .replace(/[-_]+/g, ' ')
+        .replace(/\s+/g, ' ')
+        .trim()
+        .split(' ');
+
+      titleWords = titleWords.filter(w => !/^[0-9a-fA-F]{12,}$/.test(w) && !/^\d{6,}$/.test(w));
+
+      if (titleWords.length > 0) {
+        nome = titleWords
+          .map(w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase())
+          .join(' ');
+      }
+    }
+  } catch (e) {
+    console.warn('Erro ao parsear URL:', e);
+  }
+
+  if (!nome) {
+    const platLabels = {
+      shopee: 'Produto Shopee',
+      mercadolivre: 'Oferta Mercado Livre',
+      hotmart: 'Curso Hotmart',
+      cakto: 'Produto Digital Cakto',
+      amazon: 'Produto Amazon',
+      eduzz: 'Curso Eduzz',
+      outro: 'Oferta Especial'
+    };
+    nome = platLabels[platform] || 'Produto Oferta';
+  }
+
+  return { nome, plataforma: platform, emoji, tipo };
+}
+
+function processarLinkNoModal(url) {
+  if (!url || !url.trim()) return;
+  const dados = extrairDadosDoLink(url);
+  
+  const nomeInp = document.getElementById('p-nome');
+  if (nomeInp && (!nomeInp.value.trim() || nomeInp.dataset.autofilled === 'true')) {
+    nomeInp.value = dados.nome;
+    nomeInp.dataset.autofilled = 'true';
+  }
+
+  const platSelect = document.getElementById('p-plat');
+  if (platSelect) {
+    platSelect.value = dados.plataforma;
+  }
+
+  const tipoSelect = document.getElementById('p-tipo');
+  if (tipoSelect) {
+    tipoSelect.value = dados.tipo;
+  }
+
+  const emojiInp = document.getElementById('p-emoji');
+  if (emojiInp && (!emojiInp.value.trim() || emojiInp.dataset.autofilled === 'true')) {
+    emojiInp.value = dados.emoji;
+    emojiInp.dataset.autofilled = 'true';
+  }
+}
+
+function adicionarProdutoPorLinkRapido() {
+  const inp = document.getElementById('auto-link-inp');
+  if (!inp) return;
+  const url = inp.value.trim();
+  if (!url) {
+    toast('⚠️ Cole um link de afiliado primeiro!');
+    inp.focus();
+    return;
+  }
+
+  let cleanUrl = url;
+  if (!cleanUrl.startsWith('http://') && !cleanUrl.startsWith('https://')) {
+    cleanUrl = 'https://' + cleanUrl;
+  }
+
+  const dados = extrairDadosDoLink(cleanUrl);
+
+  const obj = {
+    id: uid(),
+    nome: dados.nome,
+    url: cleanUrl,
+    descricao: 'Adicionado automaticamente por link',
+    plataforma: dados.plataforma,
+    tipo: dados.tipo,
+    preco: '',
+    precoAntes: '',
+    desconto: '',
+    emoji: dados.emoji
+  };
+
+  produtos.unshift(obj);
+  gravar();
+  renderProdutos();
+  atualizarVitrine();
+  if (typeof currentUser !== 'undefined' && currentUser) {
+    salvarNaNuvem();
+  }
+
+  inp.value = '';
+  toast(`✨ Produto "${dados.nome}" adicionado com sucesso!`);
+}
+
 // ═══ PRODUTO ══════════════════════════════════════════════════
 function abrirProduto(id){
   document.getElementById('p-edit-id').value=id||'';
@@ -831,6 +1023,12 @@ function abrirProduto(id){
   const btnDel = document.getElementById('p-btn-del');
   if (btnDel) btnDel.style.display = id ? 'inline-flex' : 'none';
   const fs=['p-nome','p-url','p-desc','p-preco','p-de','p-desc2','p-emoji'];
+  
+  const nomeInp = document.getElementById('p-nome');
+  const emojiInp = document.getElementById('p-emoji');
+  if (nomeInp) delete nomeInp.dataset.autofilled;
+  if (emojiInp) delete emojiInp.dataset.autofilled;
+
   if(id){
     const p=produtos.find(x=>x.id===id);
     if(p) {
@@ -1295,6 +1493,19 @@ function toast(msg){
 // ═══ FIREBASE CLOUD CORE INTEGRATION ══════════════════════════
 let db, auth;
 let currentUser = null;
+let firebasePromise = null;
+
+async function ensureAuth() {
+  if (auth && db) return { auth, db };
+  if (!firebasePromise) {
+    firebasePromise = inicializarFirebase();
+  }
+  await firebasePromise;
+  if (!auth) {
+    throw new Error('Não foi possível conectar ao serviço de autenticação. Tente recarregar a página.');
+  }
+  return { auth, db };
+}
 
 // Sanitize and configure sharing url
 function validarSlug(input) {
@@ -1314,17 +1525,19 @@ function validarSlug(input) {
 
 // Initialize Firebase dynamically using configuration securely served from our server
 async function inicializarFirebase() {
+  if (auth && db) return { auth, db };
   try {
     const res = await fetch('/api/config');
     if (!res.ok) throw new Error('Não foi possível carregar as credenciais da nuvem.');
     const config = await res.json();
     
     // Import SDKs from dynamic CDNs to avoid breaking bundle speeds
-    const { initializeApp } = await import('https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js');
+    const { initializeApp, getApps, getApp } = await import('https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js');
     const { getAuth, signInWithPopup, GoogleAuthProvider, signOut, onAuthStateChanged } = await import('https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js');
     const { getFirestore, doc, getDoc, setDoc, collection, query, where, getDocs } = await import('https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js');
     
-    const app = initializeApp(config);
+    const apps = getApps();
+    const app = apps.length > 0 ? getApp() : initializeApp(config);
     auth = getAuth(app);
     const dbDatabaseId = config.firestoreDatabaseId || 'ai-studio-vitrine-415e80b1-219f-4bb3-b88b-701c2f6b519c';
     db = dbDatabaseId ? getFirestore(app, dbDatabaseId) : getFirestore(app);
@@ -1659,10 +1872,6 @@ function alternarAuthAba(aba) {
 }
 
 async function recuperarSenhaEmail() {
-  if (!auth) {
-    toast('⏳ Conectando ao serviço de autenticação, aguarde 2 segundos...');
-    return;
-  }
   const emailInp = document.getElementById('auth-login-email');
   const email = emailInp ? emailInp.value.trim() : '';
   if (!email) {
@@ -1671,6 +1880,8 @@ async function recuperarSenhaEmail() {
     return;
   }
   try {
+    toast('⏳ Conectando ao sistema...');
+    await ensureAuth();
     const { sendPasswordResetEmail } = await import('https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js');
     toast('⏳ Enviando e-mail de redefinição...');
     await sendPasswordResetEmail(auth, email);
@@ -1685,17 +1896,12 @@ async function recuperarSenhaEmail() {
     } else if (err.code === 'auth/invalid-email') {
       toast('⚠️ Digite um formato de e-mail válido!');
     } else {
-      toast('⚠️ Erro ao enviar e-mail: ' + err.message);
+      toast('⚠️ Erro ao enviar e-mail: ' + (err.message || err));
     }
   }
 }
 
 async function fazerLoginEmail() {
-  if (!auth) {
-    toast('⏳ Carregando serviço de login, aguarde um segundo e clique novamente...');
-    return;
-  }
-
   const emailInput = document.getElementById('auth-login-email');
   const passInput = document.getElementById('auth-login-pass');
   if (!emailInput || !passInput) return;
@@ -1709,6 +1915,8 @@ async function fazerLoginEmail() {
   }
 
   try {
+    toast('⏳ Conectando ao sistema de login...');
+    await ensureAuth();
     const { signInWithEmailAndPassword } = await import('https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js');
     toast('⏳ Entrando na sua conta de afiliado...');
     await signInWithEmailAndPassword(auth, email, pass);
@@ -1717,7 +1925,7 @@ async function fazerLoginEmail() {
     console.error(err);
     let msg = 'Erro ao fazer login: ' + err.message;
     if (err.code === 'auth/invalid-credential' || err.code === 'auth/wrong-password' || err.code === 'auth/user-not-found') {
-      msg = '⚠️ E-mail ou senha incorretos! Se não tem conta, vá para "Criar Conta".';
+      msg = '⚠️ E-mail ou senha incorretos! Se não tem conta, clique em "Criar Conta".';
     } else if (err.code === 'auth/invalid-email') {
       msg = '⚠️ Formato de e-mail inválido!';
     } else if (err.code === 'auth/too-many-requests') {
@@ -1728,11 +1936,6 @@ async function fazerLoginEmail() {
 }
 
 async function fazerCadastroEmail() {
-  if (!auth) {
-    toast('⏳ Carregando serviço de cadastro, aguarde um instante...');
-    return;
-  }
-
   const nomeInput = document.getElementById('auth-cad-nome');
   const emailInput = document.getElementById('auth-cad-email');
   const passInput = document.getElementById('auth-cad-pass');
@@ -1762,6 +1965,8 @@ async function fazerCadastroEmail() {
   }
 
   try {
+    toast('⏳ Conectando ao sistema...');
+    await ensureAuth();
     const { collection, query, where, getDocs, doc, setDoc } = await import('https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js');
     
     // Verificar se o slug já está em uso por outro usuário
@@ -1826,14 +2031,11 @@ async function fazerCadastroEmail() {
 }
 
 async function fazerLoginGoogle() {
-  if (!auth) {
-    toast('⏳ Inicializando login com Google, aguarde um segundo...');
-    return;
-  }
   try {
+    toast('⏳ Conectando ao Google...');
+    await ensureAuth();
     const { GoogleAuthProvider, signInWithPopup } = await import('https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js');
     const provider = new GoogleAuthProvider();
-    toast('⏳ Abrindo login do Google...');
     await signInWithPopup(auth, provider);
   } catch (err) {
     console.error(err);
@@ -1846,8 +2048,8 @@ async function fazerLoginGoogle() {
 }
 
 async function fazerLogout() {
-  if (!auth) return;
   try {
+    await ensureAuth();
     const { signOut } = await import('https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js');
     if (confirm('Deseja sair da sua conta?')) {
       await signOut(auth);
@@ -2152,6 +2354,9 @@ window.filtrarListaAdmin = filtrarListaAdmin;
 window.excluirAfiliadoAdmin = excluirAfiliadoAdmin;
 window.excluirProdutoDoModal = excluirProdutoDoModal;
 window.limparRede = limparRede;
+window.extrairDadosDoLink = extrairDadosDoLink;
+window.processarLinkNoModal = processarLinkNoModal;
+window.adicionarProdutoPorLinkRapido = adicionarProdutoPorLinkRapido;
 window.salvarAvisoGlobal = salvarAvisoGlobal;
 window.apagarAvisoGlobal = apagarAvisoGlobal;
 
