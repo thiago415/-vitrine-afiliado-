@@ -1,0 +1,32 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Users collection
+    match /users/{userId} {
+      allow read: if true; // Public profiles are readable by anyone
+      allow create: if request.auth != null && request.auth.uid == userId;
+      allow update, delete: if request.auth != null && request.auth.uid == userId;
+    }
+
+    // Support tickets collection
+    match /support_tickets/{ticketId} {
+      allow create: if true; // Anyone can submit a bug report / feedback
+      allow read: if request.auth != null && (
+        request.auth.token.email == 'thiagolino974@gmail.com' || 
+        resource.data.targetProfileUid == request.auth.uid ||
+        resource.data.uid == request.auth.uid
+      );
+      allow update, delete: if request.auth != null && (
+        request.auth.token.email == 'thiagolino974@gmail.com' ||
+        resource.data.targetProfileUid == request.auth.uid ||
+        resource.data.uid == request.auth.uid
+      );
+    }
+
+    // Analytics collection
+    match /analytics/{username} {
+      allow read, create, update: if true; // Allows anonymous users to track views/clicks, and owners to view metrics
+      allow delete: if request.auth != null && request.auth.token.email == 'thiagolino974@gmail.com';
+    }
+  }
+}

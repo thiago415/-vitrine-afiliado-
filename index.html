@@ -1,0 +1,990 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vitrine Afiliados PRO</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap');
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--c1:#FF5000;--c2:#8B5CF6;--bg:#0c0c14;--bg2:#13131f;--bg3:#1c1c2a;--borda:rgba(255,255,255,0.09);--txt:#f0f0f5;--txt2:#8888aa}
+body{background:var(--bg);color:var(--txt);font-family:'Inter',sans-serif;min-height:100vh;overflow-x:hidden}
+input,select,textarea,button{font-family:inherit}
+
+/* HEADER */
+#header{background:var(--bg2);border-bottom:1px solid var(--borda);padding:13px 16px;display:flex;align-items:center;gap:10px;position:sticky;top:0;z-index:100}
+#logo-icone{width:34px;height:34px;border-radius:10px;background:linear-gradient(135deg,var(--c1),var(--c2));display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0}
+#logo-txt{font-weight:800;font-size:14px;line-height:1.2}
+#logo-sub{font-size:10px;color:var(--txt2)}
+#btn-redes{margin-left:auto;background:var(--bg3);border:1px solid var(--borda);border-radius:8px;padding:7px 11px;color:var(--txt2);font-size:12px;font-weight:600;cursor:pointer;flex-shrink:0;min-height:40px;min-width:70px}
+
+/* ABAS */
+#abas{background:var(--bg2);border-bottom:1px solid var(--borda);display:flex;position:sticky;top:61px;z-index:99}
+.aba{flex:1;padding:11px 4px;border:none;background:transparent;color:var(--txt2);font-size:11px;font-weight:700;cursor:pointer;border-bottom:2px solid transparent;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:4px;white-space:nowrap;min-height:44px}
+.aba.ativa{color:var(--c1);border-bottom-color:var(--c1);background:rgba(255,80,0,.07)}
+
+/* PÁGINAS */
+.pg{display:none;max-width:560px;margin:0 auto;padding:20px 14px 40px}
+.pg.ativa{display:block}
+#pg-vitrine{display:none;max-width:480px;margin:0 auto;padding:0 14px 40px;background:var(--bg)}
+#pg-vitrine.ativa{display:block}
+
+/* CAMPOS */
+.lbl{display:block;font-size:10px;color:var(--txt2);margin-bottom:4px;font-weight:700;text-transform:uppercase;letter-spacing:.5px}
+.inp{width:100%;background:var(--bg3);border:1px solid var(--borda);border-radius:8px;padding:9px 11px;color:var(--txt);font-size:13px;outline:none;margin-bottom:11px;transition:border-color .2s}
+.inp:focus{border-color:rgba(139,92,246,.5)}
+select.inp{cursor:pointer}
+textarea.inp{resize:vertical}
+
+/* BOTÕES */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;border:none;border-radius:9px;cursor:pointer;font-weight:700;font-size:13px;padding:10px 16px;transition:all .18s;touch-action:manipulation}
+.bp{background:linear-gradient(135deg,var(--c1),var(--c2));color:#fff}
+.bg{background:var(--bg3);color:var(--txt2);border:1px solid var(--borda)}
+.bd{background:rgba(239,68,68,.12);color:#f87171;border:1px solid rgba(239,68,68,.2)}
+.bsm{padding:7px 10px;font-size:12px;border-radius:7px}
+.bfw{width:100%}
+
+/* CARD */
+.card{background:var(--bg2);border:1px solid var(--borda);border-radius:13px;padding:15px;margin-bottom:11px}
+
+/* TAG */
+.tag{display:inline-flex;align-items:center;font-size:10px;font-weight:700;padding:2px 7px;border-radius:20px;text-transform:uppercase;letter-spacing:.3px}
+
+/* ITEM PRODUTO PAINEL */
+.pi{background:var(--bg2);border:1px solid var(--borda);border-radius:13px;padding:12px;margin-bottom:9px;display:flex;gap:11px;align-items:center}
+.pi-em{width:48px;height:48px;border-radius:9px;background:var(--bg3);display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;border:1px solid var(--borda)}
+.pi-nm{font-weight:700;font-size:13px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+
+/* VITRINE */
+.vp{text-align:center;padding:40px 0 24px;background:var(--bg)}
+.vav{width:86px;height:86px;border-radius:50%;margin:0 auto 13px;background:linear-gradient(135deg,var(--c1),var(--c2));display:flex;align-items:center;justify-content:center;font-size:38px;box-shadow:0 0 0 3px var(--bg),0 0 0 5px var(--c1),0 0 30px rgba(255,80,0,.25);animation:pulso 3s ease-in-out infinite}
+@keyframes pulso{0%,100%{box-shadow:0 0 0 3px var(--bg),0 0 0 5px var(--c1),0 0 25px rgba(255,80,0,.2)}50%{box-shadow:0 0 0 3px var(--bg),0 0 0 5px var(--c1),0 0 45px rgba(255,80,0,.4)}}
+.vnm{font-size:21px;font-weight:800;margin-bottom:5px}
+.vbi{font-size:13px;color:var(--txt2);line-height:1.6;max-width:290px;margin:0 auto 16px}
+.vrd{display:flex;gap:7px;justify-content:center;flex-wrap:wrap;margin-bottom:4px}
+.vrb{display:flex;align-items:center;gap:5px;border-radius:20px;padding:6px 12px;font-size:11px;font-weight:600;text-decoration:none}
+.vflt{display:flex;gap:6px;margin-bottom:16px;flex-wrap:wrap;padding:0 2px}
+.vfb{padding:7px 13px;border-radius:20px;border:none;cursor:pointer;font-size:12px;font-weight:600;background:var(--bg2);color:var(--txt2);touch-action:manipulation}
+.vfb.at{background:var(--c1);color:#fff}
+.vprd{display:flex;align-items:center;gap:13px;background:var(--bg2);border:1px solid var(--borda);border-radius:13px;padding:13px;text-decoration:none;color:var(--txt);margin-bottom:9px;transition:border-color .2s}
+.vprd:active{background:var(--bg3)}
+.vem{width:56px;height:56px;border-radius:11px;background:var(--bg3);display:flex;align-items:center;justify-content:center;font-size:26px;flex-shrink:0;border:1px solid var(--borda)}
+.vnome{font-weight:700;font-size:13px;margin-bottom:3px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.vdes{font-size:11px;color:var(--txt2);margin-bottom:5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.vpw{display:flex;align-items:center;gap:5px;flex-wrap:wrap}
+.vpc{font-size:15px;font-weight:900}
+.vde{font-size:11px;color:var(--txt2);text-decoration:line-through}
+.vst{color:var(--txt2);font-size:17px;flex-shrink:0}
+.vft{text-align:center;padding:20px 0 40px;font-size:11px;color:#444}
+.vem2{text-align:center;padding:44px 16px;color:var(--txt2)}
+
+/* REDES */
+.ri{background:var(--bg3);border-radius:10px;padding:11px;margin-bottom:8px;border:1px solid var(--borda)}
+.tgl{width:38px;height:22px;border-radius:11px;cursor:pointer;position:relative;background:var(--bg3);border:1px solid var(--borda);flex-shrink:0;display:inline-block;touch-action:manipulation}
+.tglb{position:absolute;top:2px;left:2px;width:16px;height:16px;border-radius:50%;background:var(--txt2);transition:left .2s,background .2s}
+
+/* FERRAMENTAS */
+.fc{background:var(--bg2);border:1px solid var(--borda);border-radius:11px;padding:13px;margin-bottom:9px}
+.fd{background:var(--bg3);border-radius:7px;padding:7px 11px;font-size:11px;color:var(--txt2);margin-bottom:7px;border-left:3px solid var(--c2)}
+.fl{display:inline-flex;align-items:center;gap:4px;background:var(--bg3);border:1px solid var(--borda);border-radius:6px;padding:5px 9px;color:var(--c2);font-size:11px;font-weight:600;text-decoration:none;margin:2px}
+.pg2{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:20px}
+.pc{background:var(--bg2);border:1px solid var(--borda);border-radius:11px;padding:11px;text-decoration:none;color:var(--txt);display:block}
+.di{display:flex;gap:11px;background:var(--bg2);border:1px solid var(--borda);border-radius:11px;padding:11px 13px;margin-bottom:7px}
+
+/* CORES */
+.cg{display:grid;grid-template-columns:1fr 1fr;gap:11px;margin-bottom:13px}
+.pb{display:flex;align-items:center;gap:6px;background:var(--bg3);border:1px solid var(--borda);border-radius:8px;padding:5px 9px;cursor:pointer;color:var(--txt);font-size:11px;font-weight:600;margin:2px;touch-action:manipulation}
+.pd{display:inline-block;width:13px;height:13px;border-radius:50%}
+
+/* MODAL */
+#overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.8);z-index:200;align-items:flex-end;justify-content:center;padding:0}
+#overlay.ab{display:flex}
+.modal{background:var(--bg2);border:1px solid var(--borda);border-radius:18px 18px 0 0;padding:20px 16px;width:100%;max-height:92vh;overflow-y:auto}
+.mt{font-size:15px;font-weight:700;margin-bottom:16px;display:flex;justify-content:space-between;align-items:center}
+.mf{background:none;border:none;color:var(--txt2);font-size:22px;cursor:pointer;line-height:1;padding:2px 6px;touch-action:manipulation}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:0 11px}
+.c2{grid-column:1/-1}
+
+/* TOAST */
+#toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%) translateY(80px);background:#1e1e2e;border:1px solid rgba(139,92,246,.4);color:#fff;padding:9px 18px;border-radius:28px;font-size:13px;font-weight:600;z-index:9999;transition:transform .3s;pointer-events:none;white-space:nowrap}
+#toast.show{transform:translateX(-50%) translateY(0)}
+
+/* EMPTY */
+.eb{text-align:center;padding:48px 16px;background:var(--bg2);border-radius:14px;border:1px dashed var(--borda)}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div id="header">
+  <div id="logo-icone">🛍️</div>
+  <div>
+    <div id="logo-txt">Vitrine <span style="color:var(--c1)">Afiliados</span> PRO</div>
+    <div id="logo-sub">Shopee · ML · Hotmart · Cakto · e mais</div>
+  </div>
+  <button id="btn-redes" onclick="abrirModal('m-redes')">📲 Redes</button>
+</div>
+
+<!-- ABAS -->
+<div id="abas">
+  <button class="aba ativa" onclick="irPara('vitrine',this)" data-pg="vitrine">👁️ Vitrine</button>
+  <button class="aba" onclick="irPara('produtos',this)" data-pg="produtos">📦 Produtos</button>
+  <button class="aba" onclick="irPara('perfil',this)" data-pg="perfil">✏️ Perfil</button>
+  <button class="aba" onclick="irPara('ferramentas',this)" data-pg="ferramentas">🛠️ Ferramentas</button>
+</div>
+
+<!-- ═══ VITRINE ═══════════════════════════ -->
+<div id="pg-vitrine" class="ativa">
+  <div class="vp">
+    <div class="vav" id="vav">🛍️</div>
+    <h1 class="vnm" id="vnm">Seu Nome Aqui</h1>
+    <p class="vbi" id="vbi">Garimpando as melhores ofertas pra você! 🔥</p>
+    <div class="vrd" id="vrd"></div>
+  </div>
+  <div id="v-flt-wrap" style="display:none">
+    <div class="vflt">
+      <button class="vfb at" onclick="filtrar('todos',this)">Todos</button>
+      <button class="vfb" onclick="filtrar('fisico',this)">📦 Físicos</button>
+      <button class="vfb" onclick="filtrar('digital',this)">💻 Digitais</button>
+    </div>
+  </div>
+  <div id="v-lista"></div>
+  <div style="margin:24px 0 14px;text-align:center">
+    <div style="font-size:10px;color:var(--txt2);text-transform:uppercase;letter-spacing:1px;font-weight:700;margin-bottom:9px">Plataformas aceitas</div>
+    <div id="v-plats" style="display:flex;gap:7px;justify-content:center;flex-wrap:wrap"></div>
+  </div>
+  <div class="vft">Criado com <span id="v-coração" style="color:var(--c1)">♥</span> no Vitrine Afiliados PRO<br><span style="margin-top:3px;display:block">Links de afiliado — ao comprar você apoia este canal 🙌</span></div>
+</div>
+
+<!-- ═══ PRODUTOS ══════════════════════════ -->
+<div id="pg-produtos" class="pg">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:18px">
+    <div>
+      <h2 style="font-size:17px;font-weight:800">Meus Produtos</h2>
+      <p id="p-count" style="font-size:12px;color:var(--txt2)">0 produto(s)</p>
+    </div>
+    <button class="btn bp" onclick="abrirProduto()">＋ Adicionar</button>
+  </div>
+  <div id="lista-prod">
+    <div class="eb">
+      <div style="font-size:44px;margin-bottom:10px">📦</div>
+      <p style="color:var(--txt2);margin-bottom:16px">Nenhum produto ainda!</p>
+      <button class="btn bp" onclick="abrirProduto()">＋ Adicionar Produto</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ PERFIL ════════════════════════════ -->
+<div id="pg-perfil" class="pg">
+  <h2 style="font-size:17px;font-weight:800;margin-bottom:5px">Meu Perfil</h2>
+  <p style="font-size:12px;color:var(--txt2);margin-bottom:20px">Personalize sua vitrine.</p>
+  <div class="card">
+    <label class="lbl">Nome / Apelido</label>
+    <input class="inp" id="pf-nome" placeholder="Ex: Vitrine do João" oninput="atualizarVitrine()">
+    <label class="lbl">Bio</label>
+    <textarea class="inp" id="pf-bio" rows="3" placeholder="Descreva sua vitrine..." oninput="atualizarVitrine()"></textarea>
+    <label class="lbl">Emoji do Avatar</label>
+    <input class="inp" id="pf-emoji" placeholder="🛍️" maxlength="4" oninput="atualizarVitrine()">
+  </div>
+  <div class="card">
+    <div style="font-weight:700;font-size:13px;margin-bottom:13px">🎨 Cores da Vitrine</div>
+    <div class="cg">
+      <div>
+        <label class="lbl">Cor Principal</label>
+        <div style="display:flex;gap:8px;align-items:center">
+          <input type="color" id="pf-c1" value="#FF5000" oninput="aplicarCores()" style="width:38px;height:38px;border:none;border-radius:7px;cursor:pointer;background:none;padding:0">
+          <span id="txt-c1" style="font-size:11px;color:var(--txt2)">#FF5000</span>
+        </div>
+      </div>
+      <div>
+        <label class="lbl">Cor Secundária</label>
+        <div style="display:flex;gap:8px;align-items:center">
+          <input type="color" id="pf-c2" value="#8B5CF6" oninput="aplicarCores()" style="width:38px;height:38px;border:none;border-radius:7px;cursor:pointer;background:none;padding:0">
+          <span id="txt-c2" style="font-size:11px;color:var(--txt2)">#8B5CF6</span>
+        </div>
+      </div>
+    </div>
+    <div style="font-size:11px;color:var(--txt2);margin-bottom:7px">Paletas rápidas:</div>
+    <div style="display:flex;flex-wrap:wrap">
+      <button class="pb" onclick="paleta('#FF5000','#FF9900')"><span class="pd" style="background:linear-gradient(135deg,#FF5000,#FF9900)"></span>Fogo</button>
+      <button class="pb" onclick="paleta('#8B5CF6','#EC4899')"><span class="pd" style="background:linear-gradient(135deg,#8B5CF6,#EC4899)"></span>Roxo</button>
+      <button class="pb" onclick="paleta('#22c55e','#06b6d4')"><span class="pd" style="background:linear-gradient(135deg,#22c55e,#06b6d4)"></span>Verde</button>
+      <button class="pb" onclick="paleta('#00C2FF','#0084FF')"><span class="pd" style="background:linear-gradient(135deg,#00C2FF,#0084FF)"></span>Azul</button>
+      <button class="pb" onclick="paleta('#F59E0B','#EF4444')"><span class="pd" style="background:linear-gradient(135deg,#F59E0B,#EF4444)"></span>Dourado</button>
+    </div>
+  </div>
+  <button class="btn bp bfw" onclick="salvarPerfil()">💾 Salvar Perfil</button>
+  
+  <!-- CARD SINCRONIZAÇÃO EM NUVEM -->
+  <div class="card" id="card-nuvem" style="margin-top:15px">
+    <div style="font-weight:700;font-size:13px;margin-bottom:6px;display:flex;align-items:center;gap:6px">☁️ Sincronização em Nuvem (Firebase)</div>
+    <p style="font-size:11px;color:var(--txt2);margin-bottom:12px">Salve seu perfil e produtos na nuvem para compartilhar seu link personalizado com o mundo.</p>
+    
+    <!-- Quando deslogado -->
+    <div id="nuvem-deslogado">
+      <button class="btn bp bfw" onclick="fazerLoginGoogle()" style="gap:8px">
+        <svg style="width:16px;height:16px;fill:currentColor" viewBox="0 0 24 24"><path d="M12.24 10.285V13.4h6.887C18.2 15.614 15.645 18 12.24 18c-3.86 0-7-3.14-7-7s3.14-7 7-7c1.7 0 3.3.65 4.5 1.8l2.4-2.4C17.3 1.7 14.85 1 12.24 1 6.58 1 2 5.58 2 11.24s4.58 10.24 10.24 10.24c5.79 0 10.24-4.1 10.24-10.24 0-.6-.08-1.35-.24-1.95H12.24z"/></svg>
+        Entrar com o Google
+      </button>
+    </div>
+    
+    <!-- Quando logado -->
+    <div id="nuvem-logado" style="display:none">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;background:var(--bg3);padding:10px;border-radius:8px;border:1px solid var(--borda)">
+        <div id="nuvem-user-avatar" style="width:36px;height:36px;border-radius:50%;background:var(--c1);display:flex;align-items:center;justify-content:center;font-size:18px">👤</div>
+        <div style="min-width:0;flex:1">
+          <div id="nuvem-user-nome" style="font-weight:700;font-size:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">Carregando...</div>
+          <div id="nuvem-user-email" style="font-size:10px;color:var(--txt2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">...</div>
+        </div>
+        <button class="btn bd bsm" onclick="fazerLogout()" style="padding:5px 8px;font-size:10px">Sair</button>
+      </div>
+      
+      <label class="lbl">Seu Link Personalizado (Slug)</label>
+      <div style="display:flex;gap:4px;margin-bottom:12px">
+        <span style="display:flex;align-items:center;background:var(--bg3);border:1px solid var(--borda);border-right:none;border-radius:8px 0 0 8px;padding:0 8px;font-size:12px;color:var(--txt2);white-space:nowrap">vitrine/</span>
+        <input class="inp" id="pf-username" placeholder="seu-nome" style="margin-bottom:0;border-radius:0 8px 8px 0" oninput="validarSlug(this)">
+      </div>
+      
+      <div id="nuvem-link-compartilhar" style="display:none;margin-bottom:12px;padding:9px;background:rgba(34,197,94,0.1);border:1px solid rgba(34,197,94,0.2);border-radius:8px;font-size:11px">
+        <span style="color:#22c55e;font-weight:700">Link Ativo: </span>
+        <a id="lnk-pub" href="#" target="_blank" style="color:var(--c2);text-decoration:underline;font-weight:700">ver minha vitrine ↗</a>
+      </div>
+
+      <button class="btn bp bfw" onclick="salvarNaNuvem()">☁️ Salvar na Nuvem</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ FERRAMENTAS ═══════════════════════ -->
+<div id="pg-ferramentas" class="pg">
+  <h2 style="font-size:17px;font-weight:800;margin-bottom:5px">🛠️ Ferramentas</h2>
+  <p style="font-size:12px;color:var(--txt2);margin-bottom:20px">Rastreamento, pixels e plataformas.</p>
+  <div class="fc"><b style="font-size:13px">🔗 Encurtador de Links</b><p style="font-size:11px;color:var(--txt2);margin:4px 0 9px">Encurte links e rastreie cliques.</p><div class="fd">💡 Use bit.ly ou TinyURL para ver quantas pessoas clicaram.</div><div><a class="fl" href="https://bit.ly" target="_blank">🔗 Bit.ly ↗</a><a class="fl" href="https://tinyurl.com" target="_blank">🔗 TinyURL ↗</a><a class="fl" href="https://linktr.ee" target="_blank">🔗 Linktree ↗</a></div></div>
+  <div class="fc"><b style="font-size:13px">📊 Pixel do Facebook</b><p style="font-size:11px;color:var(--txt2);margin:4px 0 9px">Rastreie conversões no Meta.</p><div class="fd">💡 Acesse Meta Business Suite para criar seu Pixel.</div><div><a class="fl" href="https://business.facebook.com" target="_blank">📊 Meta Business ↗</a></div></div>
+  <div class="fc"><b style="font-size:13px">🎵 Pixel do TikTok</b><p style="font-size:11px;color:var(--txt2);margin:4px 0 9px">Rastreie vendas do TikTok Ads.</p><div class="fd">💡 Configure em TikTok Ads Manager → Ativos → Eventos.</div><div><a class="fl" href="https://ads.tiktok.com" target="_blank">🎵 TikTok Ads ↗</a></div></div>
+  <div class="fc"><b style="font-size:13px">📈 Google Analytics 4</b><p style="font-size:11px;color:var(--txt2);margin:4px 0 9px">Analise o tráfego da vitrine.</p><div class="fd">💡 Crie uma propriedade GA4 e copie o ID G-XXXXXXXX.</div><div><a class="fl" href="https://analytics.google.com" target="_blank">📈 Google Analytics ↗</a></div></div>
+  <h3 style="font-size:14px;font-weight:700;margin:20px 0 11px">🏪 Plataformas de Afiliados</h3>
+  <div class="pg2">
+    <a class="pc" href="https://shopee.com.br/affiliate" target="_blank"><div style="font-size:20px;margin-bottom:3px">🛍️</div><div style="font-size:12px;font-weight:700;color:#FF5000">Shopee</div><div style="font-size:10px;color:var(--txt2)">Comissão por produto</div></a>
+    <a class="pc" href="https://afiliados.mercadolivre.com.br" target="_blank"><div style="font-size:20px;margin-bottom:3px">🛒</div><div style="font-size:12px;font-weight:700;color:#d4b800">Mercado Livre</div><div style="font-size:10px;color:var(--txt2)">Programa de afiliados</div></a>
+    <a class="pc" href="https://hotmart.com" target="_blank"><div style="font-size:20px;margin-bottom:3px">🔥</div><div style="font-size:12px;font-weight:700;color:#FF4C00">Hotmart</div><div style="font-size:10px;color:var(--txt2)">Cursos e infoprodutos</div></a>
+    <a class="pc" href="https://cakto.com.br" target="_blank"><div style="font-size:20px;margin-bottom:3px">⚡</div><div style="font-size:12px;font-weight:700;color:#00C2FF">Cakto</div><div style="font-size:10px;color:var(--txt2)">Produtos digitais</div></a>
+    <a class="pc" href="https://associados.amazon.com.br" target="_blank"><div style="font-size:20px;margin-bottom:3px">📦</div><div style="font-size:12px;font-weight:700;color:#FF9900">Amazon</div><div style="font-size:10px;color:var(--txt2)">Milhares de produtos</div></a>
+    <a class="pc" href="https://eduzz.com" target="_blank"><div style="font-size:20px;margin-bottom:3px">💡</div><div style="font-size:12px;font-weight:700;color:#F59E0B">Eduzz</div><div style="font-size:10px;color:var(--txt2)">Cursos e ebooks</div></a>
+  </div>
+  <h3 style="font-size:14px;font-weight:700;margin-bottom:10px">💡 Dicas para Vender Mais</h3>
+  <div class="di"><span style="font-size:20px">🎯</span><div><b style="font-size:12px">Produtos de alta conversão</b><div style="font-size:11px;color:var(--txt2)">Foco em avaliações boas e comissões acima de 20%.</div></div></div>
+  <div class="di"><span style="font-size:20px">📲</span><div><b style="font-size:12px">Direcione pelo WhatsApp</b><div style="font-size:11px;color:var(--txt2)">Links pelo WhatsApp convertem 40% mais que posts no feed.</div></div></div>
+  <div class="di"><span style="font-size:20px">🔥</span><div><b style="font-size:12px">Hotmart: aposte em cursos</b><div style="font-size:11px;color:var(--txt2)">Comissões de 30% a 70% sem precisar de estoque.</div></div></div>
+  <div class="di"><span style="font-size:20px">📌</span><div><b style="font-size:12px">Pinterest gera tráfego orgânico</b><div style="font-size:11px;color:var(--txt2)">Pins de produtos duram meses e trazem visitas grátis.</div></div></div>
+</div>
+
+<!-- ═══ MODAL PRODUTO ═════════════════════ -->
+<div id="overlay" onclick="fecharOverlay(event)">
+  <div id="m-produto" class="modal" style="display:none" onclick="event.stopPropagation()">
+    <div class="mt">
+      <span id="m-prod-titulo">➕ Novo Produto</span>
+      <button class="mf" onclick="fecharModal('m-produto')">×</button>
+    </div>
+    <input type="hidden" id="p-edit-id">
+    <div class="g2">
+      <div class="c2"><label class="lbl">Nome *</label><input class="inp" id="p-nome" placeholder="Ex: Fone Bluetooth TWS"></div>
+      <div class="c2"><label class="lbl">Link de Afiliado *</label><input class="inp" id="p-url" placeholder="https://..."></div>
+      <div class="c2"><label class="lbl">Descrição breve</label><input class="inp" id="p-desc" placeholder="Ex: Sem fio, cancelamento de ruído"></div>
+      <div><label class="lbl">Plataforma</label>
+        <select class="inp" id="p-plat">
+          <option value="shopee">🛍️ Shopee</option>
+          <option value="mercadolivre">🛒 Mercado Livre</option>
+          <option value="hotmart">🔥 Hotmart</option>
+          <option value="cakto">⚡ Cakto</option>
+          <option value="amazon">📦 Amazon</option>
+          <option value="eduzz">💡 Eduzz</option>
+          <option value="outro">🔗 Outro</option>
+        </select>
+      </div>
+      <div><label class="lbl">Tipo</label>
+        <select class="inp" id="p-tipo">
+          <option value="fisico">📦 Produto Físico</option>
+          <option value="digital">💻 Produto Digital</option>
+          <option value="curso">🎓 Curso</option>
+          <option value="ebook">📚 E-book</option>
+          <option value="software">🖥️ Software</option>
+        </select>
+      </div>
+      <div><label class="lbl">Preço</label><input class="inp" id="p-preco" placeholder="R$ 49,90"></div>
+      <div><label class="lbl">Preço "De"</label><input class="inp" id="p-de" placeholder="R$ 99,90"></div>
+      <div><label class="lbl">Desconto %</label><input class="inp" id="p-desc2" placeholder="50"></div>
+      <div><label class="lbl">Emoji</label><input class="inp" id="p-emoji" placeholder="📱" maxlength="4"></div>
+    </div>
+    <div style="display:flex;gap:8px;margin-top:6px">
+      <button class="btn bg bfw" onclick="fecharModal('m-produto')">Cancelar</button>
+      <button class="btn bp bfw" onclick="salvarProduto()">💾 Salvar</button>
+    </div>
+  </div>
+
+  <!-- MODAL REDES -->
+  <div id="m-redes" class="modal" style="display:none" onclick="event.stopPropagation()">
+    <div class="mt">
+      <span>📲 Redes Sociais</span>
+      <button class="mf" onclick="fecharModal('m-redes')">×</button>
+    </div>
+    <p style="font-size:12px;color:var(--txt2);margin-bottom:14px">Ative e cole seus links. Aparecem na vitrine.</p>
+    <div id="lista-redes"></div>
+    <button class="btn bp bfw" onclick="salvarRedes()">✅ Salvar Redes</button>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script type="module">
+// ═══ DADOS ════════════════════════════════════════════════════
+const PLAT={shopee:{l:'Shopee',c:'#FF5000',e:'🛍️'},mercadolivre:{l:'Mercado Livre',c:'#d4b800',e:'🛒'},hotmart:{l:'Hotmart',c:'#FF4C00',e:'🔥'},cakto:{l:'Cakto',c:'#00C2FF',e:'⚡'},amazon:{l:'Amazon',c:'#FF9900',e:'📦'},eduzz:{l:'Eduzz',c:'#F59E0B',e:'💡'},outro:{l:'Outro',c:'#6B7280',e:'🔗'}};
+const TIPOS={fisico:{l:'Físico',e:'📦'},digital:{l:'Digital',e:'💻'},curso:{l:'Curso',e:'🎓'},ebook:{l:'E-book',e:'📚'},software:{l:'Software',e:'🖥️'}};
+const REDES={whatsapp:{l:'WhatsApp',e:'💬',c:'#25D366',ph:'https://wa.me/5511999999999'},instagram:{l:'Instagram',e:'📸',c:'#E1306C',ph:'https://instagram.com/seuperfil'},telegram:{l:'Telegram',e:'✈️',c:'#229ED9',ph:'https://t.me/seucanal'},tiktok:{l:'TikTok',e:'🎵',c:'#aaa',ph:'https://tiktok.com/@seuperfil'},youtube:{l:'YouTube',e:'▶️',c:'#FF0000',ph:'https://youtube.com/@seucanal'},kwai:{l:'Kwai',e:'🎬',c:'#FF4500',ph:'https://kwai.com/@seuperfil'},pinterest:{l:'Pinterest',e:'📌',c:'#E60023',ph:'https://pinterest.com/seuperfil'}};
+const KEY='vap_v2';
+
+function uid(){return Math.random().toString(36).slice(2,9)}
+
+// ═══ LOCALSTORAGE ═════════════════════════════════════════════
+function carregar(){
+  try{const r=localStorage.getItem(KEY);if(r)return JSON.parse(r);}catch(e){}
+  return{produtos:[],redes:Object.keys(REDES).map((k,i)=>({id:i+1,tipo:k,url:'',on:false})),perfil:{nome:'Seu Nome Aqui',bio:'Garimpando as melhores ofertas pra você! 🔥',emoji:'🛍️',c1:'#FF5000',c2:'#8B5CF6'}};
+}
+function gravar(){
+  try{localStorage.setItem(KEY,JSON.stringify({produtos,redes,perfil:{nome:_v('pf-nome'),bio:_v('pf-bio'),emoji:_v('pf-emoji'),c1:_v('pf-c1'),c2:_v('pf-c2')}}));}catch(e){}
+}
+function _v(id){return document.getElementById(id).value}
+
+// ═══ ESTADO ════════════════════════════════════════════════════
+const D=carregar();
+let produtos=D.produtos||[];
+let redes=D.redes||Object.keys(REDES).map((k,i)=>({id:i+1,tipo:k,url:'',on:false}));
+let filtroAtual='todos';
+
+// Popular campos
+const pf=D.perfil||{};
+document.getElementById('pf-nome').value=pf.nome||'Seu Nome Aqui';
+document.getElementById('pf-bio').value=pf.bio||'Garimpando as melhores ofertas pra você! 🔥';
+document.getElementById('pf-emoji').value=pf.emoji||'🛍️';
+document.getElementById('pf-c1').value=pf.c1||'#FF5000';
+document.getElementById('pf-c2').value=pf.c2||'#8B5CF6';
+document.getElementById('txt-c1').textContent=pf.c1||'#FF5000';
+document.getElementById('txt-c2').textContent=pf.c2||'#8B5CF6';
+if(pf.c1){document.documentElement.style.setProperty('--c1',pf.c1);}
+if(pf.c2){document.documentElement.style.setProperty('--c2',pf.c2);}
+if(pf.c1&&pf.c2){document.getElementById('logo-icone').style.background=`linear-gradient(135deg,${pf.c1},${pf.c2})`;}
+
+// ═══ NAVEGAÇÃO ════════════════════════════════════════════════
+function irPara(id,btn){
+  document.querySelectorAll('.aba').forEach(a=>a.classList.remove('ativa'));
+  btn.classList.add('ativa');
+  document.querySelectorAll('.pg').forEach(p=>p.classList.remove('ativa'));
+  document.getElementById('pg-vitrine').classList.remove('ativa');
+  if(id==='vitrine'){document.getElementById('pg-vitrine').classList.add('ativa');}
+  else{document.getElementById('pg-'+id).classList.add('ativa');}
+}
+
+// ═══ MODAL ════════════════════════════════════════════════════
+function abrirModal(id){
+  document.getElementById('overlay').classList.add('ab');
+  document.querySelectorAll('.modal').forEach(m=>m.style.display='none');
+  document.getElementById(id).style.display='block';
+  if(id==='m-redes')renderRedes();
+}
+function fecharModal(id){
+  document.getElementById(id).style.display='none';
+  document.getElementById('overlay').classList.remove('ab');
+}
+function fecharOverlay(e){
+  if(e.target===document.getElementById('overlay')){
+    document.getElementById('overlay').classList.remove('ab');
+  }
+}
+
+// ═══ PRODUTO ══════════════════════════════════════════════════
+function abrirProduto(id){
+  document.getElementById('p-edit-id').value=id||'';
+  document.getElementById('m-prod-titulo').textContent=id?'✏️ Editar Produto':'➕ Novo Produto';
+  const fs=['p-nome','p-url','p-desc','p-preco','p-de','p-desc2','p-emoji'];
+  if(id){
+    const p=produtos.find(x=>x.id===id);
+    document.getElementById('p-nome').value=p.nome||'';
+    document.getElementById('p-url').value=p.url||'';
+    document.getElementById('p-desc').value=p.descricao||'';
+    document.getElementById('p-plat').value=p.plataforma||'shopee';
+    document.getElementById('p-tipo').value=p.tipo||'fisico';
+    document.getElementById('p-preco').value=p.preco||'';
+    document.getElementById('p-de').value=p.precoAntes||'';
+    document.getElementById('p-desc2').value=p.desconto||'';
+    document.getElementById('p-emoji').value=p.emoji||'';
+  } else {
+    fs.forEach(i=>document.getElementById(i).value='');
+    document.getElementById('p-plat').value='shopee';
+    document.getElementById('p-tipo').value='fisico';
+  }
+  abrirModal('m-produto');
+}
+
+function salvarProduto(){
+  const nome=document.getElementById('p-nome').value.trim();
+  const url=document.getElementById('p-url').value.trim();
+  if(!nome||!url){toast('⚠️ Nome e link são obrigatórios');return;}
+  const eid=document.getElementById('p-edit-id').value;
+  const obj={id:eid||uid(),nome,url,
+    descricao:document.getElementById('p-desc').value.trim(),
+    plataforma:document.getElementById('p-plat').value,
+    tipo:document.getElementById('p-tipo').value,
+    preco:document.getElementById('p-preco').value.trim(),
+    precoAntes:document.getElementById('p-de').value.trim(),
+    desconto:document.getElementById('p-desc2').value.trim(),
+    emoji:document.getElementById('p-emoji').value.trim()};
+  if(eid){produtos=produtos.map(p=>p.id===eid?obj:p);toast('✅ Produto atualizado!');}
+  else{produtos.unshift(obj);toast('✅ Produto adicionado!');}
+  gravar();
+  fecharModal('m-produto');
+  renderProdutos();
+  atualizarVitrine();
+}
+
+function removerProduto(id){
+  if(!confirm('Remover este produto?'))return;
+  produtos=produtos.filter(p=>p.id!==id);
+  gravar();
+  renderProdutos();
+  atualizarVitrine();
+  toast('🗑️ Produto removido');
+}
+
+function renderProdutos(){
+  document.getElementById('p-count').textContent=produtos.length+' produto(s)';
+  const el=document.getElementById('lista-prod');
+  if(!produtos.length){
+    el.innerHTML='<div class="eb"><div style="font-size:44px;margin-bottom:10px">📦</div><p style="color:var(--txt2);margin-bottom:16px">Nenhum produto ainda!</p><button class="btn bp" onclick="abrirProduto()">＋ Adicionar Produto</button></div>';
+    return;
+  }
+  el.innerHTML=produtos.map(p=>{
+    const pl=PLAT[p.plataforma]||PLAT.outro;
+    const ti=TIPOS[p.tipo]||TIPOS.fisico;
+    return`<div class="pi">
+      <div class="pi-em">${p.emoji||ti.e}</div>
+      <div style="flex:1;min-width:0">
+        <div class="pi-nm">${p.nome}</div>
+        <div style="display:flex;gap:5px;margin-top:4px;flex-wrap:wrap">
+          <span class="tag" style="background:${pl.c}22;color:${pl.c};border:1px solid ${pl.c}44">${pl.e} ${pl.l}</span>
+          <span class="tag" style="background:rgba(136,136,170,.15);color:var(--txt2);border:1px solid var(--borda)">${ti.e} ${ti.l}</span>
+          ${p.preco?`<span style="font-size:11px;font-weight:800;color:var(--c1)">${p.preco.startsWith('R')?p.preco:'R$ '+p.preco}</span>`:''}
+        </div>
+      </div>
+      <div style="display:flex;gap:5px;flex-shrink:0">
+        <button class="btn bg bsm" onclick="abrirProduto('${p.id}')">✏️</button>
+        <button class="btn bd bsm" onclick="removerProduto('${p.id}')">🗑️</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ═══ REDES ════════════════════════════════════════════════════
+function renderRedes(){
+  document.getElementById('lista-redes').innerHTML=redes.map(r=>{
+    const info=REDES[r.tipo];
+    if(!info)return'';
+    return`<div class="ri" style="border-color:${r.on?info.c+'44':'var(--borda)'}">
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <div style="display:flex;align-items:center;gap:7px">
+          <span style="font-size:17px">${info.e}</span>
+          <span style="font-weight:700;font-size:12px;color:${r.on?info.c:'var(--txt2)'}">${info.l}</span>
+        </div>
+        <div class="tgl" style="background:${r.on?'var(--c1)':'var(--bg3)'}" onclick="toggleRede(${r.id})">
+          <div class="tglb" style="left:${r.on?'18px':'2px'};background:${r.on?'#fff':'var(--txt2)'}"></div>
+        </div>
+      </div>
+      ${r.on?`<div style="margin-top:9px"><input class="inp" id="ur-${r.id}" placeholder="${info.ph}" value="${r.url}" style="margin-bottom:0"></div>`:''}
+    </div>`;
+  }).join('');
+}
+
+function toggleRede(id){
+  redes=redes.map(r=>r.id===id?{...r,on:!r.on}:r);
+  renderRedes();
+}
+
+function salvarRedes(){
+  redes=redes.map(r=>{
+    const el=document.getElementById('ur-'+r.id);
+    return{...r,url:el?el.value.trim():r.url};
+  });
+  gravar();
+  fecharModal('m-redes');
+  atualizarVitrine();
+  toast('✅ Redes salvas!');
+}
+
+// ═══ VITRINE ══════════════════════════════════════════════════
+function atualizarVitrine(){
+  const c1=_v('pf-c1')||'#FF5000';
+  const emoji=_v('pf-emoji')||'🛍️';
+  const nome=_v('pf-nome')||'Seu Nome Aqui';
+  const bio=_v('pf-bio')||'';
+
+  document.getElementById('vav').textContent=emoji;
+  document.getElementById('vnm').textContent=nome;
+  document.getElementById('vbi').textContent=bio;
+
+  // Redes
+  const ra=redes.filter(r=>r.on&&r.url);
+  document.getElementById('vrd').innerHTML=ra.map(r=>{
+    const info=REDES[r.tipo];
+    if(!info)return'';
+    return`<a class="vrb" href="${r.url}" target="_blank" rel="noopener" style="background:${info.c}22;border:1px solid ${info.c}44;color:${info.c}">${info.e} ${info.l}</a>`;
+  }).join('');
+
+  // Filtros
+  document.getElementById('v-flt-wrap').style.display=produtos.length?'block':'none';
+
+  // Lista
+  const lista=produtos.filter(p=>{
+    if(filtroAtual==='todos')return true;
+    if(filtroAtual==='fisico')return p.tipo==='fisico';
+    return p.tipo!=='fisico';
+  });
+  const el=document.getElementById('v-lista');
+  if(!lista.length){
+    el.innerHTML='<div class="vem2"><div style="font-size:38px;margin-bottom:10px">🛍️</div><p>Nenhum produto ainda.</p></div>';
+  } else {
+    el.innerHTML=lista.map(p=>{
+      const pl=PLAT[p.plataforma]||PLAT.outro;
+      const ti=TIPOS[p.tipo]||TIPOS.fisico;
+      const pr=p.preco?(p.preco.startsWith('R')?p.preco:'R$ '+p.preco):'';
+      const pd=p.precoAntes?(p.precoAntes.startsWith('R')?p.precoAntes:'R$ '+p.precoAntes):'';
+      return`<a class="vprd" href="${p.url}" target="_blank" rel="noopener">
+        <div class="vem">${p.emoji||ti.e}</div>
+        <div style="flex:1;min-width:0">
+          <div class="vnome">${p.nome}</div>
+          ${p.descricao?`<div class="vdes">${p.descricao}</div>`:''}
+          <div class="vpw">
+            ${pr?`<span class="vpc" style="color:${c1}">${pr}</span>`:''}
+            ${pd?`<span class="vde">${pd}</span>`:''}
+            ${p.desconto?`<span class="tag" style="background:${c1}22;color:${c1};border:1px solid ${c1}44">${p.desconto}% OFF</span>`:''}
+            <span class="tag" style="background:${pl.c}22;color:${pl.c};border:1px solid ${pl.c}44">${pl.e} ${pl.l}</span>
+            <span class="tag" style="background:rgba(136,136,170,.15);color:var(--txt2);border:1px solid var(--borda)">${ti.e} ${ti.l}</span>
+          </div>
+        </div>
+        <div class="vst">›</div>
+      </a>`;
+    }).join('');
+  }
+
+  // Tags plataformas
+  document.getElementById('v-plats').innerHTML=Object.entries(PLAT).map(([k,p])=>`<span class="tag" style="background:${p.c}22;color:${p.c};border:1px solid ${p.c}44">${p.e} ${p.l}</span>`).join('');
+}
+
+function filtrar(f,btn){
+  filtroAtual=f;
+  document.querySelectorAll('.vfb').forEach(b=>b.classList.remove('at'));
+  btn.classList.add('at');
+  atualizarVitrine();
+}
+
+// ═══ PERFIL ═══════════════════════════════════════════════════
+function salvarPerfil(){
+  gravar();
+  toast('✅ Perfil salvo! Dados preservados ao recarregar.');
+}
+
+function aplicarCores(){
+  const c1=_v('pf-c1');
+  const c2=_v('pf-c2');
+  document.getElementById('txt-c1').textContent=c1;
+  document.getElementById('txt-c2').textContent=c2;
+  document.documentElement.style.setProperty('--c1',c1);
+  document.documentElement.style.setProperty('--c2',c2);
+  document.getElementById('logo-icone').style.background=`linear-gradient(135deg,${c1},${c2})`;
+  atualizarVitrine();
+}
+
+function paleta(c1,c2){
+  document.getElementById('pf-c1').value=c1;
+  document.getElementById('pf-c2').value=c2;
+  aplicarCores();
+}
+
+// ═══ TOAST ════════════════════════════════════════════════════
+function toast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg;
+  t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),2400);
+}
+
+// ═══ FIREBASE CLOUD CORE INTEGRATION ══════════════════════════
+let db, auth;
+let currentUser = null;
+
+// Sanitize and configure sharing url
+function validarSlug(input) {
+  input.value = input.value.toLowerCase().replace(/[^a-z0-9_-]/g, '');
+  const val = input.value.trim();
+  const lnkBox = document.getElementById('nuvem-link-compartilhar');
+  const lnkAnchor = document.getElementById('lnk-pub');
+  if (val) {
+    lnkBox.style.display = 'block';
+    const cleanOrigin = window.location.origin;
+    lnkAnchor.href = `${cleanOrigin}/${val}`;
+    lnkAnchor.textContent = `${cleanOrigin}/${val} ↗`;
+  } else {
+    lnkBox.style.display = 'none';
+  }
+}
+
+// Initialize Firebase dynamically using configuration securely served from our server
+async function inicializarFirebase() {
+  try {
+    const res = await fetch('/api/config');
+    if (!res.ok) throw new Error('Não foi possível carregar as credenciais da nuvem.');
+    const config = await res.json();
+    
+    // Import SDKs from dynamic CDNs to avoid breaking bundle speeds
+    const { initializeApp } = await import('https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js');
+    const { getAuth, signInWithPopup, GoogleAuthProvider, signOut, onAuthStateChanged } = await import('https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js');
+    const { getFirestore, doc, getDoc, setDoc, collection, query, where, getDocs } = await import('https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js');
+    
+    const app = initializeApp(config);
+    auth = getAuth(app);
+    db = getFirestore(app);
+    
+    // Check if the current path represents a custom username slug (e.g. /thiago)
+    const path = window.location.pathname.replace(/^\/|\/$/g, '');
+    const isPublicView = path && path !== 'index.html' && path !== 'vitrine' && path !== 'produtos' && path !== 'perfil' && path !== 'ferramentas';
+    
+    if (isPublicView) {
+      document.body.innerHTML = `
+        <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;padding:20px;text-align:center;background:#0c0c14" id="loading-container">
+          <div style="width:40px;height:40px;border:4px solid var(--borda);border-top-color:var(--c1);border-radius:50%;animation:spin 1s linear infinite;margin-bottom:15px"></div>
+          <p style="color:var(--txt2);font-size:14px;font-weight:600">Carregando vitrine de @${path}...</p>
+        </div>
+        <style>
+          @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        </style>
+      `;
+      
+      try {
+        const q = query(collection(db, 'users'), where('username', '==', path));
+        const querySnapshot = await getDocs(q);
+        if (!querySnapshot.empty) {
+          const userDoc = querySnapshot.docs[0];
+          const userData = userDoc.data();
+          
+          // Render public-only minimal viewer mode
+          document.body.innerHTML = `
+            <div id="pg-vitrine" class="ativa" style="display:block;max-width:480px;margin:0 auto;padding:40px 14px;min-height:100vh;position:relative">
+              <div class="vp">
+                <div class="vav" id="vav">${userData.avatarEmoji || '🛍️'}</div>
+                <h1 class="vnm" id="vnm">${userData.displayName || 'Sem Nome'}</h1>
+                <p class="vbi" id="vbi">${userData.bio || ''}</p>
+                <div class="vrd" id="vrd"></div>
+              </div>
+              <div id="v-flt-wrap" style="display:none">
+                <div class="vflt">
+                  <button class="vfb at" id="btn-flt-todos">Todos</button>
+                  <button class="vfb" id="btn-flt-fisico">📦 Físicos</button>
+                  <button class="vfb" id="btn-flt-digital">💻 Digitais</button>
+                </div>
+              </div>
+              <div id="v-lista"></div>
+              <div style="margin:34px 0 20px;text-align:center">
+                <div style="font-size:10px;color:var(--txt2);text-transform:uppercase;letter-spacing:1px;font-weight:700;margin-bottom:9px">Plataformas aceitas</div>
+                <div id="v-plats" style="display:flex;gap:7px;justify-content:center;flex-wrap:wrap"></div>
+              </div>
+              <div class="vft" style="text-align:center;padding:20px 0 40px;font-size:11px;color:#666">
+                Criado com <span style="color:var(--c1)">♥</span> no <span style="font-weight:700">Vitrine Afiliados PRO</span><br>
+                <a href="/" style="margin-top:14px;display:inline-block;background:linear-gradient(135deg,var(--c1),var(--c2));color:#fff;text-decoration:none;font-weight:800;padding:8px 16px;border-radius:20px;font-size:11px;box-shadow:0 4px 12px rgba(255,80,0,0.2)">Criar Minha Vitrine Grátis 🚀</a>
+              </div>
+            </div>
+            <div id="toast"></div>
+          `;
+          
+          let colors = { c1: '#FF5000', c2: '#8B5CF6' };
+          if (userData.theme) {
+            try {
+              colors = JSON.parse(userData.theme);
+            } catch (e) {}
+          }
+          document.documentElement.style.setProperty('--c1', colors.c1);
+          document.documentElement.style.setProperty('--c2', colors.c2);
+          
+          const socWrap = document.getElementById('vrd');
+          if (userData.socials) {
+            socWrap.innerHTML = Object.entries(userData.socials)
+              .filter(([_, url]) => !!url)
+              .map(([tipo, url]) => {
+                const info = REDES[tipo];
+                if (!info) return '';
+                return `<a class="vrb" href="${url}" target="_blank" rel="noopener" style="background:${info.c}22;border:1px solid ${info.c}44;color:${info.c}">${info.e} ${info.l}</a>`;
+              }).join('');
+          }
+          
+          const prods = userData.links || [];
+          const renderList = (tipoFiltro) => {
+            const listEl = document.getElementById('v-lista');
+            const filtered = prods.filter(p => {
+              if (tipoFiltro === 'todos') return true;
+              if (tipoFiltro === 'fisico') return p.tipo === 'fisico';
+              return p.tipo !== 'fisico';
+            });
+            
+            if (!filtered.length) {
+              listEl.innerHTML = '<div class="vem2"><div style="font-size:38px;margin-bottom:10px">🛍️</div><p>Nenhum produto cadastrado.</p></div>';
+            } else {
+              listEl.innerHTML = filtered.map(p => {
+                const pl = PLAT[p.plataforma] || PLAT.outro;
+                const ti = TIPOS[p.tipo] || TIPOS.fisico;
+                const pr = p.preco ? (p.preco.startsWith('R') ? p.preco : 'R$ ' + p.preco) : '';
+                const pd = p.precoAntes ? (p.precoAntes.startsWith('R') ? p.precoAntes : 'R$ ' + p.precoAntes) : '';
+                return `
+                  <a class="vprd" href="${p.url}" target="_blank" rel="noopener">
+                    <div class="vem">${p.emoji || ti.e}</div>
+                    <div style="flex:1;min-width:0;text-align:left">
+                      <div class="vnome">${p.nome}</div>
+                      ${p.descricao ? `<div class="vdes">${p.descricao}</div>` : ''}
+                      <div class="vpw">
+                        ${pr ? `<span class="vpc" style="color:var(--c1)">${pr}</span>` : ''}
+                        ${pd ? `<span class="vde">${pd}</span>` : ''}
+                        ${p.desconto ? `<span class="tag" style="background:var(--c1)22;color:var(--c1);border:1px solid var(--c1)44">${p.desconto}% OFF</span>` : ''}
+                        <span class="tag" style="background:${pl.c}22;color:${pl.c};border:1px solid ${pl.c}44">${pl.e} ${pl.l}</span>
+                        <span class="tag" style="background:rgba(136,136,170,.15);color:var(--txt2);border:1px solid var(--borda)">${ti.e} ${ti.l}</span>
+                      </div>
+                    </div>
+                    <div class="vst">›</div>
+                  </a>
+                `;
+              }).join('');
+            }
+          };
+          
+          if (prods.length) {
+            document.getElementById('v-flt-wrap').style.display = 'block';
+            renderList('todos');
+            
+            const bTodos = document.getElementById('btn-flt-todos');
+            const bFisico = document.getElementById('btn-flt-fisico');
+            const bDigital = document.getElementById('btn-flt-digital');
+            
+            const activate = (btn) => {
+              [bTodos, bFisico, bDigital].forEach(b => b.classList.remove('at'));
+              btn.classList.add('at');
+            };
+            
+            bTodos.addEventListener('click', () => { activate(bTodos); renderList('todos'); });
+            bFisico.addEventListener('click', () => { activate(bFisico); renderList('fisico'); });
+            bDigital.addEventListener('click', () => { activate(bDigital); renderList('digital'); });
+          }
+          
+          document.getElementById('v-plats').innerHTML = Object.entries(PLAT)
+            .map(([_, p]) => `<span class="tag" style="background:${p.c}22;color:${p.c};border:1px solid ${p.c}44">${p.e} ${p.l}</span>`).join('');
+            
+        } else {
+          document.body.innerHTML = `
+            <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;padding:24px;text-align:center;background:#0c0c14">
+              <div style="font-size:64px;margin-bottom:20px">🔍</div>
+              <h1 style="font-size:22px;font-weight:900;margin-bottom:10px">Vitrine Não Encontrada</h1>
+              <p style="color:var(--txt2);font-size:13px;max-width:320px;margin-bottom:24px;line-height:1.6">O link personalizado <b>@${path}</b> ainda não foi cadastrado ou está indisponível.</p>
+              <a href="/" class="btn bp" style="font-size:13px;padding:12px 24px;border-radius:30px;box-shadow:0 4px 15px rgba(255,80,0,0.3)">Criar Minha Vitrine Grátis 🚀</a>
+            </div>
+          `;
+        }
+      } catch (err) {
+        console.error(err);
+        document.body.innerHTML = `
+          <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;padding:24px;text-align:center;background:#0c0c14">
+            <div style="font-size:64px;margin-bottom:20px">⚠️</div>
+            <h1 style="font-size:20px;font-weight:900;margin-bottom:10px">Erro de Conexão</h1>
+            <p style="color:var(--txt2);font-size:13px;max-width:320px;margin-bottom:24px">Ocorreu um erro ao conectar com o banco de dados do Firebase.</p>
+            <a href="/" class="btn bg" style="font-size:12px">Voltar ao Início</a>
+          </div>
+        `;
+      }
+      return;
+    }
+    
+    // Auth Listener for Editor Mode
+    onAuthStateChanged(auth, async (user) => {
+      currentUser = user;
+      const deslogadoEl = document.getElementById('nuvem-deslogado');
+      const logadoEl = document.getElementById('nuvem-logado');
+      
+      if (user) {
+        deslogadoEl.style.display = 'none';
+        logadoEl.style.display = 'block';
+        
+        document.getElementById('nuvem-user-nome').textContent = user.displayName || 'Usuário';
+        document.getElementById('nuvem-user-email').textContent = user.email;
+        if (user.photoURL) {
+          document.getElementById('nuvem-user-avatar').innerHTML = `<img src="${user.photoURL}" style="width:100%;height:100%;border-radius:50%;object-fit:cover">`;
+        } else {
+          document.getElementById('nuvem-user-avatar').textContent = (user.displayName || 'U')[0].toUpperCase();
+        }
+        
+        // Fetch cloud data
+        toast('☁️ Conectado à Nuvem!');
+        const userDocRef = doc(db, 'users', user.uid);
+        const docSnap = await getDoc(userDocRef);
+        
+        if (docSnap.exists()) {
+          const data = docSnap.data();
+          
+          document.getElementById('pf-nome').value = data.displayName || '';
+          document.getElementById('pf-bio').value = data.bio || '';
+          document.getElementById('pf-emoji').value = data.avatarEmoji || '🛍️';
+          document.getElementById('pf-username').value = data.username || '';
+          
+          if (data.theme) {
+            try {
+              const colors = JSON.parse(data.theme);
+              document.getElementById('pf-c1').value = colors.c1;
+              document.getElementById('pf-c2').value = colors.c2;
+              aplicarCores();
+            } catch (e) {}
+          }
+          
+          if (data.links) {
+            produtos = data.links;
+          }
+          
+          if (data.socials) {
+            redes = redes.map(r => {
+              const val = data.socials[r.tipo];
+              return { ...r, url: val || '', on: !!val };
+            });
+          }
+          
+          gravar();
+          renderProdutos();
+          atualizarVitrine();
+          validarSlug(document.getElementById('pf-username'));
+          toast('✅ Dados sincronizados com a Nuvem!');
+        }
+      } else {
+        deslogadoEl.style.display = 'block';
+        logadoEl.style.display = 'none';
+      }
+    });
+    
+  } catch (err) {
+    console.error("Erro no Firebase:", err);
+  }
+}
+
+async function fazerLoginGoogle() {
+  const { GoogleAuthProvider, signInWithPopup } = await import('https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js');
+  const provider = new GoogleAuthProvider();
+  try {
+    await signInWithPopup(auth, provider);
+  } catch (err) {
+    console.error(err);
+    toast('⚠️ Erro de Login: ' + err.message);
+  }
+}
+
+async function fazerLogout() {
+  const { signOut } = await import('https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js');
+  try {
+    if (confirm('Deseja sair da sua conta?')) {
+      await signOut(auth);
+      toast('🚪 Desconectado!');
+    }
+  } catch (err) {
+    console.error(err);
+  }
+}
+
+async function salvarNaNuvem() {
+  if (!currentUser) {
+    toast('⚠️ Faça login para salvar na nuvem!');
+    return;
+  }
+  
+  const slug = document.getElementById('pf-username').value.trim();
+  if (!slug) {
+    toast('⚠️ Digite o link personalizado da sua vitrine!');
+    return;
+  }
+  
+  try {
+    const { collection, query, where, getDocs, doc, setDoc } = await import('https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js');
+    
+    // Verify unique slug
+    const q = query(collection(db, 'users'), where('username', '==', slug));
+    const snap = await getDocs(q);
+    let taken = false;
+    snap.forEach(d => {
+      if (d.id !== currentUser.uid) {
+        taken = true;
+      }
+    });
+    
+    if (taken) {
+      toast('⚠️ Este link já está sendo usado por outro usuário!');
+      return;
+    }
+    
+    const userDocRef = doc(db, 'users', currentUser.uid);
+    const data = {
+      uid: currentUser.uid,
+      username: slug,
+      displayName: document.getElementById('pf-nome').value.trim(),
+      bio: document.getElementById('pf-bio').value.trim(),
+      avatarEmoji: document.getElementById('pf-emoji').value.trim(),
+      theme: JSON.stringify({
+        c1: document.getElementById('pf-c1').value,
+        c2: document.getElementById('pf-c2').value
+      }),
+      socials: redes.reduce((acc, curr) => {
+        acc[curr.tipo] = curr.on ? curr.url : '';
+        return acc;
+      }, {}),
+      links: produtos,
+      createdAt: new Date()
+    };
+    
+    await setDoc(userDocRef, data);
+    toast('☁️ Vitrine salva no Firebase com sucesso!');
+    validarSlug(document.getElementById('pf-username'));
+  } catch (err) {
+    console.error(err);
+    toast('⚠️ Erro ao salvar na nuvem: ' + err.message);
+  }
+}
+
+// Bind module-scoped functions to global window object for HTML inline handler compatibility
+window.irPara = irPara;
+window.abrirModal = abrirModal;
+window.fecharModal = fecharModal;
+window.fecharOverlay = fecharOverlay;
+window.abrirProduto = abrirProduto;
+window.salvarProduto = salvarProduto;
+window.removerProduto = removerProduto;
+window.toggleRede = toggleRede;
+window.salvarRedes = salvarRedes;
+window.filtrar = filtrar;
+window.salvarPerfil = salvarPerfil;
+window.aplicarCores = aplicarCores;
+window.paleta = paleta;
+window.toast = toast;
+window.validarSlug = validarSlug;
+window.fazerLoginGoogle = fazerLoginGoogle;
+window.fazerLogout = fazerLogout;
+window.salvarNaNuvem = salvarNaNuvem;
+
+// ═══ EVENT LISTENERS MOBILE ══════════════════════════════════
+document.getElementById("btn-redes").addEventListener("click",function(){abrirModal("m-redes");});
+document.querySelectorAll(".aba").forEach(function(btn){
+  btn.addEventListener("click",function(){irPara(this.getAttribute("data-pg"),this);});
+});
+
+// ═══ INICIAR ══════════════════════════════════════════════════
+renderProdutos();
+atualizarVitrine();
+inicializarFirebase();
+</script>
+</body>
+</html>

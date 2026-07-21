@@ -1,0 +1,32 @@
+{
+  "collections": {
+    "users": {
+      "schema": {
+        "uid": "string",
+        "username": "string",
+        "displayName": "string",
+        "bio": "string",
+        "avatarEmoji": "string",
+        "theme": "string",
+        "socials": "object",
+        "links": "array",
+        "createdAt": "timestamp"
+      },
+      "indexes": [
+        {
+          "fields": [
+            { "fieldPath": "username", "order": "ASCENDING" }
+          ]
+        }
+      ]
+    },
+    "support_tickets": {
+      "schema": {
+        "uid": "string?",
+        "email": "string",
+        "description": "string",
+        "createdAt": "timestamp"
+      }
+    }
+  }
+}

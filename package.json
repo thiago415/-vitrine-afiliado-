@@ -1,0 +1,16 @@
+{
+  "name": "vitrine-thiago-lino",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Thiago Lino's social links and showcase page",
+  "scripts": {
+    "dev": "node server.js",
+    "start": "node server.js",
+    "build": "echo 'Building static files...'",
+    "lint": "echo 'No linting required'"
+  },
+  "dependencies": {
+    "@google/genai": "^2.11.0",
+    "express": "^4.19.2"
+  }
+}

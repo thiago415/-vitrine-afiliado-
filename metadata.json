@@ -1,0 +1,8 @@
+{
+  "name": "Thiago Lino - Links",
+  "description": "Social links and showcase page for Thiago Lino, including top recommended items and channels.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
