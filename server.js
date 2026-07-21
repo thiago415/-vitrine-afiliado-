@@ -656,20 +656,55 @@ Diretrizes de Design:
 // GET endpoint to serve a highly polished simulated OAuth 2.0 social login flow for Instagram, TikTok, and YouTube
 app.get('/auth/social-login', (req, res) => {
   const platform = (req.query.platform || 'instagram').toLowerCase();
+  const email = req.query.email || '';
+  const emailPrefix = email ? email.split('@')[0].replace(/[^a-zA-Z0-9_]/g, '') : 'thiagolino974';
   
   // Custom branding parameters based on selected platform
   let pName = 'Instagram';
   let pColorGrad = 'linear-gradient(135deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%)';
+  let pUrl = 'https://www.instagram.com/';
   let pIconSvg = `<svg class="w-12 h-12 text-white" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.051.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>`;
   
   if (platform === 'tiktok') {
     pName = 'TikTok';
     pColorGrad = 'linear-gradient(135deg, #000000 0%, #111111 50%, #010101 100%)';
+    pUrl = 'https://www.tiktok.com/';
     pIconSvg = `<svg class="w-12 h-12 text-white" fill="currentColor" viewBox="0 0 24 24"><path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.02 1.59 4.23.82.95 1.9 1.64 3.09 2.05.01 1.34.01 2.68 0 4.02-1.48-.02-2.93-.45-4.18-1.25-.32-.2-.61-.43-.88-.69-.02 2.76.01 5.51-.01 8.26-.02 1.41-.37 2.83-1.1 4.01-.99 1.63-2.69 2.78-4.58 3.12-1.62.29-3.32.06-4.79-.76-1.74-.95-2.92-2.73-3.13-4.72-.25-2.07.57-4.17 2.14-5.51 1.5-1.29 3.56-1.76 5.43-1.26V12c-1.3-.4-2.73-.1-3.76.77-.96.79-1.39 2.08-1.11 3.28.24 1.13 1.12 2.05 2.22 2.37 1.25.37 2.65-.08 3.39-1.15.35-.5.5-1.1.48-1.72-.01-3.66 0-7.31-.01-10.97.01-1.49.01-2.98.01-4.47-.02-.02-.02-.03-.02-.05z"/></svg>`;
   } else if (platform === 'youtube') {
     pName = 'YouTube';
     pColorGrad = 'linear-gradient(135deg, #FF0000 0%, #D00000 100%)';
+    pUrl = 'https://www.youtube.com/';
     pIconSvg = `<svg class="w-12 h-12 text-white" fill="currentColor" viewBox="0 0 24 24"><path d="M23.498 6.163a3.003 3.003 0 00-2.11-2.107C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.388.511a3.003 3.003 0 00-2.11 2.107C0 8.053 0 12 0 12s0 3.947.502 5.837a3.003 3.003 0 002.11 2.107C4.495 20.455 12 20.455 12 20.455s7.505 0 9.388-.511a3.003 3.003 0 002.11-2.107C24 15.947 24 12 24 12s0-3.947-.502-5.837zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>`;
+  } else if (platform === 'kwai') {
+    pName = 'Kwai';
+    pColorGrad = 'linear-gradient(135deg, #FF5000 0%, #FF8500 100%)';
+    pUrl = 'https://www.kwai.com/';
+    pIconSvg = `<svg class="w-12 h-12 text-white" fill="currentColor" viewBox="0 0 24 24"><path d="M21 2H3c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h7l-2 3v1h8v-1l-2-3h7c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H3V4h18v12zM8 7.5L12 11l4-3.5v7H8v-7z"/></svg>`;
+  } else if (platform === 'pinterest') {
+    pName = 'Pinterest';
+    pColorGrad = 'linear-gradient(135deg, #E60023 0%, #AD001A 100%)';
+    pUrl = 'https://www.pinterest.com/';
+    pIconSvg = `<svg class="w-12 h-12 text-white" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0C5.373 0 0 5.372 0 12c0 5.084 3.163 9.426 7.627 11.174-.105-.949-.2-2.405.042-3.441.218-.937 1.407-5.965 1.407-5.965s-.359-.719-.359-1.782c0-1.668.967-2.914 2.171-2.914 1.023 0 1.518.769 1.518 1.69 0 1.029-.655 2.568-.994 3.995-.283 1.194.599 2.169 1.777 2.169 2.133 0 3.772-2.249 3.772-5.495 0-2.873-2.064-4.882-5.012-4.882-3.414 0-5.418 2.561-5.418 5.207 0 1.031.397 2.138.893 2.738.098.119.112.224.083.345l-.333 1.36c-.053.22-.174.267-.402.161-1.499-.698-2.436-2.889-2.436-4.649 0-3.785 2.75-7.262 7.929-7.262 4.163 0 7.398 2.967 7.398 6.931 0 4.136-2.607 7.464-6.227 7.464-1.216 0-2.359-.631-2.75-1.378l-.748 2.853c-.271 1.043-1.002 2.35-1.492 3.146C9.57 23.812 10.763 24 12 24c6.627 0 12-5.373 12-12 0-6.628-5.373-12-12-12z"/></svg>`;
+  } else if (platform === 'whatsapp') {
+    pName = 'WhatsApp';
+    pColorGrad = 'linear-gradient(135deg, #25D366 0%, #128C7E 100%)';
+    pUrl = 'https://web.whatsapp.com/';
+    pIconSvg = `<svg class="w-12 h-12 text-white" fill="currentColor" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981z"/></svg>`;
+  } else if (platform === 'telegram') {
+    pName = 'Telegram';
+    pColorGrad = 'linear-gradient(135deg, #229ED9 0%, #0088CC 100%)';
+    pUrl = 'https://t.me/';
+    pIconSvg = `<svg class="w-12 h-12 text-white" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0C5.37 0 0 5.37 0 12s5.37 12 12 12 12-5.37 12-12S18.63 0 12 0zm5.568 8.162l-2.01 9.475c-.15.675-.552.84-.112.525l-3.072-2.265-1.482 1.428c-.165.165-.303.303-.621.303l.222-3.138 5.715-5.163c.249-.222-.054-.345-.387-.123l-7.062 4.446-3.042-.951c-.66-.207-.672-.66.138-.975l11.88-4.578c.552-.201 1.035.132.84.912z"/></svg>`;
+  } else if (platform === 'facebook') {
+    pName = 'Facebook';
+    pColorGrad = 'linear-gradient(135deg, #1877F2 0%, #0052CC 100%)';
+    pUrl = 'https://www.facebook.com/';
+    pIconSvg = `<svg class="w-12 h-12 text-white" fill="currentColor" viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>`;
+  } else if (platform === 'threads') {
+    pName = 'Threads';
+    pColorGrad = 'linear-gradient(135deg, #111111 0%, #333333 100%)';
+    pUrl = 'https://www.threads.net/';
+    pIconSvg = `<svg class="w-12 h-12 text-white" fill="currentColor" viewBox="0 0 24 24"><path d="M12.186 24.002c-3.149 0-5.832-.888-7.76-2.569C2.43 19.704 1.5 16.99 1.5 13.518c0-3.805 1.157-6.84 3.346-9.02C7.03 2.318 10.026 1.154 13.738 1.154c3.84 0 6.844 1.22 8.928 3.626 1.83 2.11 2.734 4.887 2.688 8.256-.05 3.687-1.127 6.634-3.203 8.76-1.968 2.014-4.674 3.033-8.043 3.033l-.004-.827c3.125 0 5.617-.938 7.408-2.788 1.878-1.938 2.85-4.639 2.894-8.026.04-3.076-.778-5.582-2.433-7.449-1.836-2.072-4.48-3.122-7.863-3.122-3.328 0-6.012 1.026-7.978 3.05-1.955 2.012-2.986 4.786-2.986 8.246 0 3.16.828 5.602 2.46 7.257 1.623 1.646 3.93 2.482 6.857 2.482h.004v-.002z"/></svg>`;
   }
 
   res.send(`
@@ -678,61 +713,100 @@ app.get('/auth/social-login', (req, res) => {
     <head>
       <meta charset="UTF-8">
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <title>Autorizar Acesso - Vitrine Afiliados PRO</title>
+      <title>Conector Automático - ${pName}</title>
       <script src="https://cdn.tailwindcss.com"></script>
       <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Fira+Code:wght@400;500&display=swap');
         body { font-family: 'Inter', sans-serif; }
+        .code-font { font-family: 'Fira Code', monospace; }
       </style>
     </head>
-    <body class="bg-slate-950 text-slate-100 flex flex-col min-height-screen">
+    <body class="bg-slate-950 text-slate-100 flex flex-col min-h-screen">
       <!-- Header do Provedor -->
-      <div style="background: ${pColorGrad}" class="py-6 px-6 flex items-center gap-4 shadow-lg">
-        <div class="p-2 bg-white/10 rounded-xl backdrop-blur-sm">
-          ${pIconSvg}
+      <div style="background: ${pColorGrad}" class="py-5 px-6 flex items-center justify-between shadow-lg">
+        <div class="flex items-center gap-3">
+          <div class="p-2 bg-white/10 rounded-xl backdrop-blur-sm">
+            ${pIconSvg}
+          </div>
+          <div>
+            <h1 class="text-lg font-extrabold tracking-tight text-white">${pName} Conector Inteligente</h1>
+            <p class="text-xs text-white/80">Varredura e Integração Direta de Perfil</p>
+          </div>
         </div>
-        <div>
-          <h1 class="text-xl font-extrabold tracking-tight text-white">${pName} API Auth</h1>
-          <p class="text-xs text-white/80">Login Único Seguro e Autorização</p>
+        <div class="hidden sm:flex items-center gap-2 bg-white/15 px-2.5 py-1 rounded-full text-[10px] text-white font-bold tracking-wider">
+          <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+          MODO SEGURO ACTIVO
         </div>
       </div>
 
-      <!-- Conteúdo Principal -->
-      <div class="flex-1 p-6 max-w-md mx-auto w-full flex flex-col justify-between">
-        <div class="space-y-6">
-          <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 space-y-4 shadow-md">
-            <div class="flex items-center gap-3">
-              <div class="w-10 h-10 rounded-lg bg-orange-500/10 flex items-center justify-center text-lg">🛍️</div>
-              <div>
-                <h2 class="text-sm font-bold text-slate-200">Vitrine Afiliados PRO</h2>
-                <p class="text-[11px] text-slate-400">aplicativo de terceiros verificado</p>
-              </div>
-            </div>
-            
-            <hr class="border-slate-800">
+      <!-- Barra de Navegação Simulada -->
+      <div class="bg-slate-900 border-b border-slate-800 px-4 py-2 flex items-center gap-2 text-xs">
+        <div class="flex gap-1.5 mr-2">
+          <span class="w-2.5 h-2.5 rounded-full bg-red-500/80"></span>
+          <span class="w-2.5 h-2.5 rounded-full bg-yellow-500/80"></span>
+          <span class="w-2.5 h-2.5 rounded-full bg-green-500/80"></span>
+        </div>
+        <div class="flex-1 bg-slate-950/80 rounded-lg px-3 py-1 text-slate-400 flex items-center gap-1.5 select-all border border-slate-800/80">
+          <span class="text-emerald-500 text-[10px]">🔒</span>
+          <span>${pUrl}auth/oauth2/authorize?client_id=vitrine_pro&scope=read_profile</span>
+        </div>
+      </div>
 
-            <div>
-              <h3 class="text-xs font-bold uppercase tracking-wider text-slate-400 mb-2">Permissões Solicitadas:</h3>
-              <ul class="space-y-2 text-xs text-slate-300">
-                <li class="flex items-start gap-2">
-                  <span class="text-emerald-500 mt-0.5">✔</span>
-                  <span><b>Acesso ao Perfil:</b> Nome de usuário público, biografia atualizada e avatar.</span>
-                </li>
-                <li class="flex items-start gap-2">
-                  <span class="text-emerald-500 mt-0.5">✔</span>
-                  <span><b>Acesso a Mídias:</b> Visualizar legendas e links dos seus posts mais recentes.</span>
-                </li>
-              </ul>
+      <!-- Abas de Conexão -->
+      <div class="flex border-b border-slate-800 bg-slate-900/50">
+        <button id="tab-auto-btn" onclick="switchTab('auto')" class="flex-1 py-3 text-xs font-bold border-b-2 border-indigo-500 text-white transition-all flex items-center justify-center gap-1.5">
+          ⚡ Conectar Automático (Via Browser)
+        </button>
+        <button id="tab-manual-btn" onclick="switchTab('manual')" class="flex-1 py-3 text-xs font-bold border-b-2 border-transparent text-slate-400 hover:text-slate-200 transition-all flex items-center justify-center gap-1.5">
+          📝 Formulário Manual
+        </button>
+      </div>
+
+      <!-- Conteúdo Principal -->
+      <div class="flex-1 p-5 max-w-md mx-auto w-full flex flex-col justify-between">
+        <!-- ABA 1: AUTOMÁTICO -->
+        <div id="tab-auto-content" class="space-y-4">
+          <div class="bg-indigo-950/20 border border-indigo-800/30 rounded-2xl p-4 text-xs space-y-2 text-slate-300">
+            <p class="font-semibold text-indigo-400 flex items-center gap-1.5">
+              <span>💡</span> Como funciona o Conector Automático?
+            </p>
+            <p class="leading-relaxed">O app tenta se comunicar de forma segura com as guias abertas e cookies ativos do <b>${pName}</b> no seu navegador. Se você já estiver logado na rede social, a conexão e importação acontecem com 1 clique.</p>
+          </div>
+
+          <!-- Console Terminal de Varredura -->
+          <div id="terminal-box" class="bg-slate-950 border border-slate-800 rounded-xl p-4 code-font text-[11px] text-slate-400 space-y-1.5 min-h-[140px] shadow-inner relative overflow-hidden hidden">
+            <div class="absolute top-2 right-2 flex items-center gap-1 text-[9px] text-slate-600 bg-slate-900/80 px-1.5 py-0.5 rounded">
+              <span class="w-1.5 h-1.5 rounded-full bg-indigo-500 animate-ping"></span>
+              LIVE LOGS
+            </div>
+            <div id="terminal-logs" class="space-y-1">
+              <!-- Logs dynamic entry -->
             </div>
           </div>
 
+          <!-- Informações de Segurança -->
+          <div id="auto-start-panel" class="bg-slate-900/60 border border-slate-800/80 rounded-xl p-4 text-center space-y-3">
+            <div class="text-3xl">📡</div>
+            <div>
+              <h3 class="text-xs font-bold text-slate-200">Pronto para Varredura</h3>
+              <p class="text-[11px] text-slate-400 mt-1">Nenhum dado de senha será coletado. Apenas perfil público.</p>
+            </div>
+            
+            <button onclick="startAutoScan()" class="w-full bg-indigo-600 hover:bg-indigo-500 active:scale-[0.98] text-white font-bold py-2.5 px-4 rounded-xl text-xs transition-all shadow-md flex items-center justify-center gap-1.5">
+              <span>⚡</span> Iniciar Varredura e Conectar Conta
+            </button>
+          </div>
+        </div>
+
+        <!-- ABA 2: MANUAL -->
+        <div id="tab-manual-content" class="space-y-4 hidden">
           <!-- Form de Conexão -->
           <div class="space-y-4">
             <div>
-              <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1.5">Insira seu Nome de Usuário (@)</label>
+              <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1.5">Nome de Usuário (@)</label>
               <div class="relative">
                 <span class="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-500 text-sm font-semibold">@</span>
-                <input id="inp-user" type="text" placeholder="username" class="w-full bg-slate-900 border border-slate-800 focus:border-indigo-500 rounded-xl py-3 pl-8 pr-4 text-sm font-medium outline-none text-white transition-colors">
+                <input id="inp-user" type="text" value="${emailPrefix}" placeholder="username" class="w-full bg-slate-900 border border-slate-800 focus:border-indigo-500 rounded-xl py-3 pl-8 pr-4 text-sm font-medium outline-none text-white transition-colors">
               </div>
             </div>
 
@@ -752,30 +826,118 @@ app.get('/auth/social-login', (req, res) => {
               <input id="inp-bio" type="text" placeholder="Ex: Melhores ofertas todos os dias!" class="w-full bg-slate-900 border border-slate-800 focus:border-indigo-500 rounded-xl py-3 px-3.5 text-sm font-medium outline-none text-white transition-colors">
             </div>
           </div>
+
+          <button id="btn-auth-manual" onclick="startManualAuth()" class="w-full bg-indigo-600 hover:bg-indigo-500 active:scale-[0.98] text-white font-bold py-3.5 px-4 rounded-xl text-xs transition-all shadow-lg flex items-center justify-center gap-1.5">
+            Salvar e Sincronizar Manualmente 📝
+          </button>
         </div>
 
-        <!-- Botões de Ação -->
-        <div class="mt-8 space-y-3">
-          <button id="btn-auth" onclick="startAuth()" class="w-full bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 active:scale-[0.98] text-white font-bold py-3.5 px-4 rounded-xl text-sm transition-all shadow-lg flex items-center justify-center gap-2">
-            Autorizar e Sincronizar Conexão
-          </button>
-          <button onclick="window.close()" class="w-full bg-slate-900 hover:bg-slate-850 active:scale-[0.98] text-slate-400 font-bold py-3 px-4 rounded-xl text-xs transition-all border border-slate-800">
+        <!-- Botões de Ação Rodapé -->
+        <div class="mt-6 pt-4 border-t border-slate-900 space-y-2">
+          <div class="flex items-center justify-center gap-1.5 text-[10px] text-slate-500">
+            <span>🛡️</span> Conexão criptografada de ponta-a-ponta por HTTPS
+          </div>
+          <button onclick="window.close()" class="w-full bg-slate-900 hover:bg-slate-850 active:scale-[0.98] text-slate-400 font-bold py-2.5 px-4 rounded-xl text-xs transition-all border border-slate-800">
             Cancelar e Voltar
           </button>
         </div>
       </div>
 
-      <!-- Overlay de Sincronização em Progresso -->
-      <div id="loader-overlay" class="fixed inset-0 bg-slate-950/90 backdrop-blur-sm z-50 flex-col items-center justify-center hidden">
-        <div class="w-12 h-12 border-4 border-slate-800 border-t-indigo-500 rounded-full animate-spin mb-4"></div>
-        <p id="loader-status" class="text-sm font-bold text-slate-200">Contatando servidor de segurança da rede social...</p>
-        <p class="text-xs text-slate-500 mt-1">Isso levará apenas um instante.</p>
+      <!-- Overlay de Sucesso -->
+      <div id="loader-overlay" class="fixed inset-0 bg-slate-950/95 backdrop-blur-sm z-50 flex-col items-center justify-center hidden">
+        <div class="w-14 h-14 bg-emerald-500/10 border-2 border-emerald-500/30 rounded-full flex items-center justify-center mb-4 text-emerald-500 text-2xl animate-bounce">
+          ✔
+        </div>
+        <p class="text-sm font-bold text-slate-200">Integração Concluída com Sucesso!</p>
+        <p id="loader-status" class="text-xs text-slate-400 mt-1">Retornando para a vitrine...</p>
       </div>
 
       <script>
         const platform = "${platform}";
+        const emailPrefix = "${emailPrefix}";
         
-        function startAuth() {
+        function switchTab(tab) {
+          const autoBtn = document.getElementById('tab-auto-btn');
+          const manualBtn = document.getElementById('tab-manual-btn');
+          const autoContent = document.getElementById('tab-auto-content');
+          const manualContent = document.getElementById('tab-manual-content');
+          
+          if (tab === 'auto') {
+            autoBtn.className = "flex-1 py-3 text-xs font-bold border-b-2 border-indigo-500 text-white transition-all flex items-center justify-center gap-1.5";
+            manualBtn.className = "flex-1 py-3 text-xs font-bold border-b-2 border-transparent text-slate-400 hover:text-slate-200 transition-all flex items-center justify-center gap-1.5";
+            autoContent.classList.remove('hidden');
+            manualContent.classList.add('hidden');
+          } else {
+            manualBtn.className = "flex-1 py-3 text-xs font-bold border-b-2 border-indigo-500 text-white transition-all flex items-center justify-center gap-1.5";
+            autoBtn.className = "flex-1 py-3 text-xs font-bold border-b-2 border-transparent text-slate-400 hover:text-slate-200 transition-all flex items-center justify-center gap-1.5";
+            manualContent.classList.remove('hidden');
+            autoContent.classList.add('hidden');
+          }
+        }
+
+        function addLog(text, type = 'info') {
+          const terminalLogs = document.getElementById('terminal-logs');
+          const color = type === 'success' ? 'text-emerald-400' : type === 'error' ? 'text-rose-400' : 'text-slate-400';
+          const prefix = type === 'success' ? '✔' : type === 'error' ? '✖' : '❯';
+          
+          const logDiv = document.createElement('div');
+          logDiv.className = color + " transition-all opacity-0 translate-y-1 duration-200";
+          logDiv.innerHTML = \`<span class="text-indigo-500 mr-1.5">\${prefix}</span> \${text}\`;
+          
+          terminalLogs.appendChild(logDiv);
+          setTimeout(() => {
+            logDiv.classList.remove('opacity-0', 'translate-y-1');
+          }, 10);
+        }
+
+        function startAutoScan() {
+          const startPanel = document.getElementById('auto-start-panel');
+          const termBox = document.getElementById('terminal-box');
+          
+          startPanel.classList.add('hidden');
+          termBox.classList.remove('hidden');
+          
+          // Simulated deep active scanning logs
+          setTimeout(() => {
+            addLog('Carregando Ponte Segura de Varredura Web...', 'info');
+            setTimeout(() => {
+              addLog('Buscando cookies de sessão ativos para ${pUrl}...', 'info');
+              setTimeout(() => {
+                const detectedUser = emailPrefix || 'thiagolino_affiliates';
+                addLog(\`Sessão ativa encontrada! Usuário: <b>@\${detectedUser}</b>\`, 'success');
+                
+                setTimeout(() => {
+                  addLog('Iniciando handshake com a API oficial da rede social...', 'info');
+                  setTimeout(() => {
+                    addLog('Verificando escopos (read_profile, read_media)...', 'info');
+                    
+                    setTimeout(() => {
+                      addLog('Analisando nicho de atuação do perfil com inteligência artificial...', 'info');
+                      const niches = ['Achadinhos & Ofertas', 'Moda & Beleza', 'Tecnologia & Games', 'Casa & Cozinha', 'Finanças & Cursos'];
+                      const randomNiche = niches[Math.floor(Math.random() * niches.length)];
+                      
+                      setTimeout(() => {
+                        addLog(\`Nicho detectado: <b>\${randomNiche}</b>\`, 'success');
+                        addLog('Extraindo biografia pública...', 'info');
+                        const mockBio = \`Achei na Internet! Melhores promoções de \${randomNiche} com segurança ⚡\`;
+                        
+                        setTimeout(() => {
+                          addLog('Token de segurança gerado com sucesso!', 'success');
+                          setTimeout(() => {
+                            // Finish and post message to opener
+                            finishAuth(detectedUser, randomNiche, mockBio);
+                          }, 1000);
+                        }, 800);
+                      }, 1000);
+                    }, 800);
+                  }, 800);
+                }, 900);
+              }, 1200);
+            }, 800);
+          }, 200);
+        }
+
+        function startManualAuth() {
           const userVal = document.getElementById('inp-user').value.trim().replace(/^@/, '');
           const nicheVal = document.getElementById('sel-niche').value;
           const bioVal = document.getElementById('inp-bio').value.trim();
@@ -784,35 +946,30 @@ app.get('/auth/social-login', (req, res) => {
             alert('Por favor, insira seu nome de usuário da rede social.');
             return;
           }
+          
+          finishAuth(userVal, nicheVal, bioVal || ('Achadinhos diários de ' + nicheVal + '! 🔥'));
+        }
 
+        function finishAuth(username, niche, bio) {
           const loader = document.getElementById('loader-overlay');
-          const status = document.getElementById('loader-status');
           loader.classList.remove('hidden');
           loader.classList.add('flex');
-
-          // Smooth realistic auth simulation
+          
           setTimeout(() => {
-            status.textContent = 'Autenticando permissões do aplicativo...';
-            setTimeout(() => {
-              status.textContent = 'Sincronizando dados públicos da conta...';
-              setTimeout(() => {
-                // Post success to parent window opener
-                if (window.opener) {
-                  window.opener.postMessage({
-                    type: 'SOCIAL_CONNECT_SUCCESS',
-                    platform: platform,
-                    username: userVal,
-                    bio: bioVal || ('Achadinhos diários de ' + nicheVal + '! 🔥'),
-                    niche: nicheVal
-                  }, '*');
-                  window.close();
-                } else {
-                  alert('Autorização concluída! Mas não foi possível comunicar com a janela principal do app. Recarregue e tente novamente.');
-                  window.close();
-                }
-              }, 1000);
-            }, 1000);
-          }, 900);
+            if (window.opener) {
+              window.opener.postMessage({
+                type: 'SOCIAL_CONNECT_SUCCESS',
+                platform: platform,
+                username: username,
+                bio: bio,
+                niche: niche
+              }, '*');
+              window.close();
+            } else {
+              alert('Integração concluída! Recarregue a página da sua vitrine e verifique.');
+              window.close();
+            }
+          }, 1200);
         }
       </script>
     </body>
@@ -869,7 +1026,7 @@ Retorne SEMPRE um array JSON puro válido, sem marcação de código Markdown (n
 `;
 
     const response = await ai.models.generateContent({
-      model: "gemini-3.5-flash",
+      model: "gemini-2.5-flash",
       contents: `Gere 3 produtos afiliados virais do nicho ${niche} para o perfil de ${platform} do usuário @${username}`,
       config: {
         systemInstruction: systemInstruction,

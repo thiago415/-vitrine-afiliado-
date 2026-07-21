@@ -129,11 +129,16 @@ textarea.inp{resize:vertical}
 <!-- HEADER -->
 <div id="header">
   <div id="logo-icone">🛍️</div>
-  <div>
+  <div style="flex:1">
     <div id="logo-txt">Vitrine <span style="color:var(--c1)">Afiliados</span> PRO</div>
     <div id="logo-sub">Shopee · ML · Hotmart · Cakto · e mais</div>
   </div>
-  <button id="btn-redes" onclick="abrirModal('m-redes')">📲 Redes</button>
+  <div style="display:flex;gap:6px;align-items:center">
+    <button id="btn-header-auth" onclick="irPara('perfil', document.querySelector('.aba[data-pg=perfil]'))" class="btn bg bsm" style="padding:6px 10px;font-size:11px;gap:5px">
+      👤 Entrar
+    </button>
+    <button id="btn-redes" onclick="abrirModal('m-redes')">📲 Redes</button>
+  </div>
 </div>
 
 <!-- ABAS -->
@@ -142,10 +147,16 @@ textarea.inp{resize:vertical}
   <button class="aba" onclick="irPara('produtos',this)" data-pg="produtos">📦 Produtos</button>
   <button class="aba" onclick="irPara('perfil',this)" data-pg="perfil">✏️ Perfil</button>
   <button class="aba" onclick="irPara('ferramentas',this)" data-pg="ferramentas">🛠️ Ferramentas</button>
+  <button class="aba" id="aba-admin" onclick="irPara('admin',this)" data-pg="admin" style="display:none;background:linear-gradient(135deg, rgba(255,80,0,0.2), rgba(139,92,246,0.2));border:1px solid var(--c1);color:var(--c1);font-weight:800">👑 Admin</button>
 </div>
 
 <!-- ═══ VITRINE ═══════════════════════════ -->
 <div id="pg-vitrine" class="ativa">
+  <div id="banner-comunicado-global" style="display:none;background:linear-gradient(135deg, rgba(255,80,0,0.15), rgba(139,92,246,0.15));border:1px solid var(--c1);border-radius:10px;padding:10px 14px;margin-bottom:14px;font-size:12px;color:var(--txt);align-items:center;gap:10px">
+    <span style="font-size:16px">📢</span>
+    <div style="flex:1" id="banner-comunicado-texto"></div>
+    <button onclick="document.getElementById('banner-comunicado-global').style.display='none'" style="background:none;border:none;color:var(--txt2);font-size:16px;cursor:pointer;padding:2px 6px" title="Fechar aviso">✕</button>
+  </div>
   <div class="vp">
     <div class="vav" id="vav">🛍️</div>
     <h1 class="vnm" id="vnm">Seu Nome Aqui</h1>
@@ -281,10 +292,61 @@ textarea.inp{resize:vertical}
     
     <!-- Quando deslogado -->
     <div id="nuvem-deslogado">
-      <button class="btn bp bfw" onclick="fazerLoginGoogle()" style="gap:8px">
-        <svg style="width:16px;height:16px;fill:currentColor" viewBox="0 0 24 24"><path d="M12.24 10.285V13.4h6.887C18.2 15.614 15.645 18 12.24 18c-3.86 0-7-3.14-7-7s3.14-7 7-7c1.7 0 3.3.65 4.5 1.8l2.4-2.4C17.3 1.7 14.85 1 12.24 1 6.58 1 2 5.58 2 11.24s4.58 10.24 10.24 10.24c5.79 0 10.24-4.1 10.24-10.24 0-.6-.08-1.35-.24-1.95H12.24z"/></svg>
-        Entrar com o Google
-      </button>
+      <!-- ABAS DE AUTH -->
+      <div style="display:flex;background:var(--bg3);padding:4px;border-radius:10px;border:1px solid var(--borda);margin-bottom:14px">
+        <button id="btn-tab-login" onclick="alternarAuthAba('login')" style="flex:1;padding:8px;border:none;border-radius:7px;background:var(--c1);color:#fff;font-weight:700;font-size:12px;cursor:pointer;transition:all 0.2s">
+          🔑 Entrar
+        </button>
+        <button id="btn-tab-cadastro" onclick="alternarAuthAba('cadastro')" style="flex:1;padding:8px;border:none;border-radius:7px;background:transparent;color:var(--txt2);font-weight:700;font-size:12px;cursor:pointer;transition:all 0.2s">
+          ✨ Criar Conta
+        </button>
+      </div>
+
+      <!-- FORMULÁRIO DE LOGIN -->
+      <div id="auth-form-login">
+        <label class="lbl">E-mail de Afiliado</label>
+        <input class="inp" id="auth-login-email" type="email" placeholder="seu@email.com" autocomplete="email" onkeydown="if(event.key==='Enter')fazerLoginEmail()">
+
+        <label class="lbl">Sua Senha</label>
+        <input class="inp" id="auth-login-pass" type="password" placeholder="••••••••" autocomplete="current-password" onkeydown="if(event.key==='Enter')fazerLoginEmail()">
+
+        <button class="btn bp bfw" onclick="fazerLoginEmail()" style="margin-bottom:10px">
+          🚀 Entrar na Minha Vitrine
+        </button>
+
+        <div style="display:flex;align-items:center;gap:10px;margin:12px 0">
+          <div style="flex:1;height:1px;background:var(--borda)"></div>
+          <span style="font-size:11px;color:var(--txt2);font-weight:600">ou</span>
+          <div style="flex:1;height:1px;background:var(--borda)"></div>
+        </div>
+
+        <button class="btn bg bfw" onclick="fazerLoginGoogle()" style="gap:8px">
+          <svg style="width:16px;height:16px;fill:currentColor" viewBox="0 0 24 24"><path d="M12.24 10.285V13.4h6.887C18.2 15.614 15.645 18 12.24 18c-3.86 0-7-3.14-7-7s3.14-7 7-7c1.7 0 3.3.65 4.5 1.8l2.4-2.4C17.3 1.7 14.85 1 12.24 1 6.58 1 2 5.58 2 11.24s4.58 10.24 10.24 10.24c5.79 0 10.24-4.1 10.24-10.24 0-.6-.08-1.35-.24-1.95H12.24z"/></svg>
+          Entrar com o Google
+        </button>
+      </div>
+
+      <!-- FORMULÁRIO DE CADASTRO -->
+      <div id="auth-form-cadastro" style="display:none">
+        <label class="lbl">Seu Nome / Nome do Canal</label>
+        <input class="inp" id="auth-cad-nome" type="text" placeholder="Ex: Vitrine do João" autocomplete="name" onkeydown="if(event.key==='Enter')fazerCadastroEmail()">
+
+        <label class="lbl">E-mail para Acesso</label>
+        <input class="inp" id="auth-cad-email" type="email" placeholder="seu@email.com" autocomplete="email" onkeydown="if(event.key==='Enter')fazerCadastroEmail()">
+
+        <label class="lbl">Escolha uma Senha (mínimo 6 caracteres)</label>
+        <input class="inp" id="auth-cad-pass" type="password" placeholder="••••••••" autocomplete="new-password" onkeydown="if(event.key==='Enter')fazerCadastroEmail()">
+
+        <label class="lbl">Link Desejado para sua Vitrine (Slug)</label>
+        <div style="display:flex;gap:4px;margin-bottom:12px">
+          <span style="display:flex;align-items:center;background:var(--bg3);border:1px solid var(--borda);border-right:none;border-radius:8px 0 0 8px;padding:0 8px;font-size:12px;color:var(--txt2);white-space:nowrap">vitrine/</span>
+          <input class="inp" id="auth-cad-slug" placeholder="joao-ofertas" style="margin-bottom:0;border-radius:0 8px 8px 0" oninput="this.value = this.value.toLowerCase().replace(/[^a-z0-9_-]/g, '')" onkeydown="if(event.key==='Enter')fazerCadastroEmail()">
+        </div>
+
+        <button class="btn bp bfw" onclick="fazerCadastroEmail()">
+          ✨ Criar Minha Conta & Vitrine
+        </button>
+      </div>
     </div>
     
     <!-- Quando logado -->
@@ -318,6 +380,21 @@ textarea.inp{resize:vertical}
       <p style="font-size:11px;color:var(--txt2);margin-bottom:14px">Conecte suas contas de redes sociais pela internet. Importe sua foto, bio e gere produtos de afiliados automáticos usando IA!</p>
       
       <div style="display:flex;flex-direction:column;gap:12px" id="lista-conexoes-api">
+        <!-- Pinterest -->
+        <div style="display:flex;align-items:center;justify-content:space-between;background:var(--bg3);padding:11px;border-radius:10px;border:1px solid var(--borda)" id="con-pinterest">
+          <div style="display:flex;align-items:center;gap:10px;min-width:0;flex:1">
+            <div style="width:32px;height:32px;border-radius:50%;background:#E60023;display:flex;align-items:center;justify-content:center;font-size:16px;color:#fff">📌</div>
+            <div style="min-width:0;text-align:left">
+              <div style="font-weight:700;font-size:12px">Pinterest</div>
+              <div style="font-size:10px;color:var(--txt2)" id="status-con-pinterest">Não Conectado</div>
+            </div>
+          </div>
+          <div style="display:flex;gap:6px">
+            <button class="btn bp bsm" onclick="conectarRedeSocial('pinterest')" id="btn-con-pinterest" style="padding:6px 12px;font-size:11px">Conectar</button>
+            <button class="btn bg bsm" onclick="importarSocialPosts('pinterest')" id="btn-imp-pinterest" style="display:none;padding:6px 12px;font-size:11px;border-color:var(--c1);color:var(--c1)">⚡ Importar Posts</button>
+          </div>
+        </div>
+
         <!-- Instagram -->
         <div style="display:flex;align-items:center;justify-content:space-between;background:var(--bg3);padding:11px;border-radius:10px;border:1px solid var(--borda)" id="con-instagram">
           <div style="display:flex;align-items:center;gap:10px;min-width:0;flex:1">
@@ -362,6 +439,81 @@ textarea.inp{resize:vertical}
             <button class="btn bg bsm" onclick="importarSocialPosts('youtube')" id="btn-imp-youtube" style="display:none;padding:6px 12px;font-size:11px;border-color:var(--c1);color:var(--c1)">⚡ Importar Posts</button>
           </div>
         </div>
+
+        <!-- Kwai -->
+        <div style="display:flex;align-items:center;justify-content:space-between;background:var(--bg3);padding:11px;border-radius:10px;border:1px solid var(--borda)" id="con-kwai">
+          <div style="display:flex;align-items:center;gap:10px;min-width:0;flex:1">
+            <div style="width:32px;height:32px;border-radius:50%;background:#FF5000;display:flex;align-items:center;justify-content:center;font-size:16px;color:#fff">🎬</div>
+            <div style="min-width:0;text-align:left">
+              <div style="font-weight:700;font-size:12px">Kwai</div>
+              <div style="font-size:10px;color:var(--txt2)" id="status-con-kwai">Não Conectado</div>
+            </div>
+          </div>
+          <div style="display:flex;gap:6px">
+            <button class="btn bp bsm" onclick="conectarRedeSocial('kwai')" id="btn-con-kwai" style="padding:6px 12px;font-size:11px">Conectar</button>
+            <button class="btn bg bsm" onclick="importarSocialPosts('kwai')" id="btn-imp-kwai" style="display:none;padding:6px 12px;font-size:11px;border-color:var(--c1);color:var(--c1)">⚡ Importar Posts</button>
+          </div>
+        </div>
+
+        <!-- WhatsApp -->
+        <div style="display:flex;align-items:center;justify-content:space-between;background:var(--bg3);padding:11px;border-radius:10px;border:1px solid var(--borda)" id="con-whatsapp">
+          <div style="display:flex;align-items:center;gap:10px;min-width:0;flex:1">
+            <div style="width:32px;height:32px;border-radius:50%;background:#25D366;display:flex;align-items:center;justify-content:center;font-size:16px;color:#fff">💬</div>
+            <div style="min-width:0;text-align:left">
+              <div style="font-weight:700;font-size:12px">WhatsApp</div>
+              <div style="font-size:10px;color:var(--txt2)" id="status-con-whatsapp">Não Conectado</div>
+            </div>
+          </div>
+          <div style="display:flex;gap:6px">
+            <button class="btn bp bsm" onclick="conectarRedeSocial('whatsapp')" id="btn-con-whatsapp" style="padding:6px 12px;font-size:11px">Conectar</button>
+            <button class="btn bg bsm" onclick="importarSocialPosts('whatsapp')" id="btn-imp-whatsapp" style="display:none;padding:6px 12px;font-size:11px;border-color:var(--c1);color:var(--c1)">⚡ Importar Posts</button>
+          </div>
+        </div>
+
+        <!-- Telegram -->
+        <div style="display:flex;align-items:center;justify-content:space-between;background:var(--bg3);padding:11px;border-radius:10px;border:1px solid var(--borda)" id="con-telegram">
+          <div style="display:flex;align-items:center;gap:10px;min-width:0;flex:1">
+            <div style="width:32px;height:32px;border-radius:50%;background:#229ED9;display:flex;align-items:center;justify-content:center;font-size:16px;color:#fff">✈️</div>
+            <div style="min-width:0;text-align:left">
+              <div style="font-weight:700;font-size:12px">Telegram</div>
+              <div style="font-size:10px;color:var(--txt2)" id="status-con-telegram">Não Conectado</div>
+            </div>
+          </div>
+          <div style="display:flex;gap:6px">
+            <button class="btn bp bsm" onclick="conectarRedeSocial('telegram')" id="btn-con-telegram" style="padding:6px 12px;font-size:11px">Conectar</button>
+            <button class="btn bg bsm" onclick="importarSocialPosts('telegram')" id="btn-imp-telegram" style="display:none;padding:6px 12px;font-size:11px;border-color:var(--c1);color:var(--c1)">⚡ Importar Posts</button>
+          </div>
+        </div>
+
+        <!-- Facebook -->
+        <div style="display:flex;align-items:center;justify-content:space-between;background:var(--bg3);padding:11px;border-radius:10px;border:1px solid var(--borda)" id="con-facebook">
+          <div style="display:flex;align-items:center;gap:10px;min-width:0;flex:1">
+            <div style="width:32px;height:32px;border-radius:50%;background:#1877F2;display:flex;align-items:center;justify-content:center;font-size:16px;color:#fff">📘</div>
+            <div style="min-width:0;text-align:left">
+              <div style="font-weight:700;font-size:12px">Facebook</div>
+              <div style="font-size:10px;color:var(--txt2)" id="status-con-facebook">Não Conectado</div>
+            </div>
+          </div>
+          <div style="display:flex;gap:6px">
+            <button class="btn bp bsm" onclick="conectarRedeSocial('facebook')" id="btn-con-facebook" style="padding:6px 12px;font-size:11px">Conectar</button>
+            <button class="btn bg bsm" onclick="importarSocialPosts('facebook')" id="btn-imp-facebook" style="display:none;padding:6px 12px;font-size:11px;border-color:var(--c1);color:var(--c1)">⚡ Importar Posts</button>
+          </div>
+        </div>
+
+        <!-- Threads -->
+        <div style="display:flex;align-items:center;justify-content:space-between;background:var(--bg3);padding:11px;border-radius:10px;border:1px solid var(--borda)" id="con-threads">
+          <div style="display:flex;align-items:center;gap:10px;min-width:0;flex:1">
+            <div style="width:32px;height:32px;border-radius:50%;background:#111;display:flex;align-items:center;justify-content:center;font-size:16px;color:#fff">🧵</div>
+            <div style="min-width:0;text-align:left">
+              <div style="font-weight:700;font-size:12px">Threads</div>
+              <div style="font-size:10px;color:var(--txt2)" id="status-con-threads">Não Conectado</div>
+            </div>
+          </div>
+          <div style="display:flex;gap:6px">
+            <button class="btn bp bsm" onclick="conectarRedeSocial('threads')" id="btn-con-threads" style="padding:6px 12px;font-size:11px">Conectar</button>
+            <button class="btn bg bsm" onclick="importarSocialPosts('threads')" id="btn-imp-threads" style="display:none;padding:6px 12px;font-size:11px;border-color:var(--c1);color:var(--c1)">⚡ Importar Posts</button>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -389,6 +541,65 @@ textarea.inp{resize:vertical}
   <div class="di"><span style="font-size:20px">📲</span><div><b style="font-size:12px">Direcione pelo WhatsApp</b><div style="font-size:11px;color:var(--txt2)">Links pelo WhatsApp convertem 40% mais que posts no feed.</div></div></div>
   <div class="di"><span style="font-size:20px">🔥</span><div><b style="font-size:12px">Hotmart: aposte em cursos</b><div style="font-size:11px;color:var(--txt2)">Comissões de 30% a 70% sem precisar de estoque.</div></div></div>
   <div class="di"><span style="font-size:20px">📌</span><div><b style="font-size:12px">Pinterest gera tráfego orgânico</b><div style="font-size:11px;color:var(--txt2)">Pins de produtos duram meses e trazem visitas grátis.</div></div></div>
+</div>
+
+<!-- ═══ ADMIN ═════════════════════════════ -->
+<div id="pg-admin" class="pg">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:10px">
+    <div>
+      <h2 style="font-size:18px;font-weight:900;display:flex;align-items:center;gap:6px">
+        👑 Painel de Administração PRO
+      </h2>
+      <p style="font-size:12px;color:var(--txt2)">Controle central de afiliados, vitrines registradas e estatísticas da plataforma.</p>
+    </div>
+    <button class="btn bp bsm" onclick="carregarDadosAdmin()" style="padding:7px 14px;font-size:11px;gap:5px">
+      🔄 Atualizar Afiliados
+    </button>
+  </div>
+
+  <!-- Métricas do Admin -->
+  <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(130px, 1fr));gap:10px;margin-bottom:20px">
+    <div style="background:var(--bg3);padding:12px;border-radius:12px;border:1px solid var(--borda);text-align:center">
+      <div style="font-size:22px;font-weight:900;color:var(--c1)" id="adm-stat-users">0</div>
+      <div style="font-size:10px;color:var(--txt2);font-weight:700;text-transform:uppercase;margin-top:2px">Afiliados</div>
+    </div>
+    <div style="background:var(--bg3);padding:12px;border-radius:12px;border:1px solid var(--borda);text-align:center">
+      <div style="font-size:22px;font-weight:900;color:var(--c2)" id="adm-stat-prods">0</div>
+      <div style="font-size:10px;color:var(--txt2);font-weight:700;text-transform:uppercase;margin-top:2px">Produtos Totais</div>
+    </div>
+    <div style="background:var(--bg3);padding:12px;border-radius:12px;border:1px solid var(--borda);text-align:center">
+      <div style="font-size:22px;font-weight:900;color:#22c55e" id="adm-stat-vitrines">0</div>
+      <div style="font-size:10px;color:var(--txt2);font-weight:700;text-transform:uppercase;margin-top:2px">Vitrines Ativas</div>
+    </div>
+    <div style="background:var(--bg3);padding:12px;border-radius:12px;border:1px solid var(--borda);text-align:center">
+      <div style="font-size:11px;font-weight:800;color:var(--txt);word-break:break-all" id="adm-stat-email">thiagolino974@gmail.com</div>
+      <div style="font-size:10px;color:#22c55e;font-weight:700;text-transform:uppercase;margin-top:4px">👑 Admin Ativo</div>
+    </div>
+  </div>
+
+  <!-- AVISO GLOBAL DO ADMIN PARA AFILIADOS -->
+  <div class="card" style="margin-bottom:20px">
+    <div style="font-weight:800;font-size:13px;margin-bottom:6px;display:flex;align-items:center;gap:6px">📢 Comunicado Global aos Afiliados</div>
+    <p style="font-size:11px;color:var(--txt2);margin-bottom:10px">Mensagem exibida no topo do painel de todos os afiliados cadastrados.</p>
+    <div style="display:flex;gap:8px">
+      <input class="inp" id="adm-aviso-inp" placeholder="Ex: Dica do Admin: Adicione produtos digitais para vender mais esta semana!" style="margin-bottom:0">
+      <button class="btn bp" onclick="salvarAvisoGlobal()" style="white-space:nowrap;padding:8px 14px;font-size:11px">📢 Publicar</button>
+      <button class="btn bd" onclick="apagarAvisoGlobal()" style="white-space:nowrap;padding:8px 14px;font-size:11px;background:rgba(239,68,68,0.15);color:#ef4444;border-color:rgba(239,68,68,0.3)" title="Apagar comunicado ativo">🗑️ Apagar</button>
+    </div>
+  </div>
+
+  <!-- BUSCA E LISTAGEM DE AFILIADOS -->
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;gap:10px">
+    <h3 style="font-size:14px;font-weight:800">👥 Lista de Afiliados Cadastrados</h3>
+    <input class="inp" id="adm-busca-inp" placeholder="🔍 Filtrar..." style="max-width:180px;margin-bottom:0;padding:6px 10px;font-size:11px" oninput="filtrarListaAdmin()">
+  </div>
+
+  <div id="adm-lista-afiliados">
+    <div style="text-align:center;padding:30px;color:var(--txt2)">
+      <div style="font-size:24px;margin-bottom:8px">⏳</div>
+      <div>Carregando afiliados do Firestore...</div>
+    </div>
+  </div>
 </div>
 
 <!-- ═══ MODAL PRODUTO ═════════════════════ -->
@@ -429,6 +640,7 @@ textarea.inp{resize:vertical}
       <div><label class="lbl">Emoji</label><input class="inp" id="p-emoji" placeholder="📱" maxlength="4"></div>
     </div>
     <div style="display:flex;gap:8px;margin-top:6px">
+      <button class="btn bd" id="p-btn-del" style="display:none;background:rgba(239,68,68,0.15);color:#ef4444;border-color:rgba(239,68,68,0.3)" onclick="excluirProdutoDoModal()">🗑️ Excluir</button>
       <button class="btn bg bfw" onclick="fecharModal('m-produto')">Cancelar</button>
       <button class="btn bp bfw" onclick="salvarProduto()">💾 Salvar</button>
     </div>
@@ -500,14 +712,28 @@ const TEMAS = {
 
 const PLAT={shopee:{l:'Shopee',c:'#FF5000',e:'🛍️'},mercadolivre:{l:'Mercado Livre',c:'#d4b800',e:'🛒'},hotmart:{l:'Hotmart',c:'#FF4C00',e:'🔥'},cakto:{l:'Cakto',c:'#00C2FF',e:'⚡'},amazon:{l:'Amazon',c:'#FF9900',e:'📦'},eduzz:{l:'Eduzz',c:'#F59E0B',e:'💡'},outro:{l:'Outro',c:'#6B7280',e:'🔗'}};
 const TIPOS={fisico:{l:'Físico',e:'📦'},digital:{l:'Digital',e:'💻'},curso:{l:'Curso',e:'🎓'},ebook:{l:'E-book',e:'📚'},software:{l:'Software',e:'🖥️'}};
-const REDES={whatsapp:{l:'WhatsApp',e:'💬',c:'#25D366',ph:'https://wa.me/5511999999999'},instagram:{l:'Instagram',e:'📸',c:'#E1306C',ph:'https://instagram.com/seuperfil'},telegram:{l:'Telegram',e:'✈️',c:'#229ED9',ph:'https://t.me/seucanal'},tiktok:{l:'TikTok',e:'🎵',c:'#aaa',ph:'https://tiktok.com/@seuperfil'},youtube:{l:'YouTube',e:'▶️',c:'#FF0000',ph:'https://youtube.com/@seucanal'},kwai:{l:'Kwai',e:'🎬',c:'#FF4500',ph:'https://kwai.com/@seuperfil'},pinterest:{l:'Pinterest',e:'📌',c:'#E60023',ph:'https://pinterest.com/seuperfil'}};
+const REDES={pinterest:{l:'Pinterest',e:'📌',c:'#E60023',ph:'https://pinterest.com/seuperfil'},instagram:{l:'Instagram',e:'📸',c:'#E1306C',ph:'https://instagram.com/seuperfil'},tiktok:{l:'TikTok',e:'🎵',c:'#aaa',ph:'https://tiktok.com/@seuperfil'},youtube:{l:'YouTube',e:'▶️',c:'#FF0000',ph:'https://youtube.com/@seucanal'},kwai:{l:'Kwai',e:'🎬',c:'#FF4500',ph:'https://kwai.com/@seuperfil'},whatsapp:{l:'WhatsApp',e:'💬',c:'#25D366',ph:'https://wa.me/5511999999999'},telegram:{l:'Telegram',e:'✈️',c:'#229ED9',ph:'https://t.me/seucanal'},facebook:{l:'Facebook',e:'📘',c:'#1877F2',ph:'https://facebook.com/seuperfil'},threads:{l:'Threads',e:'🧵',c:'#111',ph:'https://threads.net/@seuperfil'}};
 const KEY='vap_v2';
 
 function uid(){return Math.random().toString(36).slice(2,9)}
 
 // ═══ LOCALSTORAGE ═════════════════════════════════════════════
 function carregar(){
-  try{const r=localStorage.getItem(KEY);if(r)return JSON.parse(r);}catch(e){}
+  try{
+    const r=localStorage.getItem(KEY);
+    if(r) {
+      const data = JSON.parse(r);
+      if (data && Array.isArray(data.redes)) {
+        const existingTypes = data.redes.map(x=>x.tipo);
+        Object.keys(REDES).forEach((k,i)=>{
+          if(!existingTypes.includes(k)){
+            data.redes.push({id: data.redes.length+1, tipo:k, url:'', on:false});
+          }
+        });
+      }
+      return data;
+    }
+  }catch(e){}
   return{produtos:[],redes:Object.keys(REDES).map((k,i)=>({id:i+1,tipo:k,url:'',on:false})),perfil:{nome:'Seu Nome Aqui',bio:'Garimpando as melhores ofertas pra você! 🔥',emoji:'🛍️',c1:'#FF5000',c2:'#8B5CF6',tema:'escuro'}};
 }
 function gravar(){
@@ -563,8 +789,15 @@ aplicarTema(idTemaInicial);
 
 // ═══ NAVEGAÇÃO ════════════════════════════════════════════════
 function irPara(id,btn){
+  if (id === 'admin') {
+    if (!currentUser || currentUser.email !== 'thiagolino974@gmail.com') {
+      toast('⚠️ Acesso restrito ao Administrador!');
+      return;
+    }
+    carregarDadosAdmin();
+  }
   document.querySelectorAll('.aba').forEach(a=>a.classList.remove('ativa'));
-  btn.classList.add('ativa');
+  if (btn) btn.classList.add('ativa');
   document.querySelectorAll('.pg').forEach(p=>p.classList.remove('ativa'));
   document.getElementById('pg-vitrine').classList.remove('ativa');
   if(id==='vitrine'){document.getElementById('pg-vitrine').classList.add('ativa');}
@@ -592,18 +825,22 @@ function fecharOverlay(e){
 function abrirProduto(id){
   document.getElementById('p-edit-id').value=id||'';
   document.getElementById('m-prod-titulo').textContent=id?'✏️ Editar Produto':'➕ Novo Produto';
+  const btnDel = document.getElementById('p-btn-del');
+  if (btnDel) btnDel.style.display = id ? 'inline-flex' : 'none';
   const fs=['p-nome','p-url','p-desc','p-preco','p-de','p-desc2','p-emoji'];
   if(id){
     const p=produtos.find(x=>x.id===id);
-    document.getElementById('p-nome').value=p.nome||'';
-    document.getElementById('p-url').value=p.url||'';
-    document.getElementById('p-desc').value=p.descricao||'';
-    document.getElementById('p-plat').value=p.plataforma||'shopee';
-    document.getElementById('p-tipo').value=p.tipo||'fisico';
-    document.getElementById('p-preco').value=p.preco||'';
-    document.getElementById('p-de').value=p.precoAntes||'';
-    document.getElementById('p-desc2').value=p.desconto||'';
-    document.getElementById('p-emoji').value=p.emoji||'';
+    if(p) {
+      document.getElementById('p-nome').value=p.nome||'';
+      document.getElementById('p-url').value=p.url||'';
+      document.getElementById('p-desc').value=p.descricao||'';
+      document.getElementById('p-plat').value=p.plataforma||'shopee';
+      document.getElementById('p-tipo').value=p.tipo||'fisico';
+      document.getElementById('p-preco').value=p.preco||'';
+      document.getElementById('p-de').value=p.precoAntes||'';
+      document.getElementById('p-desc2').value=p.desconto||'';
+      document.getElementById('p-emoji').value=p.emoji||'';
+    }
   } else {
     fs.forEach(i=>document.getElementById(i).value='');
     document.getElementById('p-plat').value='shopee';
@@ -631,15 +868,28 @@ function salvarProduto(){
   fecharModal('m-produto');
   renderProdutos();
   atualizarVitrine();
+  if (typeof currentUser !== 'undefined' && currentUser) {
+    salvarNaNuvem();
+  }
+}
+
+function excluirProdutoDoModal() {
+  const id = document.getElementById('p-edit-id').value;
+  if (!id) return;
+  fecharModal('m-produto');
+  removerProduto(id);
 }
 
 function removerProduto(id){
-  if(!confirm('Remover este produto?'))return;
+  if(!confirm('Tem certeza que deseja remover este produto?'))return;
   produtos=produtos.filter(p=>p.id!==id);
   gravar();
   renderProdutos();
   atualizarVitrine();
-  toast('🗑️ Produto removido');
+  toast('🗑️ Produto removido com sucesso!');
+  if (typeof currentUser !== 'undefined' && currentUser) {
+    salvarNaNuvem();
+  }
 }
 
 function renderProdutos(){
@@ -681,13 +931,27 @@ function renderRedes(){
           <span style="font-size:17px">${info.e}</span>
           <span style="font-weight:700;font-size:12px;color:${r.on?info.c:'var(--txt2)'}">${info.l}</span>
         </div>
-        <div class="tgl" style="background:${r.on?'var(--c1)':'var(--bg3)'}" onclick="toggleRede(${r.id})">
-          <div class="tglb" style="left:${r.on?'18px':'2px'};background:${r.on?'#fff':'var(--txt2)'}"></div>
+        <div style="display:flex;align-items:center;gap:8px">
+          ${r.on ? `<button class="btn bg bsm" onclick="limparRede(${r.id})" style="padding:2px 6px;font-size:10px;color:#ef4444;border-color:rgba(239,68,68,0.3)" title="Limpar link">🗑️ Limpar</button>` : ''}
+          <div class="tgl" style="background:${r.on?'var(--c1)':'var(--bg3)'}" onclick="toggleRede(${r.id})">
+            <div class="tglb" style="left:${r.on?'18px':'2px'};background:${r.on?'#fff':'var(--txt2)'}"></div>
+          </div>
         </div>
       </div>
       ${r.on?`<div style="margin-top:9px"><input class="inp" id="ur-${r.id}" placeholder="${info.ph}" value="${r.url}" style="margin-bottom:0"></div>`:''}
     </div>`;
   }).join('');
+}
+
+function limparRede(id) {
+  redes = redes.map(r => r.id === id ? { ...r, url: '', on: false } : r);
+  renderRedes();
+  gravar();
+  atualizarVitrine();
+  if (typeof currentUser !== 'undefined' && currentUser) {
+    salvarNaNuvem();
+  }
+  toast('🗑️ Link da rede removido!');
 }
 
 function toggleRede(id){
@@ -703,6 +967,9 @@ function salvarRedes(){
   gravar();
   fecharModal('m-redes');
   atualizarVitrine();
+  if (typeof currentUser !== 'undefined' && currentUser) {
+    salvarNaNuvem();
+  }
   toast('✅ Redes salvas!');
 }
 
@@ -780,9 +1047,27 @@ function salvarPerfil(){
 
 // ═══ CONEXÃO DE REDES SOCIAIS VIA API ═════════════════════════
 function conectarRedeSocial(platform) {
-  const win = window.open(`/auth/social-login?platform=${platform}`, 'social_auth_popup', 'width=580,height=680,status=no,location=no,toolbar=no,menubar=no');
-  if (!win) {
-    toast('⚠️ Popup bloqueado! Ative os popups para este site.');
+  const emailHint = (typeof currentUser !== 'undefined' && currentUser && currentUser.email) ? `&email=${encodeURIComponent(currentUser.email)}` : '';
+  const url = `/auth/social-login?platform=${platform}${emailHint}`;
+  let win = null;
+  try {
+    win = window.open(url, 'social_auth_popup', 'width=580,height=680,status=no,location=no,toolbar=no,menubar=no');
+  } catch(e) {}
+
+  if (!win || win.closed || typeof win.closed === 'undefined') {
+    const pName = REDES[platform] ? REDES[platform].l : platform;
+    const usr = prompt(`Digite seu arroba ou nome de usuário do ${pName} (ex: @seuperfil):`);
+    if (usr && usr.trim()) {
+      const cleanUsr = usr.trim().replace(/^@/, '');
+      const defaultNiche = 'Ofertas, Achadinhos & Dicas';
+      window.postMessage({
+        type: 'SOCIAL_CONNECT_SUCCESS',
+        platform,
+        username: cleanUsr,
+        bio: `Achadinhos e ofertas imperdíveis do @${cleanUsr}! 🔥`,
+        niche: defaultNiche
+      }, '*');
+    }
   }
 }
 
@@ -854,8 +1139,50 @@ async function importarSocialPosts(platform) {
   }
 }
 
+async function importarSocialProdutosAutomaticamente(platform, username, niche) {
+  toast(`⏳ Sincronizando e gerando links de afiliado automáticos para seu nicho (${niche})...`);
+  try {
+    const res = await fetch('/api/social/import-posts', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ platform, username, niche })
+    });
+
+    if (!res.ok) throw new Error('Falha na resposta da API');
+    const result = await res.json();
+    
+    if (result.success && result.products && result.products.length) {
+      result.products.forEach(p => {
+        // Evita adicionar duplicados pelo nome do produto
+        const exists = produtos.some(ex => ex.nome === p.nome);
+        if (!exists) {
+          produtos.unshift({
+            id: 'p_' + Math.random().toString(36).substr(2, 9),
+            nome: p.nome,
+            url: p.url,
+            descricao: p.descricao,
+            plataforma: p.plataforma,
+            tipo: p.tipo,
+            preco: p.preco,
+            precoAntes: p.precoAntes,
+            desconto: p.desconto,
+            emoji: p.emoji
+          });
+        }
+      });
+      gravar();
+      renderProdutos();
+      atualizarVitrine();
+      toast(`✅ Sucesso! Links de afiliado adicionados automaticamente para @${username}.`);
+    }
+  } catch (err) {
+    console.error(err);
+    toast('⚠️ Erro ao gerar links de afiliado automaticamente.');
+  }
+}
+
 function atualizarBotoesConexao() {
-  ['instagram', 'tiktok', 'youtube'].forEach(p => {
+  ['pinterest', 'instagram', 'tiktok', 'youtube', 'kwai', 'whatsapp', 'telegram', 'facebook', 'threads'].forEach(p => {
     const saved = localStorage.getItem('connected_' + p);
     const statusEl = document.getElementById('status-con-' + p);
     const btnCon = document.getElementById('btn-con-' + p);
@@ -894,9 +1221,15 @@ window.addEventListener('message', function(event) {
     
     // Setup matching social media link in the vitrine
     let profileUrl = '';
-    if (platform === 'instagram') profileUrl = `https://instagram.com/${username}`;
+    if (platform === 'pinterest') profileUrl = `https://pinterest.com/${username}`;
+    else if (platform === 'instagram') profileUrl = `https://instagram.com/${username}`;
     else if (platform === 'tiktok') profileUrl = `https://tiktok.com/@${username}`;
     else if (platform === 'youtube') profileUrl = `https://youtube.com/@${username}`;
+    else if (platform === 'kwai') profileUrl = `https://kwai.com/${username}`;
+    else if (platform === 'whatsapp') profileUrl = `https://wa.me/${username.replace(/\D/g,'') || '5511999999999'}`;
+    else if (platform === 'telegram') profileUrl = `https://t.me/${username}`;
+    else if (platform === 'facebook') profileUrl = `https://facebook.com/${username}`;
+    else if (platform === 'threads') profileUrl = `https://threads.net/@${username}`;
     
     redes = redes.map(r => r.tipo === platform ? { ...r, url: profileUrl, on: true } : r);
     
@@ -925,6 +1258,9 @@ window.addEventListener('message', function(event) {
     atualizarVitrine();
     atualizarBotoesConexao();
     toast(`🔌 Conta @${username} integrada com sucesso!`);
+    
+    // Automaticamente importa e gera produtos de afiliados via IA com base no nicho
+    importarSocialProdutosAutomaticamente(platform, username, niche);
   }
 });
 
@@ -987,7 +1323,8 @@ async function inicializarFirebase() {
     
     const app = initializeApp(config);
     auth = getAuth(app);
-    db = getFirestore(app);
+    const dbDatabaseId = config.firestoreDatabaseId || 'ai-studio-vitrine-415e80b1-219f-4bb3-b88b-701c2f6b519c';
+    db = dbDatabaseId ? getFirestore(app, dbDatabaseId) : getFirestore(app);
     
     // Check if the current path represents a custom username slug (e.g. /thiago)
     const path = window.location.pathname.replace(/^\/|\/$/g, '');
@@ -1157,10 +1494,35 @@ async function inicializarFirebase() {
       currentUser = user;
       const deslogadoEl = document.getElementById('nuvem-deslogado');
       const logadoEl = document.getElementById('nuvem-logado');
+      const headerAuthBtn = document.getElementById('btn-header-auth');
+      const abaAdmin = document.getElementById('aba-admin');
       
+      const isAdmin = user && user.email === 'thiagolino974@gmail.com';
+      if (abaAdmin) {
+        abaAdmin.style.display = isAdmin ? 'inline-flex' : 'none';
+      }
+
+      // Buscar comunicado global
+      try {
+        const noticeSnap = await getDoc(doc(db, 'system', 'notice'));
+        const bannerGlobal = document.getElementById('banner-comunicado-global');
+        const bannerTexto = document.getElementById('banner-comunicado-texto');
+        if (noticeSnap.exists() && noticeSnap.data().texto) {
+          if (bannerGlobal && bannerTexto) {
+            bannerTexto.textContent = noticeSnap.data().texto;
+            bannerGlobal.style.display = 'flex';
+          }
+        } else if (bannerGlobal) {
+          bannerGlobal.style.display = 'none';
+        }
+      } catch(e){}
+
       if (user) {
         deslogadoEl.style.display = 'none';
         logadoEl.style.display = 'block';
+        if (headerAuthBtn) {
+          headerAuthBtn.innerHTML = isAdmin ? `👑 Admin (${user.displayName || 'Thiago'})` : `👤 ${user.displayName || 'Minha Conta'}`;
+        }
         
         document.getElementById('nuvem-user-nome').textContent = user.displayName || 'Usuário';
         document.getElementById('nuvem-user-email').textContent = user.email;
@@ -1217,11 +1579,164 @@ async function inicializarFirebase() {
       } else {
         deslogadoEl.style.display = 'block';
         logadoEl.style.display = 'none';
+        if (headerAuthBtn) {
+          headerAuthBtn.innerHTML = `👤 Entrar`;
+        }
       }
     });
     
   } catch (err) {
     console.error("Erro no Firebase:", err);
+  }
+}
+
+function alternarAuthAba(aba) {
+  const formLogin = document.getElementById('auth-form-login');
+  const formCad = document.getElementById('auth-form-cadastro');
+  const btnTabLogin = document.getElementById('btn-tab-login');
+  const btnTabCad = document.getElementById('btn-tab-cadastro');
+
+  if (!formLogin || !formCad) return;
+
+  if (aba === 'login') {
+    formLogin.style.display = 'block';
+    formCad.style.display = 'none';
+    btnTabLogin.style.background = 'var(--c1)';
+    btnTabLogin.style.color = '#fff';
+    btnTabCad.style.background = 'transparent';
+    btnTabCad.style.color = 'var(--txt2)';
+  } else {
+    formLogin.style.display = 'none';
+    formCad.style.display = 'block';
+    btnTabCad.style.background = 'var(--c1)';
+    btnTabCad.style.color = '#fff';
+    btnTabLogin.style.background = 'transparent';
+    btnTabLogin.style.color = 'var(--txt2)';
+  }
+}
+
+async function fazerLoginEmail() {
+  const emailInput = document.getElementById('auth-login-email');
+  const passInput = document.getElementById('auth-login-pass');
+  if (!emailInput || !passInput) return;
+
+  const email = emailInput.value.trim();
+  const pass = passInput.value;
+
+  if (!email || !pass) {
+    toast('⚠️ Preencha seu e-mail e sua senha!');
+    return;
+  }
+
+  try {
+    const { signInWithEmailAndPassword } = await import('https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js');
+    toast('⏳ Entrando na sua conta de afiliado...');
+    await signInWithEmailAndPassword(auth, email, pass);
+    toast('✅ Login realizado com sucesso!');
+  } catch (err) {
+    console.error(err);
+    let msg = 'Erro ao fazer login: ' + err.message;
+    if (err.code === 'auth/invalid-credential' || err.code === 'auth/wrong-password' || err.code === 'auth/user-not-found') {
+      msg = '⚠️ E-mail ou senha incorretos!';
+    } else if (err.code === 'auth/invalid-email') {
+      msg = '⚠️ Formato de e-mail inválido!';
+    } else if (err.code === 'auth/too-many-requests') {
+      msg = '⚠️ Muitas tentativas incorretas. Tente novamente mais tarde.';
+    }
+    toast(msg);
+  }
+}
+
+async function fazerCadastroEmail() {
+  const nomeInput = document.getElementById('auth-cad-nome');
+  const emailInput = document.getElementById('auth-cad-email');
+  const passInput = document.getElementById('auth-cad-pass');
+  const slugInput = document.getElementById('auth-cad-slug');
+
+  if (!nomeInput || !emailInput || !passInput) return;
+
+  const nome = nomeInput.value.trim();
+  const email = emailInput.value.trim();
+  const pass = passInput.value;
+  let slug = (slugInput ? slugInput.value.trim() : '').toLowerCase().replace(/[^a-z0-9_-]/g, '');
+
+  if (!nome) {
+    toast('⚠️ Digite seu nome ou nome da sua marca/canal!');
+    return;
+  }
+  if (!email) {
+    toast('⚠️ Digite seu endereço de e-mail!');
+    return;
+  }
+  if (!pass || pass.length < 6) {
+    toast('⚠️ A senha deve ter no mínimo 6 caracteres!');
+    return;
+  }
+  if (!slug) {
+    slug = nome.toLowerCase().replace(/[^a-z0-9]/g, '-').replace(/-+/g, '-').substring(0, 24);
+  }
+
+  try {
+    const { collection, query, where, getDocs, doc, setDoc } = await import('https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js');
+    
+    // Verificar se o slug já está em uso por outro usuário
+    toast('🔍 Verificando disponibilidade do link...');
+    const q = query(collection(db, 'users'), where('username', '==', slug));
+    const snap = await getDocs(q);
+    if (!snap.empty) {
+      toast('⚠️ O link "' + slug + '" já está sendo usado por outro afiliado. Escolha outro!');
+      return;
+    }
+
+    const { createUserWithEmailAndPassword, updateProfile } = await import('https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js');
+    toast('⏳ Criando sua conta de afiliado...');
+    const userCred = await createUserWithEmailAndPassword(auth, email, pass);
+    const user = userCred.user;
+
+    await updateProfile(user, { displayName: nome });
+
+    // Preencher campos locais de perfil
+    document.getElementById('pf-nome').value = nome;
+    document.getElementById('pf-username').value = slug;
+
+    // Salvar documento no Firestore
+    const userDocRef = doc(db, 'users', user.uid);
+    const initialData = {
+      uid: user.uid,
+      username: slug,
+      displayName: nome,
+      bio: document.getElementById('pf-bio').value.trim() || 'Garimpando as melhores ofertas pra você! 🔥',
+      avatarEmoji: document.getElementById('pf-emoji').value.trim() || '🛍️',
+      theme: JSON.stringify({
+        c1: document.getElementById('pf-c1').value || '#FF5000',
+        c2: document.getElementById('pf-c2').value || '#8B5CF6',
+        tema: document.getElementById('pf-tema-ativo').value || 'escuro'
+      }),
+      socials: redes.reduce((acc, curr) => {
+        acc[curr.tipo] = curr.on ? curr.url : '';
+        return acc;
+      }, {}),
+      links: produtos,
+      createdAt: new Date()
+    };
+
+    await setDoc(userDocRef, initialData);
+    toast('🎉 Conta de afiliado criada com sucesso! Sua vitrine está pronta.');
+    validarSlug(document.getElementById('pf-username'));
+  } catch (err) {
+    console.error(err);
+    let msg = 'Erro ao criar conta: ' + err.message;
+    if (err.code === 'auth/email-already-in-use') {
+      msg = '⚠️ Este e-mail já está cadastrado! Direcionando para o login...';
+      alternarAuthAba('login');
+      const loginEmailInp = document.getElementById('auth-login-email');
+      if (loginEmailInp) loginEmailInp.value = email;
+    } else if (err.code === 'auth/weak-password') {
+      msg = '⚠️ A senha é muito fraca. Use pelo menos 6 caracteres.';
+    } else if (err.code === 'auth/invalid-email') {
+      msg = '⚠️ E-mail inválido!';
+    }
+    toast(msg);
   }
 }
 
@@ -1307,6 +1822,203 @@ async function salvarNaNuvem() {
   }
 }
 
+// ═══ PAINEL ADMIN PRO ════════════════════════════════════════
+let todosAfiliados = [];
+
+async function carregarDadosAdmin() {
+  if (!currentUser || currentUser.email !== 'thiagolino974@gmail.com') {
+    toast('⚠️ Acesso restrito ao Administrador do sistema!');
+    return;
+  }
+
+  const container = document.getElementById('adm-lista-afiliados');
+  if (!container) return;
+
+  container.innerHTML = `
+    <div style="text-align:center;padding:30px;color:var(--txt2)">
+      <div style="font-size:24px;margin-bottom:8px">⏳</div>
+      <div>Buscando afiliados e vitrines no Firestore...</div>
+    </div>
+  `;
+
+  try {
+    const { collection, getDocs, doc, getDoc } = await import('https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js');
+    const querySnapshot = await getDocs(collection(db, 'users'));
+    
+    todosAfiliados = [];
+    let totalProdutos = 0;
+
+    querySnapshot.forEach(docSnap => {
+      const data = docSnap.data();
+      const numProds = Array.isArray(data.links) ? data.links.length : 0;
+      totalProdutos += numProds;
+
+      todosAfiliados.push({
+        id: docSnap.id,
+        uid: data.uid || docSnap.id,
+        displayName: data.displayName || 'Sem Nome',
+        email: data.email || (docSnap.id === currentUser.uid ? currentUser.email : 'Afiliado'),
+        username: data.username || 'sem-link',
+        avatarEmoji: data.avatarEmoji || '🛍️',
+        produtosCount: numProds,
+        socialsCount: data.socials ? Object.values(data.socials).filter(Boolean).length : 0,
+        createdAt: data.createdAt ? (data.createdAt.seconds ? new Date(data.createdAt.seconds * 1000).toLocaleDateString('pt-BR') : new Date(data.createdAt).toLocaleDateString('pt-BR')) : 'Ativo',
+        dataRaw: data
+      });
+    });
+
+    const statUsers = document.getElementById('adm-stat-users');
+    const statProds = document.getElementById('adm-stat-prods');
+    const statVitrines = document.getElementById('adm-stat-vitrines');
+
+    if (statUsers) statUsers.textContent = todosAfiliados.length;
+    if (statProds) statProds.textContent = totalProdutos;
+    if (statVitrines) statVitrines.textContent = todosAfiliados.filter(u => u.username && u.username !== 'sem-link').length;
+
+    renderListaAdmin(todosAfiliados);
+
+    // Carregar comunicado ativo
+    try {
+      const noticeSnap = await getDoc(doc(db, 'system', 'notice'));
+      if (noticeSnap.exists() && noticeSnap.data().texto) {
+        const avisoInp = document.getElementById('adm-aviso-inp');
+        if (avisoInp) avisoInp.value = noticeSnap.data().texto;
+      }
+    } catch(e) {}
+
+  } catch (err) {
+    console.error(err);
+    container.innerHTML = `
+      <div style="text-align:center;padding:20px;color:#ef4444;background:rgba(239,68,68,0.1);border-radius:10px">
+        ⚠️ Erro ao carregar afiliados do banco de dados: ${err.message}
+      </div>
+    `;
+  }
+}
+
+function renderListaAdmin(lista) {
+  const container = document.getElementById('adm-lista-afiliados');
+  if (!container) return;
+
+  if (!lista || lista.length === 0) {
+    container.innerHTML = `
+      <div style="text-align:center;padding:30px;color:var(--txt2);background:var(--bg3);border-radius:12px;border:1px solid var(--borda)">
+        🔍 Nenhum afiliado encontrado.
+      </div>
+    `;
+    return;
+  }
+
+  container.innerHTML = lista.map(u => `
+    <div style="background:var(--bg2);border:1px solid var(--borda);border-radius:12px;padding:14px;margin-bottom:10px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px">
+      <div style="display:flex;align-items:center;gap:12px;min-width:200px">
+        <div style="width:40px;height:40px;border-radius:50%;background:var(--bg3);border:1px solid var(--borda);display:flex;align-items:center;justify-content:center;font-size:20px">
+          ${u.avatarEmoji}
+        </div>
+        <div>
+          <div style="font-weight:800;font-size:13px;display:flex;align-items:center;gap:6px">
+            ${u.displayName}
+            ${u.email === 'thiagolino974@gmail.com' ? '<span style="font-size:9px;background:var(--c1);color:#fff;padding:2px 6px;border-radius:10px;font-weight:800">👑 ADMIN</span>' : ''}
+          </div>
+          <div style="font-size:11px;color:var(--txt2)">${u.email}</div>
+          <div style="font-size:10px;color:var(--c2);font-weight:700;margin-top:2px">
+            🔗 vitrine/${u.username}
+          </div>
+        </div>
+      </div>
+
+      <div style="display:flex;align-items:center;gap:14px">
+        <div style="text-align:center">
+          <div style="font-size:13px;font-weight:800;color:var(--txt)">${u.produtosCount}</div>
+          <div style="font-size:9px;color:var(--txt2)">Produtos</div>
+        </div>
+        <div style="text-align:center">
+          <div style="font-size:13px;font-weight:800;color:var(--txt)">${u.socialsCount}</div>
+          <div style="font-size:9px;color:var(--txt2)">Redes</div>
+        </div>
+        <div style="text-align:center">
+          <div style="font-size:10px;font-weight:700;color:var(--txt2)">${u.createdAt}</div>
+          <div style="font-size:9px;color:var(--txt2)">Cadastro</div>
+        </div>
+      </div>
+
+      <div style="display:flex;gap:6px">
+        <a href="/${u.username}" target="_blank" class="btn bg bsm" style="padding:6px 10px;font-size:11px;text-decoration:none">
+          👁️ Ver Vitrine
+        </a>
+        ${u.email !== 'thiagolino974@gmail.com' ? `
+          <button class="btn bg bsm" onclick="excluirAfiliadoAdmin('${u.id}')" style="padding:6px 10px;font-size:11px;color:#ef4444;border-color:rgba(239,68,68,0.3)" title="Excluir Afiliado">
+            🗑️ Excluir
+          </button>
+        ` : ''}
+      </div>
+    </div>
+  `).join('');
+}
+
+function filtrarListaAdmin() {
+  const q = (document.getElementById('adm-busca-inp')?.value || '').toLowerCase().trim();
+  if (!q) {
+    renderListaAdmin(todosAfiliados);
+    return;
+  }
+  const filtrados = todosAfiliados.filter(u => 
+    u.displayName.toLowerCase().includes(q) || 
+    u.email.toLowerCase().includes(q) || 
+    u.username.toLowerCase().includes(q)
+  );
+  renderListaAdmin(filtrados);
+}
+
+async function excluirAfiliadoAdmin(id) {
+  const target = todosAfiliados.find(u => u.id === id);
+  const nome = target ? (target.displayName || target.username || target.email) : 'este afiliado';
+  if (!confirm(`Tem certeza que deseja excluir o cadastro do afiliado "${nome}"? Esta ação não pode ser desfeita.`)) return;
+  try {
+    const { doc, deleteDoc } = await import('https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js');
+    await deleteDoc(doc(db, 'users', id));
+    todosAfiliados = todosAfiliados.filter(u => u.id !== id);
+    renderListaAdmin(todosAfiliados);
+    toast('🗑️ Afiliado excluído com sucesso!');
+    await carregarDadosAdmin();
+  } catch(err) {
+    console.error(err);
+    toast('⚠️ Erro ao excluir afiliado: ' + err.message);
+  }
+}
+
+async function salvarAvisoGlobal() {
+  const avisoInp = document.getElementById('adm-aviso-inp');
+  if (!avisoInp) return;
+  const texto = avisoInp.value.trim();
+  try {
+    const { doc, setDoc } = await import('https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js');
+    await setDoc(doc(db, 'system', 'notice'), {
+      texto,
+      updatedAt: new Date(),
+      author: currentUser ? currentUser.email : 'Admin'
+    });
+    toast('📢 Comunicado global publicado para todos os afiliados!');
+  } catch(err) {
+    console.error(err);
+    toast('⚠️ Erro ao salvar comunicado: ' + err.message);
+  }
+}
+
+async function apagarAvisoGlobal() {
+  if (!confirm('Deseja apagar o comunicado global?')) return;
+  try {
+    const { doc, deleteDoc } = await import('https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js');
+    await deleteDoc(doc(db, 'system', 'notice'));
+    const avisoInp = document.getElementById('adm-aviso-inp');
+    if (avisoInp) avisoInp.value = '';
+    toast('🗑️ Comunicado global removido!');
+  } catch(err) {
+    console.error(err);
+    toast('⚠️ Erro ao apagar comunicado: ' + err.message);
+  }
+}
+
 // Bind module-scoped functions to global window object for HTML inline handler compatibility
 window.irPara = irPara;
 window.abrirModal = abrirModal;
@@ -1315,6 +2027,9 @@ window.fecharOverlay = fecharOverlay;
 window.abrirProduto = abrirProduto;
 window.salvarProduto = salvarProduto;
 window.removerProduto = removerProduto;
+window.renderProdutos = renderProdutos;
+window.renderRedes = renderRedes;
+window.atualizarVitrine = atualizarVitrine;
 window.toggleRede = toggleRede;
 window.salvarRedes = salvarRedes;
 window.filtrar = filtrar;
@@ -1324,6 +2039,9 @@ window.aplicarTema = aplicarTema;
 window.paleta = paleta;
 window.toast = toast;
 window.validarSlug = validarSlug;
+window.alternarAuthAba = alternarAuthAba;
+window.fazerLoginEmail = fazerLoginEmail;
+window.fazerCadastroEmail = fazerCadastroEmail;
 window.fazerLoginGoogle = fazerLoginGoogle;
 window.fazerLogout = fazerLogout;
 window.salvarNaNuvem = salvarNaNuvem;
@@ -1331,6 +2049,14 @@ window.conectarRedeSocial = conectarRedeSocial;
 window.desconectarRedeSocial = desconectarRedeSocial;
 window.importarSocialPosts = importarSocialPosts;
 window.atualizarBotoesConexao = atualizarBotoesConexao;
+window.carregarDadosAdmin = carregarDadosAdmin;
+window.renderListaAdmin = renderListaAdmin;
+window.filtrarListaAdmin = filtrarListaAdmin;
+window.excluirAfiliadoAdmin = excluirAfiliadoAdmin;
+window.excluirProdutoDoModal = excluirProdutoDoModal;
+window.limparRede = limparRede;
+window.salvarAvisoGlobal = salvarAvisoGlobal;
+window.apagarAvisoGlobal = apagarAvisoGlobal;
 
 // ═══ EVENT LISTENERS MOBILE ══════════════════════════════════
 document.getElementById("btn-redes").addEventListener("click",function(){abrirModal("m-redes");});
