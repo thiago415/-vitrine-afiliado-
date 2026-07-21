@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vitrine Afiliados PRO</title>
+  <script>
+    // GitHub Pages SPA fallback redirection
+    (function() {
+      var l = window.location;
+      var parts = l.pathname.replace(/^\/|\/$/g, '').split('/').filter(Boolean);
+      var slug = '';
+      if (parts.length > 0) {
+        var last = parts[parts.length - 1];
+        if (!['index.html', '404.html'].includes(last)) {
+          slug = last;
+        }
+      }
+      var repoPath = parts.length > 1 ? '/' + parts[0] : '';
+      var newUrl = l.protocol + '//' + l.hostname + (l.port ? ':' + l.port : '') + repoPath + '/?u=' + encodeURIComponent(slug) + (l.hash || '');
+      window.location.replace(newUrl);
+    })();
+  </script>
+</head>
+<body style="background:#0c0c14;color:#fff;font-family:sans-serif;display:flex;align-items:center;justify-content:center;height:100vh;margin:0">
+  <p>Carregando Vitrine...</p>
+</body>
+</html>
