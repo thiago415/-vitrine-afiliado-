@@ -791,8 +791,8 @@ Diretrizes de Design:
   }
 });
 
-// GET endpoint to serve a highly polished simulated OAuth 2.0 social login flow for Instagram, TikTok, and YouTube
-app.get('/auth/social-login', (req, res) => {
+// GET endpoint to serve a highly polished simulated OAuth 2.0 social login flow for Instagram, TikTok, YouTube, Kwai, Pinterest, WhatsApp, Telegram, Facebook, Threads
+app.get(['/auth/social-login', '/auth/social', '/social-login', '/social', '/integracao', '/integracoes', '/api/social/connect', '/api/social-login'], (req, res) => {
   const platform = (req.query.platform || 'instagram').toLowerCase();
   const email = req.query.email || '';
   const emailPrefix = email ? email.split('@')[0].replace(/[^a-zA-Z0-9_]/g, '') : 'thiagolino974';
@@ -1116,7 +1116,7 @@ app.get('/auth/social-login', (req, res) => {
 });
 
 // POST endpoint to generate 3 custom AI product recommendations tailored perfectly to the connected social niche
-app.post('/api/social/import-posts', async (req, res) => {
+app.post(['/api/social/import-posts', '/api/social/import', '/api/import-social'], async (req, res) => {
   try {
     const { platform, username, niche } = req.body;
     if (!platform || !username || !niche) {
