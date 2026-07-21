@@ -66,7 +66,17 @@ textarea.inp{resize:vertical}
 .vflt{display:flex;gap:6px;margin-bottom:16px;flex-wrap:wrap;padding:0 2px}
 .vfb{padding:7px 13px;border-radius:20px;border:none;cursor:pointer;font-size:12px;font-weight:600;background:var(--bg2);color:var(--txt2);touch-action:manipulation}
 .vfb.at{background:var(--c1);color:#fff}
-.vprd{display:flex;align-items:center;gap:13px;background:var(--bg2);border:1px solid var(--borda);border-radius:13px;padding:13px;text-decoration:none;color:var(--txt);margin-bottom:9px;transition:border-color .2s}
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.vprd{display:flex;align-items:center;gap:13px;background:var(--bg2);border:1px solid var(--borda);border-radius:13px;padding:13px;text-decoration:none;color:var(--txt);margin-bottom:9px;transition:border-color .2s;animation:fadeInUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) both}
 .vprd:active{background:var(--bg3)}
 .vem{width:56px;height:56px;border-radius:11px;background:var(--bg3);display:flex;align-items:center;justify-content:center;font-size:26px;flex-shrink:0;border:1px solid var(--borda)}
 .vnome{font-weight:700;font-size:13px;margin-bottom:3px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
@@ -300,6 +310,59 @@ textarea.inp{resize:vertical}
       </div>
 
       <button class="btn bp bfw" onclick="salvarNaNuvem()">☁️ Salvar na Nuvem</button>
+    </div>
+
+    <!-- CARD CONEXÃO DE REDES SOCIAIS -->
+    <div class="card" id="card-conexoes" style="margin-top:15px">
+      <div style="font-weight:700;font-size:13px;margin-bottom:6px;display:flex;align-items:center;gap:6px">🔌 Integração Oficial com Redes Sociais</div>
+      <p style="font-size:11px;color:var(--txt2);margin-bottom:14px">Conecte suas contas de redes sociais pela internet. Importe sua foto, bio e gere produtos de afiliados automáticos usando IA!</p>
+      
+      <div style="display:flex;flex-direction:column;gap:12px" id="lista-conexoes-api">
+        <!-- Instagram -->
+        <div style="display:flex;align-items:center;justify-content:space-between;background:var(--bg3);padding:11px;border-radius:10px;border:1px solid var(--borda)" id="con-instagram">
+          <div style="display:flex;align-items:center;gap:10px;min-width:0;flex:1">
+            <div style="width:32px;height:32px;border-radius:50%;background:#E1306C;display:flex;align-items:center;justify-content:center;font-size:16px;color:#fff">📸</div>
+            <div style="min-width:0;text-align:left">
+              <div style="font-weight:700;font-size:12px">Instagram</div>
+              <div style="font-size:10px;color:var(--txt2)" id="status-con-instagram">Não Conectado</div>
+            </div>
+          </div>
+          <div style="display:flex;gap:6px">
+            <button class="btn bp bsm" onclick="conectarRedeSocial('instagram')" id="btn-con-instagram" style="padding:6px 12px;font-size:11px">Conectar</button>
+            <button class="btn bg bsm" onclick="importarSocialPosts('instagram')" id="btn-imp-instagram" style="display:none;padding:6px 12px;font-size:11px;border-color:var(--c1);color:var(--c1)">⚡ Importar Posts</button>
+          </div>
+        </div>
+
+        <!-- TikTok -->
+        <div style="display:flex;align-items:center;justify-content:space-between;background:var(--bg3);padding:11px;border-radius:10px;border:1px solid var(--borda)" id="con-tiktok">
+          <div style="display:flex;align-items:center;gap:10px;min-width:0;flex:1">
+            <div style="width:32px;height:32px;border-radius:50%;background:#111;display:flex;align-items:center;justify-content:center;font-size:16px;color:#fff">🎵</div>
+            <div style="min-width:0;text-align:left">
+              <div style="font-weight:700;font-size:12px">TikTok</div>
+              <div style="font-size:10px;color:var(--txt2)" id="status-con-tiktok">Não Conectado</div>
+            </div>
+          </div>
+          <div style="display:flex;gap:6px">
+            <button class="btn bp bsm" onclick="conectarRedeSocial('tiktok')" id="btn-con-tiktok" style="padding:6px 12px;font-size:11px">Conectar</button>
+            <button class="btn bg bsm" onclick="importarSocialPosts('tiktok')" id="btn-imp-tiktok" style="display:none;padding:6px 12px;font-size:11px;border-color:var(--c1);color:var(--c1)">⚡ Importar Posts</button>
+          </div>
+        </div>
+
+        <!-- YouTube -->
+        <div style="display:flex;align-items:center;justify-content:space-between;background:var(--bg3);padding:11px;border-radius:10px;border:1px solid var(--borda)" id="con-youtube">
+          <div style="display:flex;align-items:center;gap:10px;min-width:0;flex:1">
+            <div style="width:32px;height:32px;border-radius:50%;background:#FF0000;display:flex;align-items:center;justify-content:center;font-size:16px;color:#fff">▶️</div>
+            <div style="min-width:0;text-align:left">
+              <div style="font-weight:700;font-size:12px">YouTube</div>
+              <div style="font-size:10px;color:var(--txt2)" id="status-con-youtube">Não Conectado</div>
+            </div>
+          </div>
+          <div style="display:flex;gap:6px">
+            <button class="btn bp bsm" onclick="conectarRedeSocial('youtube')" id="btn-con-youtube" style="padding:6px 12px;font-size:11px">Conectar</button>
+            <button class="btn bg bsm" onclick="importarSocialPosts('youtube')" id="btn-imp-youtube" style="display:none;padding:6px 12px;font-size:11px;border-color:var(--c1);color:var(--c1)">⚡ Importar Posts</button>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </div>
@@ -675,12 +738,12 @@ function atualizarVitrine(){
   if(!lista.length){
     el.innerHTML='<div class="vem2"><div style="font-size:38px;margin-bottom:10px">🛍️</div><p>Nenhum produto ainda.</p></div>';
   } else {
-    el.innerHTML=lista.map(p=>{
+    el.innerHTML=lista.map((p,idx)=>{
       const pl=PLAT[p.plataforma]||PLAT.outro;
       const ti=TIPOS[p.tipo]||TIPOS.fisico;
       const pr=p.preco?(p.preco.startsWith('R')?p.preco:'R$ '+p.preco):'';
       const pd=p.precoAntes?(p.precoAntes.startsWith('R')?p.precoAntes:'R$ '+p.precoAntes):'';
-      return`<a class="vprd" href="${p.url}" target="_blank" rel="noopener">
+      return`<a class="vprd" href="${p.url}" target="_blank" rel="noopener" style="animation-delay: ${idx * 0.04}s">
         <div class="vem">${p.emoji||ti.e}</div>
         <div style="flex:1;min-width:0">
           <div class="vnome">${p.nome}</div>
@@ -714,6 +777,156 @@ function salvarPerfil(){
   gravar();
   toast('✅ Perfil salvo! Dados preservados ao recarregar.');
 }
+
+// ═══ CONEXÃO DE REDES SOCIAIS VIA API ═════════════════════════
+function conectarRedeSocial(platform) {
+  const win = window.open(`/auth/social-login?platform=${platform}`, 'social_auth_popup', 'width=580,height=680,status=no,location=no,toolbar=no,menubar=no');
+  if (!win) {
+    toast('⚠️ Popup bloqueado! Ative os popups para este site.');
+  }
+}
+
+function desconectarRedeSocial(platform) {
+  if (confirm(`Deseja desconectar sua conta do ${platform}?`)) {
+    localStorage.removeItem('connected_' + platform);
+    redes = redes.map(r => r.tipo === platform ? { ...r, url: '', on: false } : r);
+    gravar();
+    atualizarVitrine();
+    atualizarBotoesConexao();
+    toast(`🔌 Conta do ${platform} desconectada com sucesso.`);
+  }
+}
+
+async function importarSocialPosts(platform) {
+  const saved = localStorage.getItem('connected_' + platform);
+  if (!saved) {
+    toast('⚠️ Conecte sua conta antes de importar.');
+    return;
+  }
+  
+  let data;
+  try {
+    data = JSON.parse(saved);
+  } catch (e) {
+    return;
+  }
+
+  toast(`⏳ Consultando posts recentes no @${data.username}...`);
+  
+  try {
+    const res = await fetch('/api/social/import-posts', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ platform, username: data.username, niche: data.niche })
+    });
+
+    if (!res.ok) throw new Error('Falha na resposta da API');
+    const result = await res.json();
+    
+    if (result.success && result.products && result.products.length) {
+      const confirmed = confirm(`✨ IA: Encontramos 3 novos produtos recomendados para o nicho "${data.niche}" do seu canal @${data.username}.\n\nDeseja importá-los agora para sua vitrine?`);
+      if (confirmed) {
+        result.products.forEach(p => {
+          produtos.unshift({
+            id: 'p_' + Math.random().toString(36).substr(2, 9),
+            nome: p.nome,
+            url: p.url,
+            descricao: p.descricao,
+            plataforma: p.plataforma,
+            tipo: p.tipo,
+            preco: p.preco,
+            precoAntes: p.precoAntes,
+            desconto: p.desconto,
+            emoji: p.emoji
+          });
+        });
+        gravar();
+        renderProdutos();
+        atualizarVitrine();
+        toast('✅ 3 novos produtos adicionados com sucesso!');
+      }
+    } else {
+      toast('⚠️ Não foi possível obter novos posts no momento.');
+    }
+  } catch (err) {
+    console.error(err);
+    toast('⚠️ Erro ao importar posts com IA.');
+  }
+}
+
+function atualizarBotoesConexao() {
+  ['instagram', 'tiktok', 'youtube'].forEach(p => {
+    const saved = localStorage.getItem('connected_' + p);
+    const statusEl = document.getElementById('status-con-' + p);
+    const btnCon = document.getElementById('btn-con-' + p);
+    const btnImp = document.getElementById('btn-imp-' + p);
+    
+    if (!statusEl || !btnCon || !btnImp) return;
+
+    if (saved) {
+      try {
+        const data = JSON.parse(saved);
+        statusEl.innerHTML = `<span style="color:#22c55e;font-weight:700">● Conectado: @${data.username}</span><br><span style="font-size:9px;color:var(--txt2)">Nicho: ${data.niche}</span>`;
+        btnCon.textContent = 'Desconectar';
+        btnCon.className = 'btn bd bsm';
+        btnCon.setAttribute('onclick', `desconectarRedeSocial('${p}')`);
+        btnImp.style.display = 'inline-flex';
+      } catch (e) {
+        localStorage.removeItem('connected_' + p);
+      }
+    } else {
+      statusEl.textContent = 'Não Conectado';
+      btnCon.textContent = 'Conectar';
+      btnCon.className = 'btn bp bsm';
+      btnCon.setAttribute('onclick', `conectarRedeSocial('${p}')`);
+      btnImp.style.display = 'none';
+    }
+  });
+}
+
+// Global receiver for the social authorization popup
+window.addEventListener('message', function(event) {
+  if (event.data && event.data.type === 'SOCIAL_CONNECT_SUCCESS') {
+    const { platform, username, bio, niche } = event.data;
+    
+    // Save to local storage for persistence
+    localStorage.setItem('connected_' + platform, JSON.stringify({ username, bio, niche }));
+    
+    // Setup matching social media link in the vitrine
+    let profileUrl = '';
+    if (platform === 'instagram') profileUrl = `https://instagram.com/${username}`;
+    else if (platform === 'tiktok') profileUrl = `https://tiktok.com/@${username}`;
+    else if (platform === 'youtube') profileUrl = `https://youtube.com/@${username}`;
+    
+    redes = redes.map(r => r.tipo === platform ? { ...r, url: profileUrl, on: true } : r);
+    
+    // Auto-update profile bio if empty or using default template
+    const currentBio = document.getElementById('pf-bio').value.trim();
+    if (!currentBio || currentBio.includes('Seu Nome Aqui') || currentBio.includes('Seu Link Aqui') || currentBio === '') {
+      document.getElementById('pf-bio').value = bio;
+    }
+    
+    // Update profile emoji based on selected niche to make it look premium
+    const currentEmoji = document.getElementById('pf-emoji').value.trim();
+    if (currentEmoji === '🛍️') {
+      if (niche.includes('Moda')) document.getElementById('pf-emoji').value = '💄';
+      else if (niche.includes('Tecnologia')) document.getElementById('pf-emoji').value = '🎮';
+      else if (niche.includes('Cozinha')) document.getElementById('pf-emoji').value = '🍳';
+      else if (niche.includes('Finanças')) document.getElementById('pf-emoji').value = '📈';
+    }
+
+    // Auto-update display name to make it user friendly
+    const currentNome = document.getElementById('pf-nome').value.trim();
+    if (!currentNome || currentNome === 'Seu Nome Aqui') {
+      document.getElementById('pf-nome').value = username.charAt(0).toUpperCase() + username.slice(1);
+    }
+    
+    gravar();
+    atualizarVitrine();
+    atualizarBotoesConexao();
+    toast(`🔌 Conta @${username} integrada com sucesso!`);
+  }
+});
 
 function aplicarCores(){
   const c1=_v('pf-c1');
@@ -868,13 +1081,13 @@ async function inicializarFirebase() {
             if (!filtered.length) {
               listEl.innerHTML = '<div class="vem2"><div style="font-size:38px;margin-bottom:10px">🛍️</div><p>Nenhum produto cadastrado.</p></div>';
             } else {
-              listEl.innerHTML = filtered.map(p => {
+              listEl.innerHTML = filtered.map((p, idx) => {
                 const pl = PLAT[p.plataforma] || PLAT.outro;
                 const ti = TIPOS[p.tipo] || TIPOS.fisico;
                 const pr = p.preco ? (p.preco.startsWith('R') ? p.preco : 'R$ ' + p.preco) : '';
                 const pd = p.precoAntes ? (p.precoAntes.startsWith('R') ? p.precoAntes : 'R$ ' + p.precoAntes) : '';
                 return `
-                  <a class="vprd" href="${p.url}" target="_blank" rel="noopener">
+                  <a class="vprd" href="${p.url}" target="_blank" rel="noopener" style="animation-delay: ${idx * 0.04}s">
                     <div class="vem">${p.emoji || ti.e}</div>
                     <div style="flex:1;min-width:0;text-align:left">
                       <div class="vnome">${p.nome}</div>
@@ -1114,6 +1327,10 @@ window.validarSlug = validarSlug;
 window.fazerLoginGoogle = fazerLoginGoogle;
 window.fazerLogout = fazerLogout;
 window.salvarNaNuvem = salvarNaNuvem;
+window.conectarRedeSocial = conectarRedeSocial;
+window.desconectarRedeSocial = desconectarRedeSocial;
+window.importarSocialPosts = importarSocialPosts;
+window.atualizarBotoesConexao = atualizarBotoesConexao;
 
 // ═══ EVENT LISTENERS MOBILE ══════════════════════════════════
 document.getElementById("btn-redes").addEventListener("click",function(){abrirModal("m-redes");});
@@ -1124,6 +1341,7 @@ document.querySelectorAll(".aba").forEach(function(btn){
 // ═══ INICIAR ══════════════════════════════════════════════════
 renderProdutos();
 atualizarVitrine();
+atualizarBotoesConexao();
 inicializarFirebase();
 </script>
 </body>

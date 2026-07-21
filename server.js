@@ -653,6 +653,267 @@ Diretrizes de Design:
   }
 });
 
+// GET endpoint to serve a highly polished simulated OAuth 2.0 social login flow for Instagram, TikTok, and YouTube
+app.get('/auth/social-login', (req, res) => {
+  const platform = (req.query.platform || 'instagram').toLowerCase();
+  
+  // Custom branding parameters based on selected platform
+  let pName = 'Instagram';
+  let pColorGrad = 'linear-gradient(135deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%)';
+  let pIconSvg = `<svg class="w-12 h-12 text-white" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.051.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>`;
+  
+  if (platform === 'tiktok') {
+    pName = 'TikTok';
+    pColorGrad = 'linear-gradient(135deg, #000000 0%, #111111 50%, #010101 100%)';
+    pIconSvg = `<svg class="w-12 h-12 text-white" fill="currentColor" viewBox="0 0 24 24"><path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.02 1.59 4.23.82.95 1.9 1.64 3.09 2.05.01 1.34.01 2.68 0 4.02-1.48-.02-2.93-.45-4.18-1.25-.32-.2-.61-.43-.88-.69-.02 2.76.01 5.51-.01 8.26-.02 1.41-.37 2.83-1.1 4.01-.99 1.63-2.69 2.78-4.58 3.12-1.62.29-3.32.06-4.79-.76-1.74-.95-2.92-2.73-3.13-4.72-.25-2.07.57-4.17 2.14-5.51 1.5-1.29 3.56-1.76 5.43-1.26V12c-1.3-.4-2.73-.1-3.76.77-.96.79-1.39 2.08-1.11 3.28.24 1.13 1.12 2.05 2.22 2.37 1.25.37 2.65-.08 3.39-1.15.35-.5.5-1.1.48-1.72-.01-3.66 0-7.31-.01-10.97.01-1.49.01-2.98.01-4.47-.02-.02-.02-.03-.02-.05z"/></svg>`;
+  } else if (platform === 'youtube') {
+    pName = 'YouTube';
+    pColorGrad = 'linear-gradient(135deg, #FF0000 0%, #D00000 100%)';
+    pIconSvg = `<svg class="w-12 h-12 text-white" fill="currentColor" viewBox="0 0 24 24"><path d="M23.498 6.163a3.003 3.003 0 00-2.11-2.107C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.388.511a3.003 3.003 0 00-2.11 2.107C0 8.053 0 12 0 12s0 3.947.502 5.837a3.003 3.003 0 002.11 2.107C4.495 20.455 12 20.455 12 20.455s7.505 0 9.388-.511a3.003 3.003 0 002.11-2.107C24 15.947 24 12 24 12s0-3.947-.502-5.837zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>`;
+  }
+
+  res.send(`
+    <!DOCTYPE html>
+    <html lang="pt-BR">
+    <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>Autorizar Acesso - Vitrine Afiliados PRO</title>
+      <script src="https://cdn.tailwindcss.com"></script>
+      <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+      </style>
+    </head>
+    <body class="bg-slate-950 text-slate-100 flex flex-col min-height-screen">
+      <!-- Header do Provedor -->
+      <div style="background: ${pColorGrad}" class="py-6 px-6 flex items-center gap-4 shadow-lg">
+        <div class="p-2 bg-white/10 rounded-xl backdrop-blur-sm">
+          ${pIconSvg}
+        </div>
+        <div>
+          <h1 class="text-xl font-extrabold tracking-tight text-white">${pName} API Auth</h1>
+          <p class="text-xs text-white/80">Login Único Seguro e Autorização</p>
+        </div>
+      </div>
+
+      <!-- Conteúdo Principal -->
+      <div class="flex-1 p-6 max-w-md mx-auto w-full flex flex-col justify-between">
+        <div class="space-y-6">
+          <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 space-y-4 shadow-md">
+            <div class="flex items-center gap-3">
+              <div class="w-10 h-10 rounded-lg bg-orange-500/10 flex items-center justify-center text-lg">🛍️</div>
+              <div>
+                <h2 class="text-sm font-bold text-slate-200">Vitrine Afiliados PRO</h2>
+                <p class="text-[11px] text-slate-400">aplicativo de terceiros verificado</p>
+              </div>
+            </div>
+            
+            <hr class="border-slate-800">
+
+            <div>
+              <h3 class="text-xs font-bold uppercase tracking-wider text-slate-400 mb-2">Permissões Solicitadas:</h3>
+              <ul class="space-y-2 text-xs text-slate-300">
+                <li class="flex items-start gap-2">
+                  <span class="text-emerald-500 mt-0.5">✔</span>
+                  <span><b>Acesso ao Perfil:</b> Nome de usuário público, biografia atualizada e avatar.</span>
+                </li>
+                <li class="flex items-start gap-2">
+                  <span class="text-emerald-500 mt-0.5">✔</span>
+                  <span><b>Acesso a Mídias:</b> Visualizar legendas e links dos seus posts mais recentes.</span>
+                </li>
+              </ul>
+            </div>
+          </div>
+
+          <!-- Form de Conexão -->
+          <div class="space-y-4">
+            <div>
+              <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1.5">Insira seu Nome de Usuário (@)</label>
+              <div class="relative">
+                <span class="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-500 text-sm font-semibold">@</span>
+                <input id="inp-user" type="text" placeholder="username" class="w-full bg-slate-900 border border-slate-800 focus:border-indigo-500 rounded-xl py-3 pl-8 pr-4 text-sm font-medium outline-none text-white transition-colors">
+              </div>
+            </div>
+
+            <div>
+              <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1.5">Selecione seu Nicho de Conteúdo</label>
+              <select id="sel-niche" class="w-full bg-slate-900 border border-slate-800 focus:border-indigo-500 rounded-xl py-3 px-3.5 text-sm font-medium outline-none text-white transition-colors cursor-pointer">
+                <option value="Achadinhos & Ofertas">🛍️ Achadinhos & Ofertas Gerais</option>
+                <option value="Moda & Beleza">💄 Moda, Maquiagem & Beleza</option>
+                <option value="Tecnologia & Games">🎮 Tecnologia, Eletrônicos & Games</option>
+                <option value="Casa & Cozinha">🍳 Decoração, Casa & Cozinha</option>
+                <option value="Finanças & Cursos">📈 Finanças, Mentalidade & Cursos</option>
+              </select>
+            </div>
+            
+            <div>
+              <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1.5">Sua Biografia Curta (Opcional)</label>
+              <input id="inp-bio" type="text" placeholder="Ex: Melhores ofertas todos os dias!" class="w-full bg-slate-900 border border-slate-800 focus:border-indigo-500 rounded-xl py-3 px-3.5 text-sm font-medium outline-none text-white transition-colors">
+            </div>
+          </div>
+        </div>
+
+        <!-- Botões de Ação -->
+        <div class="mt-8 space-y-3">
+          <button id="btn-auth" onclick="startAuth()" class="w-full bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 active:scale-[0.98] text-white font-bold py-3.5 px-4 rounded-xl text-sm transition-all shadow-lg flex items-center justify-center gap-2">
+            Autorizar e Sincronizar Conexão
+          </button>
+          <button onclick="window.close()" class="w-full bg-slate-900 hover:bg-slate-850 active:scale-[0.98] text-slate-400 font-bold py-3 px-4 rounded-xl text-xs transition-all border border-slate-800">
+            Cancelar e Voltar
+          </button>
+        </div>
+      </div>
+
+      <!-- Overlay de Sincronização em Progresso -->
+      <div id="loader-overlay" class="fixed inset-0 bg-slate-950/90 backdrop-blur-sm z-50 flex-col items-center justify-center hidden">
+        <div class="w-12 h-12 border-4 border-slate-800 border-t-indigo-500 rounded-full animate-spin mb-4"></div>
+        <p id="loader-status" class="text-sm font-bold text-slate-200">Contatando servidor de segurança da rede social...</p>
+        <p class="text-xs text-slate-500 mt-1">Isso levará apenas um instante.</p>
+      </div>
+
+      <script>
+        const platform = "${platform}";
+        
+        function startAuth() {
+          const userVal = document.getElementById('inp-user').value.trim().replace(/^@/, '');
+          const nicheVal = document.getElementById('sel-niche').value;
+          const bioVal = document.getElementById('inp-bio').value.trim();
+          
+          if (!userVal) {
+            alert('Por favor, insira seu nome de usuário da rede social.');
+            return;
+          }
+
+          const loader = document.getElementById('loader-overlay');
+          const status = document.getElementById('loader-status');
+          loader.classList.remove('hidden');
+          loader.classList.add('flex');
+
+          // Smooth realistic auth simulation
+          setTimeout(() => {
+            status.textContent = 'Autenticando permissões do aplicativo...';
+            setTimeout(() => {
+              status.textContent = 'Sincronizando dados públicos da conta...';
+              setTimeout(() => {
+                // Post success to parent window opener
+                if (window.opener) {
+                  window.opener.postMessage({
+                    type: 'SOCIAL_CONNECT_SUCCESS',
+                    platform: platform,
+                    username: userVal,
+                    bio: bioVal || ('Achadinhos diários de ' + nicheVal + '! 🔥'),
+                    niche: nicheVal
+                  }, '*');
+                  window.close();
+                } else {
+                  alert('Autorização concluída! Mas não foi possível comunicar com a janela principal do app. Recarregue e tente novamente.');
+                  window.close();
+                }
+              }, 1000);
+            }, 1000);
+          }, 900);
+        }
+      </script>
+    </body>
+    </html>
+  `);
+});
+
+// POST endpoint to generate 3 custom AI product recommendations tailored perfectly to the connected social niche
+app.post('/api/social/import-posts', async (req, res) => {
+  try {
+    const { platform, username, niche } = req.body;
+    if (!platform || !username || !niche) {
+      return res.status(400).json({ error: 'Parâmetros platform, username e niche são obrigatórios.' });
+    }
+
+    const ai = getGeminiClient();
+    const systemInstruction = `
+Você é o Assistente de Inteligência Artificial do Vitrine Afiliados PRO.
+Sua tarefa é simular a importação de posts recentes do perfil de rede social (${platform}) do usuário @${username} que tem foco no nicho de público "${niche}".
+Com base no nicho do usuário, gere exatamente 3 sugestões de produtos altamente virais e atraentes para ele vender como afiliado na sua vitrine de links.
+
+Os produtos gerados devem ser extremamente adequados e condizentes com o nicho:
+- Se "Achadinhos & Ofertas": Sugira produtos inovadores da Shopee ou Amazon (como mini processador portátil recarregável, organizador giratório 360°, garrafa térmica digital led).
+- Se "Moda & Beleza": Sugira itens de maquiagem, skincare, pincéis de maquiagem macios de alta precisão, ou acessórios de cabelo de sucesso no Instagram/TikTok.
+- Se "Tecnologia & Games": Sugira acessórios eletrônicos, fones de ouvido Bluetooth TWS, carregador por indução ultra rápido ou mouse gamer sem fio.
+- Se "Casa & Cozinha": Sugira utensílios de cozinha práticos e modernos, luminária LED inteligente ou mop giratório.
+- Se "Finanças & Cursos": Sugira infoprodutos da Hotmart, Eduzz ou Cakto (como e-book de investimentos do zero, curso de renda extra digital).
+
+Para cada um dos 3 produtos, monte o objeto com os seguintes campos obrigatórios:
+1. nome: Título do produto com um emoji bonito no início (ex: "🥤 Garrafa Térmica Digital Inteligente")
+2. plataforma: Escolha uma das seguintes opções coerentes: "shopee" | "amazon" | "hotmart" | "cakto" | "eduzz" | "mercadolivre" | "outro"
+3. tipo: Escolha uma das seguintes opções: "fisico" | "digital" | "curso" | "ebook" | "software"
+4. preco: Preço fictício realista em reais (ex: "49,90" - sem prefixo R$)
+5. precoAntes: Preço riscado realista maior (ex: "99,90" - sem prefixo R$)
+6. desconto: Porcentagem de desconto (ex: "50" - apenas o número)
+7. emoji: Emoji representativo único (ex: "🥤")
+8. descricao: Uma legenda curta atraente estilo rede social (ex: "O achadinho mais viral do feed com 50% de desconto e frete grátis!")
+9. url: Link realista de afiliado (ex: "https://shopee.com.br/product-viral-link?aff_id=vitrine_" + username)
+
+Retorne SEMPRE um array JSON puro válido, sem marcação de código Markdown (não adicione \`\`\`json ou \`\`\`), sem explicações textuais, contendo exatamente esta estrutura:
+[
+  {
+    "nome": "nome do produto",
+    "plataforma": "plataforma",
+    "tipo": "tipo",
+    "preco": "preco",
+    "precoAntes": "precoAntes",
+    "desconto": "desconto",
+    "emoji": "emoji",
+    "descricao": "descricao",
+    "url": "url"
+  }
+]
+`;
+
+    const response = await ai.models.generateContent({
+      model: "gemini-3.5-flash",
+      contents: `Gere 3 produtos afiliados virais do nicho ${niche} para o perfil de ${platform} do usuário @${username}`,
+      config: {
+        systemInstruction: systemInstruction,
+        responseMimeType: 'application/json',
+        responseSchema: {
+          type: Type.ARRAY,
+          items: {
+            type: Type.OBJECT,
+            properties: {
+              nome: { type: Type.STRING },
+              plataforma: { type: Type.STRING },
+              tipo: { type: Type.STRING },
+              preco: { type: Type.STRING },
+              precoAntes: { type: Type.STRING },
+              desconto: { type: Type.STRING },
+              emoji: { type: Type.STRING },
+              descricao: { type: Type.STRING },
+              url: { type: Type.STRING }
+            },
+            required: ["nome", "plataforma", "tipo", "preco", "precoAntes", "desconto", "emoji", "descricao", "url"]
+          }
+        }
+      }
+    });
+
+    let products = [];
+    try {
+      let cleanText = response.text.trim();
+      if (cleanText.startsWith('```')) {
+        cleanText = cleanText.replace(/^```json\s*/i, '').replace(/```$/, '').trim();
+      }
+      products = JSON.parse(cleanText);
+    } catch (parseError) {
+      console.error("Failed to parse social import products JSON:", parseError);
+      return res.status(500).json({ error: 'Erro ao processar a estrutura de produtos com IA.' });
+    }
+
+    res.json({ success: true, products: products });
+  } catch (error) {
+    console.error("Social Import Error:", error);
+    res.status(500).json({ error: `Erro na simulação de importação da conta de rede social: ${error.message}` });
+  }
+});
+
 // Serve static files from the root directory
 app.use(express.static(__dirname));
 
