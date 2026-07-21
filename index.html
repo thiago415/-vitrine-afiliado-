@@ -134,7 +134,7 @@ textarea.inp{resize:vertical}
     <div id="logo-sub">Shopee · ML · Hotmart · Cakto · e mais</div>
   </div>
   <div style="display:flex;gap:6px;align-items:center">
-    <button id="btn-header-auth" onclick="irPara('perfil', document.querySelector('.aba[data-pg=perfil]'))" class="btn bg bsm" style="padding:6px 10px;font-size:11px;gap:5px">
+    <button id="btn-header-auth" onclick="abrirTelaLogin()" class="btn bg bsm" style="padding:6px 10px;font-size:11px;gap:5px">
       👤 Entrar
     </button>
     <button id="btn-redes" onclick="abrirModal('m-redes')">📲 Redes</button>
@@ -307,7 +307,10 @@ textarea.inp{resize:vertical}
         <label class="lbl">E-mail de Afiliado</label>
         <input class="inp" id="auth-login-email" type="email" placeholder="seu@email.com" autocomplete="email" onkeydown="if(event.key==='Enter')fazerLoginEmail()">
 
-        <label class="lbl">Sua Senha</label>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+          <label class="lbl" style="margin-bottom:0">Sua Senha</label>
+          <a href="javascript:void(0)" onclick="recuperarSenhaEmail()" style="font-size:11px;color:var(--c1);text-decoration:none;font-weight:600">🔑 Esqueci a senha</a>
+        </div>
         <input class="inp" id="auth-login-pass" type="password" placeholder="••••••••" autocomplete="current-password" onkeydown="if(event.key==='Enter')fazerLoginEmail()">
 
         <button class="btn bp bfw" onclick="fazerLoginEmail()" style="margin-bottom:10px">
@@ -1524,12 +1527,12 @@ async function inicializarFirebase() {
           headerAuthBtn.innerHTML = isAdmin ? `👑 Admin (${user.displayName || 'Thiago'})` : `👤 ${user.displayName || 'Minha Conta'}`;
         }
         
-        document.getElementById('nuvem-user-nome').textContent = user.displayName || 'Usuário';
-        document.getElementById('nuvem-user-email').textContent = user.email;
+        document.getElementById('nuvem-user-nome').textContent = user.displayName || user.email || 'Usuário';
+        document.getElementById('nuvem-user-email').textContent = user.email || '';
         if (user.photoURL) {
           document.getElementById('nuvem-user-avatar').innerHTML = `<img src="${user.photoURL}" style="width:100%;height:100%;border-radius:50%;object-fit:cover">`;
         } else {
-          document.getElementById('nuvem-user-avatar').textContent = (user.displayName || 'U')[0].toUpperCase();
+          document.getElementById('nuvem-user-avatar').textContent = (user.displayName || user.email || 'U')[0].toUpperCase();
         }
         
         // Fetch cloud data
@@ -1548,8 +1551,8 @@ async function inicializarFirebase() {
           if (data.theme) {
             try {
               const colors = JSON.parse(data.theme);
-              document.getElementById('pf-c1').value = colors.c1;
-              document.getElementById('pf-c2').value = colors.c2;
+              document.getElementById('pf-c1').value = colors.c1 || '#FF5000';
+              document.getElementById('pf-c2').value = colors.c2 || '#8B5CF6';
               if (colors.tema) {
                 aplicarTema(colors.tema);
               } else {
@@ -1575,6 +1578,32 @@ async function inicializarFirebase() {
           atualizarVitrine();
           validarSlug(document.getElementById('pf-username'));
           toast('✅ Dados sincronizados com a Nuvem!');
+        } else {
+          // Criar perfil padrão no Firestore se for primeiro login
+          const defaultName = user.displayName || user.email.split('@')[0];
+          const defaultSlug = defaultName.toLowerCase().replace(/[^a-z0-9]/g, '-').replace(/-+/g, '-').substring(0, 24);
+          
+          const initialData = {
+            uid: user.uid,
+            username: defaultSlug,
+            displayName: defaultName,
+            bio: 'Garimpando as melhores ofertas pra você! 🔥',
+            avatarEmoji: '🛍️',
+            theme: JSON.stringify({
+              c1: '#FF5000',
+              c2: '#8B5CF6',
+              tema: 'escuro'
+            }),
+            socials: {},
+            links: produtos || [],
+            createdAt: new Date()
+          };
+          
+          await setDoc(userDocRef, initialData);
+          document.getElementById('pf-nome').value = defaultName;
+          document.getElementById('pf-username').value = defaultSlug;
+          validarSlug(document.getElementById('pf-username'));
+          toast('🎉 Conta criada e sincronizada com sucesso!');
         }
       } else {
         deslogadoEl.style.display = 'block';
@@ -1588,6 +1617,20 @@ async function inicializarFirebase() {
   } catch (err) {
     console.error("Erro no Firebase:", err);
   }
+}
+
+function abrirTelaLogin() {
+  irPara('perfil', document.querySelector('.aba[data-pg=perfil]'));
+  setTimeout(() => {
+    const cardNuvem = document.getElementById('card-nuvem');
+    if (cardNuvem) {
+      cardNuvem.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+    const inpLogin = document.getElementById('auth-login-email');
+    if (inpLogin && !currentUser) {
+      inpLogin.focus();
+    }
+  }, 100);
 }
 
 function alternarAuthAba(aba) {
@@ -1615,7 +1658,44 @@ function alternarAuthAba(aba) {
   }
 }
 
+async function recuperarSenhaEmail() {
+  if (!auth) {
+    toast('⏳ Conectando ao serviço de autenticação, aguarde 2 segundos...');
+    return;
+  }
+  const emailInp = document.getElementById('auth-login-email');
+  const email = emailInp ? emailInp.value.trim() : '';
+  if (!email) {
+    toast('⚠️ Digite seu e-mail no campo "E-mail de Afiliado" para redefinir a senha!');
+    if (emailInp) emailInp.focus();
+    return;
+  }
+  try {
+    const { sendPasswordResetEmail } = await import('https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js');
+    toast('⏳ Enviando e-mail de redefinição...');
+    await sendPasswordResetEmail(auth, email);
+    toast('📧 E-mail de redefinição enviado! Verifique sua caixa de entrada/spam.');
+  } catch (err) {
+    console.error(err);
+    if (err.code === 'auth/user-not-found') {
+      toast('⚠️ Este e-mail não foi encontrado. Clique na aba "Criar Conta" para se cadastrar!');
+      alternarAuthAba('cadastro');
+      const cadEmail = document.getElementById('auth-cad-email');
+      if (cadEmail) cadEmail.value = email;
+    } else if (err.code === 'auth/invalid-email') {
+      toast('⚠️ Digite um formato de e-mail válido!');
+    } else {
+      toast('⚠️ Erro ao enviar e-mail: ' + err.message);
+    }
+  }
+}
+
 async function fazerLoginEmail() {
+  if (!auth) {
+    toast('⏳ Carregando serviço de login, aguarde um segundo e clique novamente...');
+    return;
+  }
+
   const emailInput = document.getElementById('auth-login-email');
   const passInput = document.getElementById('auth-login-pass');
   if (!emailInput || !passInput) return;
@@ -1637,17 +1717,22 @@ async function fazerLoginEmail() {
     console.error(err);
     let msg = 'Erro ao fazer login: ' + err.message;
     if (err.code === 'auth/invalid-credential' || err.code === 'auth/wrong-password' || err.code === 'auth/user-not-found') {
-      msg = '⚠️ E-mail ou senha incorretos!';
+      msg = '⚠️ E-mail ou senha incorretos! Se não tem conta, vá para "Criar Conta".';
     } else if (err.code === 'auth/invalid-email') {
       msg = '⚠️ Formato de e-mail inválido!';
     } else if (err.code === 'auth/too-many-requests') {
-      msg = '⚠️ Muitas tentativas incorretas. Tente novamente mais tarde.';
+      msg = '⚠️ Muitas tentativas incorretas. Clique em "Esqueci a senha" para redefinir!';
     }
     toast(msg);
   }
 }
 
 async function fazerCadastroEmail() {
+  if (!auth) {
+    toast('⏳ Carregando serviço de cadastro, aguarde um instante...');
+    return;
+  }
+
   const nomeInput = document.getElementById('auth-cad-nome');
   const emailInput = document.getElementById('auth-cad-email');
   const passInput = document.getElementById('auth-cad-pass');
@@ -1741,19 +1826,29 @@ async function fazerCadastroEmail() {
 }
 
 async function fazerLoginGoogle() {
-  const { GoogleAuthProvider, signInWithPopup } = await import('https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js');
-  const provider = new GoogleAuthProvider();
+  if (!auth) {
+    toast('⏳ Inicializando login com Google, aguarde um segundo...');
+    return;
+  }
   try {
+    const { GoogleAuthProvider, signInWithPopup } = await import('https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js');
+    const provider = new GoogleAuthProvider();
+    toast('⏳ Abrindo login do Google...');
     await signInWithPopup(auth, provider);
   } catch (err) {
     console.error(err);
-    toast('⚠️ Erro de Login: ' + err.message);
+    if (err.code === 'auth/popup-closed-by-user') {
+      toast('⚠️ A janela do Google foi fechada antes de concluir.');
+    } else {
+      toast('⚠️ Erro no Login com Google: ' + err.message);
+    }
   }
 }
 
 async function fazerLogout() {
-  const { signOut } = await import('https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js');
+  if (!auth) return;
   try {
+    const { signOut } = await import('https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js');
     if (confirm('Deseja sair da sua conta?')) {
       await signOut(auth);
       toast('🚪 Desconectado!');
@@ -2040,6 +2135,8 @@ window.paleta = paleta;
 window.toast = toast;
 window.validarSlug = validarSlug;
 window.alternarAuthAba = alternarAuthAba;
+window.abrirTelaLogin = abrirTelaLogin;
+window.recuperarSenhaEmail = recuperarSenhaEmail;
 window.fazerLoginEmail = fazerLoginEmail;
 window.fazerCadastroEmail = fazerCadastroEmail;
 window.fazerLoginGoogle = fazerLoginGoogle;
