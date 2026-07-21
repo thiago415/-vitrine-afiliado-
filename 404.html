@@ -5,20 +5,48 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Vitrine Afiliados PRO</title>
   <script>
-    // GitHub Pages SPA fallback redirection
     (function() {
       var l = window.location;
-      var parts = l.pathname.replace(/^\/|\/$/g, '').split('/').filter(Boolean);
+      var isGitHub = l.hostname.endsWith('github.io');
+      var path = l.pathname.replace(/^\/|\/$/g, '');
+      var parts = path.split('/').filter(Boolean);
+      
+      var repoPath = '';
       var slug = '';
-      if (parts.length > 0) {
-        var last = parts[parts.length - 1];
-        if (!['index.html', '404.html'].includes(last)) {
-          slug = last;
+      
+      if (isGitHub) {
+        if (parts.length > 0) {
+          repoPath = '/' + parts[0];
+          if (parts.length > 1) {
+            var last = parts[parts.length - 1];
+            if (!['index.html', '404.html'].includes(last)) {
+              slug = last;
+            }
+          }
+        }
+      } else {
+        if (parts.length > 0) {
+          var last = parts[parts.length - 1];
+          if (!['index.html', '404.html'].includes(last)) {
+            slug = last;
+          }
         }
       }
-      var repoPath = parts.length > 1 ? '/' + parts[0] : '';
-      var newUrl = l.protocol + '//' + l.hostname + (l.port ? ':' + l.port : '') + repoPath + '/?u=' + encodeURIComponent(slug) + (l.hash || '');
-      window.location.replace(newUrl);
+      
+      var ignoreSlugs = ['index.html', '404.html', 'vitrine', 'produtos', 'perfil', 'ferramentas', 'admin', 'login', 'signup'];
+      if (slug && (ignoreSlugs.includes(slug.toLowerCase()) || slug.includes('vitrine-afiliado') || slug.startsWith('-vitrine-'))) {
+        slug = '';
+      }
+      
+      var redirectUrl = l.protocol + '//' + l.hostname + (l.port ? ':' + l.port : '') + repoPath + '/';
+      if (slug) {
+        redirectUrl += '?u=' + encodeURIComponent(slug);
+      }
+      if (l.hash) {
+        redirectUrl += l.hash;
+      }
+      
+      window.location.replace(redirectUrl);
     })();
   </script>
 </head>
