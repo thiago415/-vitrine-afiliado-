@@ -177,6 +177,11 @@ textarea.inp{resize:vertical;min-height:80px}
     <div class="vrd" id="vrd"></div>
   </div>
   <div id="v-flt-wrap" style="display:none">
+    <div style="margin-bottom:12px;position:relative">
+      <input class="inp" id="v-search-inp" placeholder="🔍 Buscar oferta, produto..." oninput="atualizarVitrine()" style="margin-bottom:0;padding-left:36px;padding-right:32px;border-radius:24px;background:var(--bg2)">
+      <span style="position:absolute;left:12px;top:50%;transform:translateY(-50%);font-size:14px;pointer-events:none;color:var(--txt2)">🔍</span>
+      <button id="v-search-clear" onclick="limparBuscaVitrine()" style="display:none;position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--txt2);font-size:14px;cursor:pointer;padding:4px">✕</button>
+    </div>
     <div class="vflt">
       <button class="vfb at" onclick="filtrar('todos',this)">Todos</button>
       <button class="vfb" onclick="filtrar('fisico',this)">📦 Físicos</button>
@@ -213,6 +218,13 @@ textarea.inp{resize:vertical;min-height:80px}
       <input class="inp" id="auto-link-inp" placeholder="Cole o link aqui (https://...)" style="margin-bottom:0;flex:1;font-size:12px" onkeydown="if(event.key==='Enter')adicionarProdutoPorLinkRapido()">
       <button class="btn bp" onclick="adicionarProdutoPorLinkRapido()" style="white-space:nowrap;padding:8px 14px;font-size:11px">✨ Adicionar</button>
     </div>
+  </div>
+
+  <!-- BARRA DE BUSCA EM PRODUTOS -->
+  <div style="margin-bottom:14px;position:relative" id="p-search-wrap">
+    <input class="inp" id="p-search-inp" placeholder="🔍 Buscar em meus produtos (nome, plataforma, tipo)..." oninput="renderProdutos()" style="margin-bottom:0;padding-left:36px;padding-right:32px;border-radius:12px;font-size:13px">
+    <span style="position:absolute;left:12px;top:50%;transform:translateY(-50%);font-size:14px;pointer-events:none;color:var(--txt2)">🔍</span>
+    <button id="p-search-clear" onclick="limparBuscaProdutos()" style="display:none;position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--txt2);font-size:14px;cursor:pointer;padding:4px">✕</button>
   </div>
 
   <div id="lista-prod">
@@ -974,6 +986,8 @@ function extrairDadosDoLink(urlStr) {
   return { nome, plataforma: platform, emoji, tipo };
 }
 
+let linkResolverTimeout = null;
+
 function processarLinkNoModal(url) {
   if (!url || !url.trim()) return;
   const dados = extrairDadosDoLink(url);
@@ -999,9 +1013,59 @@ function processarLinkNoModal(url) {
     emojiInp.value = dados.emoji;
     emojiInp.dataset.autofilled = 'true';
   }
+
+  // Debounced auto-fetch of full product title via API
+  if (linkResolverTimeout) clearTimeout(linkResolverTimeout);
+  
+  let hintEl = document.getElementById('p-link-hint');
+  if (!hintEl) {
+    hintEl = document.createElement('div');
+    hintEl.id = 'p-link-hint';
+    hintEl.style.cssText = 'font-size:10px;color:var(--c1);margin-top:4px;font-weight:700';
+    const urlInp = document.getElementById('p-url');
+    if (urlInp && urlInp.parentNode) urlInp.parentNode.appendChild(hintEl);
+  }
+  
+  hintEl.textContent = '🔍 Lendo link e buscando nome do produto...';
+
+  linkResolverTimeout = setTimeout(async () => {
+    try {
+      const res = await fetch('/api/resolve-link', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ url: url.trim() })
+      });
+      if (res.ok) {
+        const data = await res.json();
+        if (data && data.nome && data.nome.length > 2) {
+          if (nomeInp && (!nomeInp.value.trim() || nomeInp.dataset.autofilled === 'true' || nomeInp.value.includes('Produto Shopee') || nomeInp.value.includes('Oferta Especial') || nomeInp.value.includes('Produto Amazon') || nomeInp.value.includes('Curso Hotmart'))) {
+            nomeInp.value = data.nome;
+            nomeInp.dataset.autofilled = 'true';
+          }
+          if (data.preco) {
+            const precoInp = document.getElementById('p-preco');
+            if (precoInp && !precoInp.value.trim()) precoInp.value = data.preco;
+          }
+          if (data.emoji && emojiInp && (!emojiInp.value.trim() || emojiInp.dataset.autofilled === 'true')) {
+            emojiInp.value = data.emoji;
+            emojiInp.dataset.autofilled = 'true';
+          }
+          if (data.plataforma && platSelect) platSelect.value = data.plataforma;
+          if (data.tipo && tipoSelect) tipoSelect.value = data.tipo;
+
+          hintEl.textContent = '✨ Nome do produto identificado!';
+          setTimeout(() => { if (hintEl) hintEl.textContent = ''; }, 3000);
+          return;
+        }
+      }
+      if (hintEl) hintEl.textContent = '';
+    } catch (err) {
+      if (hintEl) hintEl.textContent = '';
+    }
+  }, 500);
 }
 
-function adicionarProdutoPorLinkRapido() {
+async function adicionarProdutoPorLinkRapido() {
   const inp = document.getElementById('auto-link-inp');
   if (!inp) return;
   const url = inp.value.trim();
@@ -1016,7 +1080,30 @@ function adicionarProdutoPorLinkRapido() {
     cleanUrl = 'https://' + cleanUrl;
   }
 
-  const dados = extrairDadosDoLink(cleanUrl);
+  toast('🔍 Lendo link e buscando nome completo do produto...');
+
+  let dados = extrairDadosDoLink(cleanUrl);
+
+  try {
+    const res = await fetch('/api/resolve-link', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ url: cleanUrl })
+    });
+
+    if (res.ok) {
+      const apiData = await res.json();
+      if (apiData && apiData.nome && apiData.nome.length > 2) {
+        dados.nome = apiData.nome;
+        if (apiData.plataforma) dados.plataforma = apiData.plataforma;
+        if (apiData.tipo) dados.tipo = apiData.tipo;
+        if (apiData.emoji) dados.emoji = apiData.emoji;
+        if (apiData.preco) dados.preco = apiData.preco;
+      }
+    }
+  } catch (e) {
+    console.warn("Aviso ao buscar nome no servidor:", e);
+  }
 
   const obj = {
     id: uid(),
@@ -1025,7 +1112,7 @@ function adicionarProdutoPorLinkRapido() {
     descricao: 'Adicionado automaticamente por link',
     plataforma: dados.plataforma,
     tipo: dados.tipo,
-    preco: '',
+    preco: dados.preco || '',
     precoAntes: '',
     desconto: '',
     emoji: dados.emoji
@@ -1120,24 +1207,57 @@ function removerProduto(id){
   }
 }
 
+function limparBuscaProdutos() {
+  const inp = document.getElementById('p-search-inp');
+  if (inp) inp.value = '';
+  renderProdutos();
+}
+
 function renderProdutos(){
-  document.getElementById('p-count').textContent=produtos.length+' produto(s)';
-  const el=document.getElementById('lista-prod');
-  if(!produtos.length){
-    el.innerHTML='<div class="eb"><div style="font-size:44px;margin-bottom:10px">📦</div><p style="color:var(--txt2);margin-bottom:16px">Nenhum produto ainda!</p><button class="btn bp" onclick="abrirProduto()">＋ Adicionar Produto</button></div>';
+  const term = (document.getElementById('p-search-inp')?.value || '').toLowerCase().trim();
+  const clearBtn = document.getElementById('p-search-clear');
+  if (clearBtn) clearBtn.style.display = term ? 'block' : 'none';
+
+  const listFiltered = produtos.filter(p => {
+    if (!term) return true;
+    const matchNome = (p.nome || '').toLowerCase().includes(term);
+    const matchDesc = (p.descricao || '').toLowerCase().includes(term);
+    const matchPlat = (p.plataforma || '').toLowerCase().includes(term);
+    const matchTipo = (p.tipo || '').toLowerCase().includes(term);
+    return matchNome || matchDesc || matchPlat || matchTipo;
+  });
+
+  const pCountEl = document.getElementById('p-count');
+  if (pCountEl) {
+    if (term) {
+      pCountEl.textContent = `${listFiltered.length} de ${produtos.length} produto(s)`;
+    } else {
+      pCountEl.textContent = `${produtos.length} produto(s)`;
+    }
+  }
+
+  const el = document.getElementById('lista-prod');
+  if (!produtos.length) {
+    el.innerHTML = '<div class="eb"><div style="font-size:44px;margin-bottom:10px">📦</div><p style="color:var(--txt2);margin-bottom:16px">Nenhum produto ainda!</p><button class="btn bp" onclick="abrirProduto()">＋ Adicionar Produto</button></div>';
     return;
   }
-  el.innerHTML=produtos.map(p=>{
-    const pl=PLAT[p.plataforma]||PLAT.outro;
-    const ti=TIPOS[p.tipo]||TIPOS.fisico;
-    return`<div class="pi">
-      <div class="pi-em">${p.emoji||ti.e}</div>
+
+  if (!listFiltered.length) {
+    el.innerHTML = `<div class="eb"><div style="font-size:44px;margin-bottom:10px">🔍</div><p style="color:var(--txt2);margin-bottom:12px">Nenhum produto encontrado para "<b>${term}</b>"</p><button class="btn bg bsm" onclick="limparBuscaProdutos()">Limpar Busca</button></div>`;
+    return;
+  }
+
+  el.innerHTML = listFiltered.map(p => {
+    const pl = PLAT[p.plataforma] || PLAT.outro;
+    const ti = TIPOS[p.tipo] || TIPOS.fisico;
+    return `<div class="pi">
+      <div class="pi-em">${p.emoji || ti.e}</div>
       <div style="flex:1;min-width:0">
         <div class="pi-nm">${p.nome}</div>
         <div style="display:flex;gap:5px;margin-top:4px;flex-wrap:wrap">
           <span class="tag" style="background:${pl.c}22;color:${pl.c};border:1px solid ${pl.c}44">${pl.e} ${pl.l}</span>
           <span class="tag" style="background:rgba(136,136,170,.15);color:var(--txt2);border:1px solid var(--borda)">${ti.e} ${ti.l}</span>
-          ${p.preco?`<span style="font-size:11px;font-weight:800;color:var(--c1)">${p.preco.startsWith('R')?p.preco:'R$ '+p.preco}</span>`:''}
+          ${p.preco ? `<span style="font-size:11px;font-weight:800;color:var(--c1)">${p.preco.startsWith('R') ? p.preco : 'R$ ' + p.preco}</span>` : ''}
         </div>
       </div>
       <div style="display:flex;gap:5px;flex-shrink:0">
@@ -1202,6 +1322,12 @@ function salvarRedes(){
 }
 
 // ═══ VITRINE ══════════════════════════════════════════════════
+function limparBuscaVitrine() {
+  const inp = document.getElementById('v-search-inp');
+  if (inp) inp.value = '';
+  atualizarVitrine();
+}
+
 function atualizarVitrine(){
   const c1=_v('pf-c1')||'#FF5000';
   const emoji=_v('pf-emoji')||'🛍️';
@@ -1223,15 +1349,30 @@ function atualizarVitrine(){
   // Filtros
   document.getElementById('v-flt-wrap').style.display=produtos.length?'block':'none';
 
+  // Termo de busca na vitrine
+  const term = (document.getElementById('v-search-inp')?.value || '').toLowerCase().trim();
+  const clearBtn = document.getElementById('v-search-clear');
+  if (clearBtn) clearBtn.style.display = term ? 'block' : 'none';
+
   // Lista
   const lista=produtos.filter(p=>{
-    if(filtroAtual==='todos')return true;
-    if(filtroAtual==='fisico')return p.tipo==='fisico';
-    return p.tipo!=='fisico';
+    if(filtroAtual==='fisico' && p.tipo!=='fisico') return false;
+    if(filtroAtual==='digital' && p.tipo==='fisico') return false;
+    if(term) {
+      const matchNome = (p.nome || '').toLowerCase().includes(term);
+      const matchDesc = (p.descricao || '').toLowerCase().includes(term);
+      const matchPlat = (p.plataforma || '').toLowerCase().includes(term);
+      const matchTipo = (p.tipo || '').toLowerCase().includes(term);
+      return matchNome || matchDesc || matchPlat || matchTipo;
+    }
+    return true;
   });
+
   const el=document.getElementById('v-lista');
-  if(!lista.length){
+  if(!produtos.length){
     el.innerHTML='<div class="vem2"><div style="font-size:38px;margin-bottom:10px">🛍️</div><p>Nenhum produto ainda.</p></div>';
+  } else if(!lista.length){
+    el.innerHTML='<div class="vem2"><div style="font-size:38px;margin-bottom:10px">🔍</div><p>Nenhum produto encontrado para "<b>'+term+'</b>".</p><button class="btn bg bsm" style="margin-top:12px" onclick="limparBuscaVitrine()">Limpar Busca</button></div>';
   } else {
     el.innerHTML=lista.map((p,idx)=>{
       const pl=PLAT[p.plataforma]||PLAT.outro;
@@ -1685,6 +1826,11 @@ async function inicializarFirebase() {
                 <div class="vrd" id="vrd"></div>
               </div>
               <div id="v-flt-wrap" style="display:none">
+                <div style="margin-bottom:12px;position:relative">
+                  <input class="inp" id="v-search-pub-inp" placeholder="🔍 Buscar oferta, produto..." style="margin-bottom:0;padding-left:36px;padding-right:32px;border-radius:24px;background:var(--bg2)">
+                  <span style="position:absolute;left:12px;top:50%;transform:translateY(-50%);font-size:14px;pointer-events:none;color:var(--txt2)">🔍</span>
+                  <button id="v-search-pub-clear" style="display:none;position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--txt2);font-size:14px;cursor:pointer;padding:4px">✕</button>
+                </div>
                 <div class="vflt">
                   <button class="vfb at" id="btn-flt-todos">Todos</button>
                   <button class="vfb" id="btn-flt-fisico">📦 Físicos</button>
@@ -1733,17 +1879,32 @@ async function inicializarFirebase() {
               }).join('');
           }
           
+          let currentFiltroPub = 'todos';
           const prods = userData.links || [];
-          const renderList = (tipoFiltro) => {
+          const renderList = () => {
             const listEl = document.getElementById('v-lista');
+            const searchInp = document.getElementById('v-search-pub-inp');
+            const searchClear = document.getElementById('v-search-pub-clear');
+            const term = (searchInp?.value || '').toLowerCase().trim();
+            if (searchClear) searchClear.style.display = term ? 'block' : 'none';
+
             const filtered = prods.filter(p => {
-              if (tipoFiltro === 'todos') return true;
-              if (tipoFiltro === 'fisico') return p.tipo === 'fisico';
-              return p.tipo !== 'fisico';
+              if (currentFiltroPub === 'fisico' && p.tipo !== 'fisico') return false;
+              if (currentFiltroPub === 'digital' && p.tipo === 'fisico') return false;
+              if (term) {
+                const matchNome = (p.nome || '').toLowerCase().includes(term);
+                const matchDesc = (p.descricao || '').toLowerCase().includes(term);
+                const matchPlat = (p.plataforma || '').toLowerCase().includes(term);
+                const matchTipo = (p.tipo || '').toLowerCase().includes(term);
+                return matchNome || matchDesc || matchPlat || matchTipo;
+              }
+              return true;
             });
             
-            if (!filtered.length) {
+            if (!prods.length) {
               listEl.innerHTML = '<div class="vem2"><div style="font-size:38px;margin-bottom:10px">🛍️</div><p>Nenhum produto cadastrado.</p></div>';
+            } else if (!filtered.length) {
+              listEl.innerHTML = `<div class="vem2"><div style="font-size:38px;margin-bottom:10px">🔍</div><p>Nenhum produto encontrado para "<b>${term}</b>".</p></div>`;
             } else {
               listEl.innerHTML = filtered.map((p, idx) => {
                 const pl = PLAT[p.plataforma] || PLAT.outro;
@@ -1773,20 +1934,27 @@ async function inicializarFirebase() {
           
           if (prods.length) {
             document.getElementById('v-flt-wrap').style.display = 'block';
-            renderList('todos');
+            renderList();
             
             const bTodos = document.getElementById('btn-flt-todos');
             const bFisico = document.getElementById('btn-flt-fisico');
             const bDigital = document.getElementById('btn-flt-digital');
+            const sInp = document.getElementById('v-search-pub-inp');
+            const sClr = document.getElementById('v-search-pub-clear');
+
+            if (sInp) sInp.addEventListener('input', renderList);
+            if (sClr) sClr.addEventListener('click', () => { if (sInp) sInp.value = ''; renderList(); });
             
-            const activate = (btn) => {
+            const activate = (btn, f) => {
               [bTodos, bFisico, bDigital].forEach(b => b.classList.remove('at'));
               btn.classList.add('at');
+              currentFiltroPub = f;
+              renderList();
             };
             
-            bTodos.addEventListener('click', () => { activate(bTodos); renderList('todos'); });
-            bFisico.addEventListener('click', () => { activate(bFisico); renderList('fisico'); });
-            bDigital.addEventListener('click', () => { activate(bDigital); renderList('digital'); });
+            bTodos.addEventListener('click', () => { activate(bTodos, 'todos'); });
+            bFisico.addEventListener('click', () => { activate(bFisico, 'fisico'); });
+            bDigital.addEventListener('click', () => { activate(bDigital, 'digital'); });
           }
           
           document.getElementById('v-plats').innerHTML = Object.entries(PLAT)

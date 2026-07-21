@@ -157,6 +157,144 @@ Se nenhum link ou produto for encontrado, retorne um array vazio [].
   }
 });
 
+// API endpoint to resolve short links and extract real product name, price, platform & emoji
+app.post('/api/resolve-link', async (req, res) => {
+  try {
+    let { url } = req.body;
+    if (!url || typeof url !== 'string') {
+      return res.status(400).json({ error: 'URL inválida' });
+    }
+
+    url = url.trim();
+    if (!url.startsWith('http://') && !url.startsWith('https://')) {
+      url = 'https://' + url;
+    }
+
+    let finalUrl = url;
+    let pageTitle = '';
+    let metaOgTitle = '';
+    let htmlSnippet = '';
+
+    // Step 1: Follow redirects and fetch page head/content
+    try {
+      const response = await fetch(url, {
+        redirect: 'follow',
+        headers: {
+          'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+          'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
+          'Accept-Language': 'pt-BR,pt;q=0.9,en-US;q=0.8,en;q=0.7'
+        }
+      });
+      finalUrl = response.url || url;
+      const text = await response.text();
+      htmlSnippet = text.substring(0, 25000);
+
+      const titleMatch = text.match(/<title[^>]*>([^<]+)<\/title>/i);
+      if (titleMatch) pageTitle = titleMatch[1].trim();
+
+      const ogMatch = text.match(/<meta[^>]+property=["']og:title["'][^>]+content=["']([^"']+)["']/i) ||
+                      text.match(/<meta[^>]+content=["']([^"']+)["'][^>]+property=["']og:title["']/i);
+      if (ogMatch) metaOgTitle = ogMatch[1].trim();
+    } catch (e) {
+      console.warn("Aviso ao seguir redirecionamento de URL:", e.message);
+    }
+
+    const lower = (finalUrl + ' ' + url).toLowerCase();
+    let plataforma = 'outro';
+    let defaultEmoji = '🛍️';
+    let defaultTipo = 'fisico';
+
+    if (lower.includes('shopee') || lower.includes('shope.ee')) {
+      plataforma = 'shopee';
+      defaultEmoji = '🛍️';
+    } else if (lower.includes('mercadolivre') || lower.includes('mercadolibre') || lower.includes('ml.br')) {
+      plataforma = 'mercadolivre';
+      defaultEmoji = '🛒';
+    } else if (lower.includes('hotmart')) {
+      plataforma = 'hotmart';
+      defaultEmoji = '🔥';
+      defaultTipo = 'curso';
+    } else if (lower.includes('cakto')) {
+      plataforma = 'cakto';
+      defaultEmoji = '⚡';
+      defaultTipo = 'digital';
+    } else if (lower.includes('amazon') || lower.includes('amzn.')) {
+      plataforma = 'amazon';
+      defaultEmoji = '📦';
+    } else if (lower.includes('eduzz') || lower.includes('nutror')) {
+      plataforma = 'eduzz';
+      defaultEmoji = '💡';
+      defaultTipo = 'curso';
+    }
+
+    let extractedName = '';
+    let extractedPrice = '';
+    let extractedEmoji = defaultEmoji;
+    let extractedTipo = defaultTipo;
+
+    try {
+      const ai = getGeminiClient();
+      const prompt = `
+Analise a URL do produto e o fragmento de página abaixo.
+URL Inicial: ${url}
+URL Final Redirecionada: ${finalUrl}
+Título da Página: ${pageTitle || 'N/A'}
+Meta OG Title: ${metaOgTitle || 'N/A'}
+Primeiros caracteres do HTML: ${htmlSnippet.substring(0, 3000)}
+
+Sua tarefa é retornar dados estruturados do produto em JSON:
+1. "nome": Nome limpo, completo e atraente do produto em português (ex: "Camiseta The Hope - Algodão Bordada"). NUNCA responda genérico como "Produto Shopee" se for possível identificar o item real. Remova sufixos de loja desnecessários como "| Shopee Brasil" ou "- Mercado Livre".
+2. "preco": Preço do produto se encontrado no texto/título (ex: "27,13" ou "49,90"), ou string vazia se não encontrar.
+3. "emoji": Emoji representativo e bonito do item (ex: 👕 para camiseta, 📱 para celular, 👟 para tênis).
+4. "tipo": "fisico", "digital", "curso", "ebook" ou "software".
+
+Responda APENAS um JSON válido no formato:
+{
+  "nome": "...",
+  "preco": "...",
+  "emoji": "...",
+  "tipo": "..."
+}
+`;
+      const response = await ai.models.generateContent({
+        model: "gemini-3.5-flash",
+        contents: prompt,
+        config: {
+          responseMimeType: 'application/json'
+        }
+      });
+
+      let jsonRes = JSON.parse(response.text.trim().replace(/^```json\s*/i, '').replace(/```$/, '').trim());
+      if (jsonRes.nome && jsonRes.nome.length > 2 && !jsonRes.nome.toLowerCase().includes('produto shopee')) {
+        extractedName = jsonRes.nome;
+      }
+      if (jsonRes.preco) extractedPrice = jsonRes.preco;
+      if (jsonRes.emoji) extractedEmoji = jsonRes.emoji;
+      if (jsonRes.tipo) extractedTipo = jsonRes.tipo;
+    } catch (aiErr) {
+      console.warn("Gemini link resolution error, fallback to heuristics:", aiErr.message);
+    }
+
+    if (!extractedName) {
+      if (metaOgTitle) extractedName = metaOgTitle.replace(/\|.*$/i, '').replace(/-\s*Shopee.*$/i, '').replace(/-\s*Mercado Livre.*$/i, '').trim();
+      else if (pageTitle) extractedName = pageTitle.replace(/\|.*$/i, '').replace(/-\s*Shopee.*$/i, '').replace(/-\s*Mercado Livre.*$/i, '').trim();
+    }
+
+    res.json({
+      success: true,
+      nome: extractedName || '',
+      preco: extractedPrice || '',
+      emoji: extractedEmoji,
+      plataforma,
+      tipo: extractedTipo,
+      urlFinal: finalUrl
+    });
+  } catch (err) {
+    console.error("Erro em resolve-link:", err);
+    res.status(500).json({ error: err.message });
+  }
+});
+
 // API endpoint for automatic virtual support chat using Gemini
 app.post('/api/gemini/chat', async (req, res) => {
   try {
