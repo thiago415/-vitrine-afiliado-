@@ -1522,6 +1522,16 @@ let db, auth;
 let currentUser = null;
 let firebasePromise = null;
 
+const FALLBACK_FIREBASE_CONFIG = {
+  projectId: "gen-lang-client-0896010333",
+  appId: "1:642455829136:web:f4bf25b7d03fb04254b615",
+  apiKey: "AIzaSyB7uCl8FTX3yJrD0rF9Z2LkvDZUvnReYnI",
+  authDomain: "gen-lang-client-0896010333.firebaseapp.com",
+  firestoreDatabaseId: "ai-studio-vitrine-415e80b1-219f-4bb3-b88b-701c2f6b519c",
+  storageBucket: "gen-lang-client-0896010333.firebasestorage.app",
+  messagingSenderId: "642455829136"
+};
+
 async function ensureAuth() {
   if (auth && db) return { auth, db };
   if (!firebasePromise) {
@@ -1556,13 +1566,19 @@ function validarSlug(input) {
   }
 }
 
-// Initialize Firebase dynamically using configuration securely served from our server
+// Initialize Firebase dynamically using configuration securely served from our server or fallback
 async function inicializarFirebase() {
   if (auth && db) return { auth, db };
   try {
-    const res = await fetch('/api/config');
-    if (!res.ok) throw new Error('Não foi possível carregar as credenciais da nuvem.');
-    const config = await res.json();
+    let config = FALLBACK_FIREBASE_CONFIG;
+    try {
+      const res = await fetch('/api/config');
+      if (res.ok) {
+        config = await res.json();
+      }
+    } catch (fetchErr) {
+      console.warn("Aviso ao carregar /api/config, usando credenciais integradas:", fetchErr);
+    }
     
     // Import SDKs from dynamic CDNs to avoid breaking bundle speeds
     const { initializeApp, getApps, getApp } = await import('https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js');
