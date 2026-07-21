@@ -765,7 +765,21 @@ function carregar(){
       return data;
     }
   }catch(e){}
-  return{produtos:[],redes:Object.keys(REDES).map((k,i)=>({id:i+1,tipo:k,url:'',on:false})),perfil:{nome:'Seu Nome Aqui',bio:'Garimpando as melhores ofertas pra você! 🔥',emoji:'🛍️',c1:'#FF5000',c2:'#8B5CF6',tema:'escuro'}};
+  const sampleProds = [
+    {
+      id: 'prod-hope-1',
+      nome: 'Camiseta The Hope - Raio',
+      url: 'https://shopee.com.br',
+      descricao: 'Nova edição especial algodão macio com bordado The Hope',
+      plataforma: 'shopee',
+      tipo: 'fisico',
+      preco: '27,13',
+      precoAntes: '49,90',
+      desconto: '45% OFF',
+      emoji: '👕'
+    }
+  ];
+  return{produtos:sampleProds,redes:Object.keys(REDES).map((k,i)=>({id:i+1,tipo:k,url:'',on:false})),perfil:{nome:'Seu Nome Aqui',bio:'Garimpando as melhores ofertas pra você! 🔥',emoji:'🛍️',c1:'#FF5000',c2:'#8B5CF6',tema:'escuro'}};
 }
 function gravar(){
   try{localStorage.setItem(KEY,JSON.stringify({produtos,redes,perfil:{nome:_v('pf-nome'),bio:_v('pf-bio'),emoji:_v('pf-emoji'),c1:_v('pf-c1'),c2:_v('pf-c2'),tema:document.getElementById('pf-tema-ativo').value}}));}catch(e){}
