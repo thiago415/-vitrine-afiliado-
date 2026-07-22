@@ -725,6 +725,18 @@ textarea.inp{resize:vertical;min-height:80px}
       <div style="background:var(--bg3);border:1px solid var(--borda);border-radius:10px;padding:12px;font-size:11px;color:var(--txt2);margin-bottom:12px">
         💡 O assistente irá varrer sua sessão ativa do navegador para identificar seu usuário, analisar o nicho do seu público e gerar produtos recomendados automaticamente!
       </div>
+      
+      <!-- BARRA DE PROGRESSO DA VARREDURA DE IA -->
+      <div id="sc-progress-wrap" style="display:none;margin-bottom:12px;background:var(--bg3);padding:10px;border-radius:10px;border:1px solid var(--borda)">
+        <div style="display:flex;justify-content:space-between;align-items:center;font-size:11px;font-weight:700;margin-bottom:6px">
+          <span style="color:var(--txt1)" id="sc-progress-title">⚡ Varredura de IA em andamento...</span>
+          <span style="color:var(--c1)" id="sc-pct-text">0%</span>
+        </div>
+        <div style="width:100%;height:8px;background:var(--bg2);border-radius:4px;overflow:hidden;border:1px solid var(--borda)">
+          <div id="sc-progress-fill" style="width:0%;height:100%;background:linear-gradient(90deg, #6366f1, #ec4899);transition:width 0.3s ease;border-radius:4px"></div>
+        </div>
+      </div>
+
       <div id="sc-terminal" style="display:none;background:#09090e;border:1px solid var(--borda);border-radius:10px;padding:12px;font-family:monospace;font-size:11px;color:#a0a0c0;max-height:160px;overflow-y:auto;margin-bottom:12px">
         <div id="sc-logs" style="display:flex;flex-direction:column;gap:4px"></div>
       </div>
@@ -1507,12 +1519,22 @@ function conectarRedeSocial(platform) {
   document.getElementById('sc-inp-user').value = emailUsr || 'thiagolino974';
   document.getElementById('sc-inp-bio').value = `Achadinhos e ofertas imperdíveis do @${emailUsr || 'thiagolino974'}! 🔥`;
   
-  // Reset logs
+  // Reset logs and progress
+  const pWrap = document.getElementById('sc-progress-wrap');
+  if (pWrap) pWrap.style.display = 'none';
+  const pFill = document.getElementById('sc-progress-fill');
+  if (pFill) pFill.style.width = '0%';
+  const pctTxt = document.getElementById('sc-pct-text');
+  if (pctTxt) pctTxt.textContent = '0%';
+
   document.getElementById('sc-terminal').style.display = 'none';
   document.getElementById('sc-logs').innerHTML = '';
-  document.getElementById('sc-btn-scan').style.display = 'block';
-  document.getElementById('sc-btn-scan').disabled = false;
-  document.getElementById('sc-btn-scan').textContent = '⚡ Iniciar Varredura e Sincronizar Conta';
+  const scanBtn = document.getElementById('sc-btn-scan');
+  if (scanBtn) {
+    scanBtn.style.display = 'block';
+    scanBtn.disabled = false;
+    scanBtn.textContent = '⚡ Iniciar Varredura e Sincronizar Conta';
+  }
 
   scSwitchTab('auto');
   abrirModal('m-social-connect');
@@ -1551,13 +1573,26 @@ function scAddLog(msg, isSuccess = false) {
   if (term) term.scrollTop = term.scrollHeight;
 }
 
+function scSetProgress(pct, titleText) {
+  const pWrap = document.getElementById('sc-progress-wrap');
+  if (pWrap) pWrap.style.display = 'block';
+  const pFill = document.getElementById('sc-progress-fill');
+  if (pFill) pFill.style.width = pct + '%';
+  const pctTxt = document.getElementById('sc-pct-text');
+  if (pctTxt) pctTxt.textContent = pct + '%';
+  const pTitle = document.getElementById('sc-progress-title');
+  if (pTitle && titleText) pTitle.textContent = titleText;
+}
+
 function scIniciarVarredura() {
   const btn = document.getElementById('sc-btn-scan');
-  btn.disabled = true;
-  btn.textContent = '⏳ Varrendo Sessão... Aguarde';
+  if (btn) {
+    btn.disabled = true;
+    btn.textContent = '⏳ Varrendo Sessão... Aguarde';
+  }
 
   const term = document.getElementById('sc-terminal');
-  term.style.display = 'block';
+  if (term) term.style.display = 'block';
   document.getElementById('sc-logs').innerHTML = '';
 
   const cfg = SC_PLATFORMS_CONFIG[scActivePlatform] || { l: scActivePlatform };
@@ -1566,26 +1601,31 @@ function scIniciarVarredura() {
     usr = currentUser.email.split('@')[0].replace(/[^a-zA-Z0-9_]/g, '') || usr;
   }
 
-  scAddLog(`Conectando ponte segura com ${cfg.l}...`);
+  scSetProgress(10, `Iniciando ponte com ${cfg.l}...`);
+  scAddLog(`Conectando ponte de inteligência artificial com ${cfg.l}...`);
   
   setTimeout(() => {
+    scSetProgress(35, `Sessão ativa encontrada!`);
     scAddLog(`Sessão ativa detectada para @${usr}`, true);
     setTimeout(() => {
-      scAddLog(`Analisando perfil e engajamento...`);
+      scSetProgress(60, `Analisando perfil e engajamento...`);
+      scAddLog(`Analisando perfil, público e engajamento...`);
       setTimeout(() => {
         const niches = ['Achadinhos & Ofertas', 'Moda & Beleza', 'Tecnologia & Games', 'Casa & Cozinha', 'Finanças & Cursos'];
         const randomNiche = niches[Math.floor(Math.random() * niches.length)];
+        scSetProgress(85, `Nicho detectado: ${randomNiche}`);
         scAddLog(`Nicho do perfil identificado: ${randomNiche}`, true);
         setTimeout(() => {
+          scSetProgress(100, `Varredura concluída com sucesso!`);
           scAddLog(`Sincronizando credenciais e gerando chave de API...`, true);
           setTimeout(() => {
             const bio = `Achadinhos e ofertas imperdíveis do @${usr}! 🔥`;
             scFinalizarConexao(usr, bio, randomNiche);
-          }, 800);
-        }, 800);
-      }, 700);
-    }, 700);
-  }, 600);
+          }, 500);
+        }, 500);
+      }, 500);
+    }, 500);
+  }, 400);
 }
 
 function scSalvarManual() {
@@ -1601,16 +1641,69 @@ function scSalvarManual() {
   scFinalizarConexao(usr, bio, niche);
 }
 
+function processarConexaoSocial(platform, username, bio, niche) {
+  // Save to local storage for persistence
+  localStorage.setItem('connected_' + platform, JSON.stringify({ username, bio, niche }));
+  
+  // Setup matching social media link in the vitrine
+  let profileUrl = '';
+  if (platform === 'pinterest') profileUrl = `https://pinterest.com/${username}`;
+  else if (platform === 'instagram') profileUrl = `https://instagram.com/${username}`;
+  else if (platform === 'tiktok') profileUrl = `https://tiktok.com/@${username}`;
+  else if (platform === 'youtube') profileUrl = `https://youtube.com/@${username}`;
+  else if (platform === 'kwai') profileUrl = `https://kwai.com/${username}`;
+  else if (platform === 'whatsapp') profileUrl = `https://wa.me/${username.replace(/\D/g,'') || '5511999999999'}`;
+  else if (platform === 'telegram') profileUrl = `https://t.me/${username}`;
+  else if (platform === 'facebook') profileUrl = `https://facebook.com/${username}`;
+  else if (platform === 'threads') profileUrl = `https://threads.net/@${username}`;
+  
+  redes = redes.map(r => r.tipo === platform ? { ...r, url: profileUrl, on: true } : r);
+  
+  // Auto-update profile bio if empty or default
+  const bioInp = document.getElementById('pf-bio');
+  if (bioInp) {
+    const currentBio = bioInp.value.trim();
+    if (!currentBio || currentBio.includes('Seu Nome Aqui') || currentBio.includes('Seu Link Aqui') || currentBio === '') {
+      bioInp.value = bio;
+    }
+  }
+  
+  // Update profile emoji based on selected niche
+  const emojiInp = document.getElementById('pf-emoji');
+  if (emojiInp) {
+    const currentEmoji = emojiInp.value.trim();
+    if (currentEmoji === '🛍️') {
+      if (niche.includes('Moda')) emojiInp.value = '💄';
+      else if (niche.includes('Tecnologia')) emojiInp.value = '🎮';
+      else if (niche.includes('Cozinha')) emojiInp.value = '🍳';
+      else if (niche.includes('Finanças')) emojiInp.value = '📈';
+    }
+  }
+
+  // Auto-update display name
+  const nomeInp = document.getElementById('pf-nome');
+  if (nomeInp) {
+    const currentNome = nomeInp.value.trim();
+    if (!currentNome || currentNome === 'Seu Nome Aqui') {
+      nomeInp.value = username.charAt(0).toUpperCase() + username.slice(1);
+    }
+  }
+  
+  gravar();
+  atualizarVitrine();
+  atualizarBotoesConexao();
+  if (typeof currentUser !== 'undefined' && currentUser) {
+    salvarNaNuvem();
+  }
+  toast(`🔌 Conta @${username} integrada com sucesso no ${platform}!`);
+  
+  // Auto import products
+  importarSocialProdutosAutomaticamente(platform, username, niche);
+}
+
 function scFinalizarConexao(username, bio, niche) {
   fecharModal('m-social-connect');
-  
-  window.postMessage({
-    type: 'SOCIAL_CONNECT_SUCCESS',
-    platform: scActivePlatform,
-    username: username,
-    bio: bio,
-    niche: niche
-  }, '*');
+  processarConexaoSocial(scActivePlatform, username, bio, niche);
 }
 
 function scAbrirJanelaOAuth() {

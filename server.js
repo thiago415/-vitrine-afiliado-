@@ -1093,8 +1093,12 @@ app.get(['/auth/social-login', '/auth/social', '/social-login', '/social', '/int
           loader.classList.remove('hidden');
           loader.classList.add('flex');
           
-          setTimeout(() => {
-            if (window.opener) {
+          try {
+            localStorage.setItem('connected_' + platform, JSON.stringify({ username, bio, niche }));
+          } catch(e){}
+
+          if (window.opener && !window.opener.closed) {
+            try {
               window.opener.postMessage({
                 type: 'SOCIAL_CONNECT_SUCCESS',
                 platform: platform,
@@ -1102,12 +1106,18 @@ app.get(['/auth/social-login', '/auth/social', '/social-login', '/social', '/int
                 bio: bio,
                 niche: niche
               }, '*');
+            } catch(e){}
+          }
+          
+          setTimeout(() => {
+            try {
               window.close();
-            } else {
-              alert('Integração concluída! Recarregue a página da sua vitrine e verifique.');
-              window.close();
+            } catch(e){}
+            const loaderStatus = document.getElementById('loader-status');
+            if (loaderStatus) {
+              loaderStatus.innerHTML = `Conectado como <b>@${username}</b>!<br><br><a href="/" style="display:inline-block;padding:12px 24px;background:#4f46e5;color:#ffffff;font-weight:bold;border-radius:12px;text-decoration:none;font-size:13px;box-shadow:0 10px 15px -3px rgba(79,70,229,0.3)">🚀 Voltar para a Vitrine</a>`;
             }
-          }, 1200);
+          }, 1000);
         }
       </script>
     </body>
