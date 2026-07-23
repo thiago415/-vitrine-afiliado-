@@ -7,9 +7,9 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 <style>
-:root{--primary:#6366f1;--primary-d:#4f46e5;--secondary:#ec4899;--success:#10b981;--danger:#ef4444;--bg:#0a0a14;--bg2:#111120;--bg3:#1a1a2e;--card:#13131f;--border:rgba(255,255,255,0.08);--t1:#f1f1ff;--t2:#8888a8;--t3:#4a4a6a;--radius:12px;--tr:all .25s ease}
+:root{--primary:#6366f1;--primary-d:#4f46e5;--secondary:#ec4899;--success:#10b981;--danger:#ef4444;--bg:#0a0a14;--bg2:#111120;--bg3:#1a1a2e;--card:#13131f;--border:rgba(255,255,255,0.08);--t1:#f1f1ff;--t2:#8888a8;--t3:#4a4a6a;--tr:all .25s ease}
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
-body{font-family:'Inter',-apple-system,sans-serif;background:var(--bg);color:var(--t1);min-height:100vh;overflow-x:hidden;-webkit-font-smoothing:antialiased}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--t1);min-height:100vh;overflow-x:hidden}
 a{text-decoration:none;color:inherit}
 button{cursor:pointer;border:none;background:none;font-family:inherit;color:inherit}
 input,select,textarea{font-family:inherit;color:var(--t1);outline:none;width:100%}
@@ -19,8 +19,8 @@ img{max-width:100%;display:block}
 .hidden{display:none!important}
 @keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
 @keyframes spin{to{transform:rotate(360deg)}}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}
 
-/* SIDEBAR */
 .sidebar{position:fixed;left:0;top:0;bottom:0;width:240px;background:var(--bg2);border-right:1px solid var(--border);display:flex;flex-direction:column;z-index:200;transition:transform .3s}
 .sidebar-header{display:flex;align-items:center;justify-content:space-between;padding:18px 16px;border-bottom:1px solid var(--border)}
 .logo{font-size:1.1rem;font-weight:800;background:linear-gradient(135deg,var(--primary),var(--secondary));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
@@ -33,11 +33,9 @@ img{max-width:100%;display:block}
 .sidebar-footer{padding:14px;border-top:1px solid var(--border)}
 .btn-preview{width:100%;padding:11px;background:linear-gradient(135deg,var(--primary),var(--primary-d));color:#fff;border-radius:10px;font-size:.88rem;font-weight:600;display:flex;align-items:center;justify-content:center;gap:8px}
 
-/* OVERLAY */
 .overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:199}
 .overlay.show{display:block}
 
-/* MAIN */
 .main{margin-left:240px;min-height:100vh;transition:margin .3s}
 .topbar{position:sticky;top:0;height:58px;background:var(--bg2);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:12px;padding:0 20px;z-index:100}
 .menu-btn{width:36px;height:36px;border-radius:8px;background:var(--border);display:none;align-items:center;justify-content:center;color:var(--t2);font-size:.95rem}
@@ -46,21 +44,19 @@ img{max-width:100%;display:block}
 .btn-icon{width:36px;height:36px;border-radius:8px;background:rgba(255,255,255,.05);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;color:var(--t2);font-size:.9rem;transition:var(--tr)}
 .btn-icon:hover{border-color:var(--primary);color:var(--primary)}
 
-.content{padding:0}
 .page{padding:24px;animation:fadeIn .3s ease}
 .page-header{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-bottom:24px;flex-wrap:wrap}
 .page-header h1{font-size:1.4rem;font-weight:800;margin-bottom:4px}
 .page-header p{color:var(--t2);font-size:.88rem}
 
-/* BUTTONS */
 .btn-primary{display:inline-flex;align-items:center;gap:8px;padding:10px 20px;background:linear-gradient(135deg,var(--primary),var(--primary-d));color:#fff;border-radius:10px;font-weight:600;font-size:.88rem;transition:var(--tr);white-space:nowrap}
 .btn-primary:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(99,102,241,.4)}
+.btn-primary:disabled{opacity:.6;cursor:not-allowed}
 .btn-ghost{display:inline-flex;align-items:center;gap:8px;padding:10px 20px;border:1px solid var(--border);color:var(--t2);border-radius:10px;font-size:.88rem;font-weight:500;transition:var(--tr)}
 .btn-ghost:hover{border-color:var(--primary);color:var(--primary)}
 .btn-danger{display:inline-flex;align-items:center;gap:8px;padding:10px 20px;background:rgba(239,68,68,.12);color:var(--danger);border:1px solid rgba(239,68,68,.25);border-radius:10px;font-size:.88rem;font-weight:600}
 .btn-block{width:100%;justify-content:center}
 
-/* DASHBOARD */
 .welcome-box{display:flex;align-items:center;justify-content:space-between;background:linear-gradient(135deg,rgba(99,102,241,.15),rgba(236,72,153,.1));border:1px solid rgba(99,102,241,.2);border-radius:16px;padding:24px;margin-bottom:24px;flex-wrap:wrap;gap:16px}
 .welcome-box h1{font-size:1.5rem;font-weight:800;margin-bottom:6px}
 .welcome-box p{color:var(--t2)}
@@ -76,27 +72,23 @@ img{max-width:100%;display:block}
 .acao-card i{font-size:1.3rem;color:var(--primary)}
 .acao-card:hover{border-color:var(--primary);color:var(--t1);transform:translateY(-3px)}
 
-/* FORM */
 .form-box{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:20px;margin-bottom:20px;animation:fadeIn .3s ease}
 .form-box-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px}
 .form-box-header h3{font-size:.95rem;font-weight:700}
-.form-box-header button{width:28px;height:28px;border-radius:50%;background:rgba(255,255,255,.07);display:flex;align-items:center;justify-content:center;color:var(--t2);font-size:.8rem}
-.form-box-header button:hover{background:var(--danger);color:#fff}
+.form-box-header button{width:28px;height:28px;border-radius:50%;background:rgba(255,255,255,.07);display:flex;align-items:center;justify-content:center;color:var(--t2)}
 .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
 .campo{display:flex;flex-direction:column;gap:5px}
 .campo.full{grid-column:1/-1}
 .campo label{font-size:.75rem;font-weight:600;color:var(--t2);text-transform:uppercase;letter-spacing:.5px}
-.campo input,.campo select,.campo textarea{padding:10px 14px;background:var(--bg3);border:1px solid var(--border);border-radius:8px;font-size:.9rem;transition:var(--tr)}
+.campo input,.campo select,.campo textarea{padding:10px 14px;background:var(--bg3);border:1px solid var(--border);border-radius:8px;font-size:.9rem}
 .campo input:focus,.campo select:focus,.campo textarea:focus{border-color:var(--primary)}
 .campo textarea{resize:vertical;min-height:80px}
 .form-actions{display:flex;gap:10px;margin-top:16px;flex-wrap:wrap}
-
 .cor-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
 .cor-row input[type=color]{width:36px;height:36px;border:2px solid var(--border);border-radius:8px;cursor:pointer;padding:2px;background:none}
 .cores-rapidas{display:flex;gap:6px;flex-wrap:wrap}
 .cores-rapidas span{width:22px;height:22px;border-radius:50%;cursor:pointer;transition:var(--tr);border:2px solid transparent;display:inline-block}
 .cores-rapidas span:hover{transform:scale(1.25);border-color:#fff}
-
 .toggle-label{display:flex;align-items:center;gap:10px;cursor:pointer;font-size:.88rem;color:var(--t2)}
 .toggle-label input{display:none;width:auto}
 .toggle-switch{width:38px;height:21px;background:var(--bg3);border:1px solid var(--border);border-radius:11px;position:relative;transition:var(--tr);flex-shrink:0}
@@ -104,7 +96,6 @@ img{max-width:100%;display:block}
 .toggle-label input:checked+.toggle-switch{background:var(--primary);border-color:var(--primary)}
 .toggle-label input:checked+.toggle-switch::after{left:20px;background:#fff}
 
-/* LINKS */
 .link-item{display:flex;align-items:center;gap:12px;background:var(--card);border:1px solid var(--border);border-radius:12px;padding:14px 16px;margin-bottom:10px;transition:var(--tr);animation:fadeIn .3s ease}
 .link-item:hover{border-color:var(--primary)}
 .link-icone{width:38px;height:38px;border-radius:9px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:1rem;flex-shrink:0}
@@ -120,13 +111,11 @@ img{max-width:100%;display:block}
 .btn-toggle{color:var(--t3);background:rgba(255,255,255,.04)}
 .btn-toggle.ativo{color:var(--success)}
 
-/* EMPTY */
 .empty-state{text-align:center;padding:50px 20px}
 .empty-icon{font-size:3rem;margin-bottom:14px}
 .empty-state h3{font-size:1rem;font-weight:700;margin-bottom:8px}
 .empty-state p{color:var(--t2);font-size:.88rem;margin-bottom:18px}
 
-/* PRODUTOS */
 .tabs-mini{display:flex;gap:8px;margin-bottom:18px;flex-wrap:wrap}
 .tab-mini{padding:8px 18px;border-radius:50px;font-size:.85rem;font-weight:600;color:var(--t2);background:rgba(255,255,255,.05);border:1px solid var(--border);transition:var(--tr)}
 .tab-mini.active{background:var(--primary);color:#fff;border-color:var(--primary)}
@@ -136,7 +125,6 @@ img{max-width:100%;display:block}
 .btn-buscar{padding:10px 16px;background:linear-gradient(135deg,var(--primary),var(--primary-d));color:#fff;border-radius:8px;font-size:.85rem;font-weight:600;display:flex;align-items:center;gap:6px;white-space:nowrap}
 .filtros{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px}
 .filtro{padding:7px 16px;border-radius:50px;font-size:.82rem;font-weight:500;color:var(--t2);background:rgba(255,255,255,.04);border:1px solid var(--border);transition:var(--tr)}
-.filtro:hover{border-color:var(--primary);color:var(--primary)}
 .filtro.active{background:var(--primary);color:#fff;border-color:var(--primary)}
 .prod-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
 .prod-card{background:var(--card);border:1px solid var(--border);border-radius:14px;overflow:hidden;transition:var(--tr);animation:fadeIn .3s ease}
@@ -152,7 +140,6 @@ img{max-width:100%;display:block}
 .preco-por{font-size:1.1rem;font-weight:800;color:var(--success)}
 .prod-acoes{display:flex;gap:8px}
 
-/* IMPORTAR */
 .import-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}
 .import-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:20px;transition:var(--tr)}
 .import-card:hover{border-color:var(--primary)}
@@ -162,11 +149,32 @@ img{max-width:100%;display:block}
 .import-card-header h3{font-size:.95rem;font-weight:700}
 .import-card p{color:var(--t2);font-size:.85rem;margin-bottom:12px}
 .badge-verde{display:inline-block;padding:2px 8px;background:rgba(16,185,129,.15);color:var(--success);border-radius:50px;font-size:.7rem;font-weight:600;margin-top:2px}
-.input-import{padding:10px 14px;background:var(--bg3);border:1px solid var(--border);border-radius:8px;font-size:.88rem;margin-bottom:10px;transition:var(--tr)}
+.input-import{padding:10px 14px;background:var(--bg3);border:1px solid var(--border);border-radius:8px;font-size:.88rem;margin-bottom:10px}
 .input-import:focus{border-color:var(--primary)}
-.resultado-import{margin-top:12px;padding:12px 14px;background:var(--bg3);border-radius:8px;font-size:.85rem;line-height:1.6}
 
-/* APARÊNCIA */
+.resultado-import{margin-top:14px;padding:0;border-radius:10px;font-size:.85rem;overflow:hidden;border:1px solid var(--border);animation:fadeIn .3s ease}
+.res-header{padding:12px 14px;background:var(--bg3);display:flex;align-items:center;gap:10px;font-weight:600}
+.res-body{padding:14px;background:var(--card);max-height:400px;overflow-y:auto}
+.res-link{display:flex;align-items:center;gap:10px;padding:10px;background:var(--bg3);border-radius:8px;margin-bottom:8px;transition:var(--tr)}
+.res-link.selecionado{border:1px solid var(--primary);background:rgba(99,102,241,.08)}
+.res-link-check{width:20px;height:20px;border-radius:5px;border:2px solid var(--border);display:flex;align-items:center;justify-content:center;flex-shrink:0;cursor:pointer;transition:var(--tr)}
+.res-link.selecionado .res-link-check{background:var(--primary);border-color:var(--primary);color:#fff}
+.res-link-icone{width:32px;height:32px;border-radius:7px;display:flex;align-items:center;justify-content:center;color:#fff;flex-shrink:0;font-size:.85rem}
+.res-link-info{flex:1;min-width:0}
+.res-link-titulo{font-size:.85rem;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.res-link-url{font-size:.7rem;color:var(--t3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.res-actions{padding:14px;background:var(--bg3);display:flex;gap:10px;flex-wrap:wrap;border-top:1px solid var(--border)}
+.res-loading{padding:20px;text-align:center;color:var(--t2)}
+.res-loading .spin{display:inline-block;width:20px;height:20px;border:2px solid var(--primary);border-top-color:transparent;border-radius:50%;animation:spin .8s linear infinite;margin-right:8px;vertical-align:middle}
+.res-erro{padding:16px;color:var(--danger);text-align:center}
+.res-sucesso{padding:16px;color:var(--success);text-align:center}
+.res-perfil{padding:16px;display:flex;align-items:center;gap:14px;background:var(--bg3);border-bottom:1px solid var(--border)}
+.res-perfil-avatar{width:50px;height:50px;border-radius:50%;background:linear-gradient(135deg,var(--primary),var(--secondary));display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;overflow:hidden;flex-shrink:0}
+.res-perfil-avatar img{width:100%;height:100%;object-fit:cover}
+.res-perfil-info{flex:1;min-width:0}
+.res-perfil-nome{font-weight:700;font-size:.95rem}
+.res-perfil-bio{font-size:.78rem;color:var(--t2);margin-top:2px}
+
 .aparencia-layout{display:grid;grid-template-columns:1fr 260px;gap:24px;align-items:start}
 .opcao-section{margin-bottom:28px}
 .opcao-section h3{font-size:.9rem;font-weight:700;margin-bottom:14px;color:var(--t2)}
@@ -194,7 +202,6 @@ img{max-width:100%;display:block}
 .celular-frame{width:200px;height:400px;margin:0 auto;border:3px solid var(--border);border-radius:30px;overflow:hidden;background:var(--bg3)}
 .celular-tela{height:100%;overflow:hidden}
 
-/* CONFIG */
 .config-layout{display:grid;grid-template-columns:1fr 300px;gap:20px;align-items:start}
 .config-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:22px}
 .config-card h3{font-size:.95rem;font-weight:700;margin-bottom:18px}
@@ -204,68 +211,36 @@ img{max-width:100%;display:block}
 .btn-foto{padding:8px 16px;background:rgba(255,255,255,.06);border:1px solid var(--border);border-radius:8px;font-size:.82rem;color:var(--t2);display:flex;align-items:center;gap:6px;cursor:pointer}
 .btn-foto:hover{border-color:var(--primary);color:var(--primary)}
 .url-usuario{display:flex;align-items:center;background:var(--bg3);border:1px solid var(--border);border-radius:8px;overflow:hidden}
-.url-usuario:focus-within{border-color:var(--primary)}
 .url-usuario span{padding:10px 12px;color:var(--t3);font-size:.82rem;border-right:1px solid var(--border);white-space:nowrap}
 .url-usuario input{flex:1;padding:10px 12px;background:transparent;border:none;font-size:.9rem}
 
-/* MODAL */
 .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.9);backdrop-filter:blur(10px);z-index:1000;display:flex;flex-direction:column}
 .modal-top{display:flex;align-items:center;justify-content:space-between;padding:14px 20px;border-bottom:1px solid rgba(255,255,255,.1);font-size:.9rem;font-weight:600}
 .modal-devices{display:flex;align-items:center;gap:8px}
 .device-btn{width:34px;height:34px;border-radius:8px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);color:rgba(255,255,255,.5);display:flex;align-items:center;justify-content:center;font-size:.85rem;transition:var(--tr)}
 .device-btn.active,.device-btn:hover{background:var(--primary);border-color:var(--primary);color:#fff}
-.modal-fechar{width:34px;height:34px;border-radius:50%;background:rgba(239,68,68,.2);border:1px solid rgba(239,68,68,.3);color:var(--danger);display:flex;align-items:center;justify-content:center;font-size:.9rem;margin-left:8px}
-.modal-fechar:hover{background:var(--danger);color:#fff}
+.modal-fechar{width:34px;height:34px;border-radius:50%;background:rgba(239,68,68,.2);border:1px solid rgba(239,68,68,.3);color:var(--danger);display:flex;align-items:center;justify-content:center;margin-left:8px}
 .modal-corpo{flex:1;display:flex;align-items:center;justify-content:center;padding:20px;overflow:auto}
 .device-frame{transition:var(--tr);border-radius:12px;overflow:hidden;background:#fff}
-.device-frame.mobile{width:min(375px,90vw);height:min(680px,80vh);border:3px solid rgba(255,255,255,.15);border-radius:30px;box-shadow:0 20px 60px rgba(0,0,0,.5)}
+.device-frame.mobile{width:min(375px,90vw);height:min(680px,80vh);border:3px solid rgba(255,255,255,.15);border-radius:30px}
 .device-frame.tablet{width:min(768px,95vw);height:min(600px,80vh);border:3px solid rgba(255,255,255,.15);border-radius:16px}
 .device-frame.desktop{width:min(1100px,95vw);height:min(600px,80vh);border:1px solid rgba(255,255,255,.1);border-radius:8px}
 .device-frame iframe{width:100%;height:100%;border:none;display:block}
 
-/* TOAST */
-.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);padding:12px 22px;background:var(--card);border:1px solid var(--border);border-radius:50px;font-size:.88rem;font-weight:500;z-index:9999;box-shadow:0 4px 24px rgba(0,0,0,.5);white-space:nowrap;animation:fadeIn .3s ease}
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);padding:12px 22px;background:var(--card);border:1px solid var(--border);border-radius:50px;font-size:.88rem;font-weight:500;z-index:9999;box-shadow:0 4px 24px rgba(0,0,0,.5);white-space:nowrap;animation:fadeIn .3s ease;max-width:90vw;overflow:hidden;text-overflow:ellipsis}
 
-/* LOJAS */
 .loja-amazon{background:rgba(255,153,0,.2);color:#FF9900;border:1px solid rgba(255,153,0,.3)}
 .loja-shopee{background:rgba(238,77,45,.2);color:#EE4D2D;border:1px solid rgba(238,77,45,.3)}
 .loja-mercadolivre{background:rgba(255,218,0,.2);color:#cc9f00;border:1px solid rgba(255,218,0,.3)}
 .loja-outros{background:rgba(255,255,255,.05);color:var(--t2);border:1px solid var(--border)}
 
-/* RESPONSIVE */
-@media(max-width:1024px){
-  .cards-grid{grid-template-columns:repeat(2,1fr)}
-  .aparencia-layout{grid-template-columns:1fr}
-  .aparencia-preview{position:static}
-  .config-layout{grid-template-columns:1fr}
-  .prod-grid{grid-template-columns:repeat(2,1fr)}
-  .temas-grid{grid-template-columns:repeat(3,1fr)}
-}
-@media(max-width:768px){
-  .sidebar{transform:translateX(-100%);width:260px}
-  .sidebar.aberta{transform:translateX(0)}
-  .close-sidebar{display:flex}
-  .main{margin-left:0}
-  .menu-btn{display:flex}
-  .cards-grid{grid-template-columns:repeat(2,1fr)}
-  .acoes-grid{grid-template-columns:repeat(2,1fr)}
-  .form-grid{grid-template-columns:1fr}
-  .campo.full{grid-column:1}
-  .import-grid{grid-template-columns:1fr}
-  .import-card.destaque{grid-column:1}
-  .estilos-grid{grid-template-columns:repeat(2,1fr)}
-}
-@media(max-width:480px){
-  .page{padding:16px}
-  .prod-grid{grid-template-columns:1fr}
-  .temas-grid{grid-template-columns:repeat(3,1fr)}
-  .link-row input{min-width:0;width:100%}
-}
+@media(max-width:1024px){.cards-grid{grid-template-columns:repeat(2,1fr)}.aparencia-layout{grid-template-columns:1fr}.aparencia-preview{position:static}.config-layout{grid-template-columns:1fr}.prod-grid{grid-template-columns:repeat(2,1fr)}.temas-grid{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:768px){.sidebar{transform:translateX(-100%);width:260px}.sidebar.aberta{transform:translateX(0)}.close-sidebar{display:flex}.main{margin-left:0}.menu-btn{display:flex}.cards-grid{grid-template-columns:repeat(2,1fr)}.acoes-grid{grid-template-columns:repeat(2,1fr)}.form-grid{grid-template-columns:1fr}.campo.full{grid-column:1}.import-grid{grid-template-columns:1fr}.import-card.destaque{grid-column:1}.estilos-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:480px){.page{padding:16px}.prod-grid{grid-template-columns:1fr}.temas-grid{grid-template-columns:repeat(3,1fr)}.link-row input{min-width:0;width:100%}}
 </style>
 </head>
 <body>
 
-<!-- SIDEBAR -->
 <div class="sidebar" id="sidebar">
   <div class="sidebar-header">
     <span class="logo">⚡ LinkVitrine</span>
@@ -296,230 +271,224 @@ img{max-width:100%;display:block}
     </div>
   </div>
 
-  <div class="content">
-
-    <!-- DASHBOARD -->
-    <div class="page" id="page-dashboard">
-      <div class="welcome-box">
-        <div><h1>Olá, <span id="nomeUsuario">Usuário</span>! 👋</h1><p>Gerencie seus links e produtos</p></div>
-        <button class="btn-primary" onclick="verPagina()"><i class="fas fa-eye"></i> Ver Página</button>
-      </div>
-      <div class="cards-grid">
-        <div class="card-stat"><div class="card-stat-icon" style="background:#6366f122"><i class="fas fa-link" style="color:#6366f1"></i></div><div><div class="card-stat-num" id="totalLinks">0</div><div class="card-stat-label">Links</div></div></div>
-        <div class="card-stat"><div class="card-stat-icon" style="background:#ec489922"><i class="fas fa-fire" style="color:#ec4899"></i></div><div><div class="card-stat-num" id="totalProdutos">0</div><div class="card-stat-label">Produtos</div></div></div>
-        <div class="card-stat"><div class="card-stat-icon" style="background:#10b98122"><i class="fas fa-mouse-pointer" style="color:#10b981"></i></div><div><div class="card-stat-num" id="totalCliques">0</div><div class="card-stat-label">Cliques</div></div></div>
-        <div class="card-stat"><div class="card-stat-icon" style="background:#f59e0b22"><i class="fas fa-share-alt" style="color:#f59e0b"></i></div><div><div class="card-stat-num" id="totalRedes">0</div><div class="card-stat-label">Redes</div></div></div>
-      </div>
-      <h2 class="section-title">Ações Rápidas</h2>
-      <div class="acoes-grid">
-        <button class="acao-card" onclick="irPara('links')"><i class="fas fa-plus"></i><span>Novo Link</span></button>
-        <button class="acao-card" onclick="irPara('produtos')"><i class="fas fa-tag"></i><span>Novo Produto</span></button>
-        <button class="acao-card" onclick="irPara('importar')"><i class="fas fa-download"></i><span>Importar</span></button>
-        <button class="acao-card" onclick="irPara('aparencia')"><i class="fas fa-palette"></i><span>Personalizar</span></button>
-        <button class="acao-card" onclick="verPagina()"><i class="fas fa-eye"></i><span>Ver Página</span></button>
-        <button class="acao-card" onclick="compartilhar()"><i class="fas fa-share-alt"></i><span>Compartilhar</span></button>
-      </div>
+  <div class="page" id="page-dashboard">
+    <div class="welcome-box">
+      <div><h1>Olá, <span id="nomeUsuario">Usuário</span>! 👋</h1><p>Gerencie seus links e produtos</p></div>
+      <button class="btn-primary" onclick="verPagina()"><i class="fas fa-eye"></i> Ver Página</button>
     </div>
+    <div class="cards-grid">
+      <div class="card-stat"><div class="card-stat-icon" style="background:#6366f122"><i class="fas fa-link" style="color:#6366f1"></i></div><div><div class="card-stat-num" id="totalLinks">0</div><div class="card-stat-label">Links</div></div></div>
+      <div class="card-stat"><div class="card-stat-icon" style="background:#ec489922"><i class="fas fa-fire" style="color:#ec4899"></i></div><div><div class="card-stat-num" id="totalProdutos">0</div><div class="card-stat-label">Produtos</div></div></div>
+      <div class="card-stat"><div class="card-stat-icon" style="background:#10b98122"><i class="fas fa-mouse-pointer" style="color:#10b981"></i></div><div><div class="card-stat-num" id="totalCliques">0</div><div class="card-stat-label">Cliques</div></div></div>
+      <div class="card-stat"><div class="card-stat-icon" style="background:#f59e0b22"><i class="fas fa-share-alt" style="color:#f59e0b"></i></div><div><div class="card-stat-num" id="totalRedes">0</div><div class="card-stat-label">Redes</div></div></div>
+    </div>
+    <h2 class="section-title">Ações Rápidas</h2>
+    <div class="acoes-grid">
+      <button class="acao-card" onclick="irPara('links')"><i class="fas fa-plus"></i><span>Novo Link</span></button>
+      <button class="acao-card" onclick="irPara('produtos')"><i class="fas fa-tag"></i><span>Novo Produto</span></button>
+      <button class="acao-card" onclick="irPara('importar')"><i class="fas fa-download"></i><span>Importar Linktree</span></button>
+      <button class="acao-card" onclick="irPara('aparencia')"><i class="fas fa-palette"></i><span>Personalizar</span></button>
+      <button class="acao-card" onclick="verPagina()"><i class="fas fa-eye"></i><span>Ver Página</span></button>
+      <button class="acao-card" onclick="compartilhar()"><i class="fas fa-share-alt"></i><span>Compartilhar</span></button>
+    </div>
+  </div>
 
-    <!-- LINKS -->
-    <div class="page hidden" id="page-links">
-      <div class="page-header">
-        <div><h1>Meus Links</h1><p>Adicione e organize seus links</p></div>
-        <button class="btn-primary" onclick="toggleFormLink()"><i class="fas fa-plus"></i> Novo Link</button>
+  <div class="page hidden" id="page-links">
+    <div class="page-header">
+      <div><h1>Meus Links</h1><p>Adicione e organize seus links</p></div>
+      <button class="btn-primary" onclick="toggleFormLink()"><i class="fas fa-plus"></i> Novo Link</button>
+    </div>
+    <div class="form-box hidden" id="formLink">
+      <div class="form-box-header"><h3>Adicionar Link</h3><button onclick="toggleFormLink()"><i class="fas fa-times"></i></button></div>
+      <div class="form-grid">
+        <div class="campo full"><label>URL *</label><input type="url" id="linkUrl" placeholder="https://..." oninput="autoDetectarLink(this.value)"></div>
+        <div class="campo"><label>Título *</label><input type="text" id="linkTitulo" placeholder="Ex: Instagram"></div>
+        <div class="campo"><label>Ícone</label><input type="text" id="linkIcone" value="fas fa-link" oninput="document.getElementById('iconePreview').className=this.value"><i id="iconePreview" class="fas fa-link" style="margin-top:6px;font-size:1.2rem;color:var(--primary)"></i></div>
+        <div class="campo"><label>Cor</label><div class="cor-row"><input type="color" id="linkCor" value="#6366f1"><div class="cores-rapidas"><span style="background:#6366f1" onclick="definirCor('#6366f1')"></span><span style="background:#ec4899" onclick="definirCor('#ec4899')"></span><span style="background:#10b981" onclick="definirCor('#10b981')"></span><span style="background:#f59e0b" onclick="definirCor('#f59e0b')"></span><span style="background:#ef4444" onclick="definirCor('#ef4444')"></span><span style="background:#E1306C" onclick="definirCor('#E1306C')"></span><span style="background:#FF0000" onclick="definirCor('#FF0000')"></span><span style="background:#25D366" onclick="definirCor('#25D366')"></span></div></div></div>
+        <div class="campo full"><label class="toggle-label"><input type="checkbox" id="linkDestaque"><span class="toggle-switch"></span>Destacar</label></div>
       </div>
-      <div class="form-box hidden" id="formLink">
-        <div class="form-box-header"><h3>Adicionar Link</h3><button onclick="toggleFormLink()"><i class="fas fa-times"></i></button></div>
+      <div class="form-actions"><button class="btn-primary" onclick="salvarLink()"><i class="fas fa-check"></i> Salvar</button><button class="btn-ghost" onclick="toggleFormLink()">Cancelar</button></div>
+    </div>
+    <div id="listaLinks"></div>
+  </div>
+
+  <div class="page hidden" id="page-produtos">
+    <div class="page-header">
+      <div><h1>Produtos Afiliados</h1><p>Amazon, Shopee, Mercado Livre e mais</p></div>
+      <button class="btn-primary" onclick="toggleFormProduto()"><i class="fas fa-plus"></i> Novo Produto</button>
+    </div>
+    <div class="form-box hidden" id="formProduto">
+      <div class="form-box-header"><h3>Adicionar Produto</h3><button onclick="toggleFormProduto()"><i class="fas fa-times"></i></button></div>
+      <div class="tabs-mini">
+        <button class="tab-mini active" data-tab="auto" onclick="trocarTabProd('auto',this)">🔗 Cole o Link</button>
+        <button class="tab-mini" data-tab="manual" onclick="trocarTabProd('manual',this)">✏️ Manual</button>
+      </div>
+      <div id="tabAuto">
+        <div class="campo"><label>Link do Produto *</label>
+          <div class="link-row">
+            <span class="link-row-icone" id="lojaIcone">🔗</span>
+            <input type="url" id="prodUrl" placeholder="Cole o link do produto...">
+            <button class="btn-buscar" onclick="buscarProduto()"><i class="fas fa-search"></i> Buscar</button>
+          </div>
+        </div>
+        <div id="resultadoBusca" class="hidden">
+          <div class="form-grid" style="margin-top:16px">
+            <div class="campo full"><label>Nome do Produto</label><input type="text" id="prodNome"></div>
+            <div class="campo"><label>URL da Imagem</label><input type="url" id="prodImagem"></div>
+            <div class="campo"><label>Preço De</label><input type="number" id="prodPrecoOld" step="0.01"></div>
+            <div class="campo"><label>Preço Por *</label><input type="number" id="prodPreco" step="0.01"></div>
+            <div class="campo"><label>Categoria</label><select id="prodCat"><option value="tecnologia">Tecnologia</option><option value="moda">Moda</option><option value="casa">Casa</option><option value="esporte">Esportes</option><option value="beleza">Beleza</option><option value="outros">Outros</option></select></div>
+            <div class="campo full"><label>Link Afiliado</label><input type="url" id="prodAfiliado"></div>
+          </div>
+          <div class="form-actions"><button class="btn-primary" onclick="salvarProdutoAuto()"><i class="fas fa-check"></i> Salvar</button><button class="btn-ghost" onclick="cancelarBusca()">Cancelar</button></div>
+        </div>
+      </div>
+      <div id="tabManual" class="hidden">
         <div class="form-grid">
-          <div class="campo full"><label>URL *</label><input type="url" id="linkUrl" placeholder="https://..." oninput="autoDetectarLink(this.value)"></div>
-          <div class="campo"><label>Título *</label><input type="text" id="linkTitulo" placeholder="Ex: Instagram"></div>
-          <div class="campo"><label>Ícone</label><input type="text" id="linkIcone" placeholder="fab fa-instagram" value="fas fa-link" oninput="document.getElementById('iconePreview').className=this.value"><i id="iconePreview" class="fas fa-link" style="margin-top:6px;font-size:1.2rem;color:var(--primary)"></i></div>
-          <div class="campo"><label>Cor</label><div class="cor-row"><input type="color" id="linkCor" value="#6366f1"><div class="cores-rapidas"><span style="background:#6366f1" onclick="definirCor('#6366f1')"></span><span style="background:#ec4899" onclick="definirCor('#ec4899')"></span><span style="background:#10b981" onclick="definirCor('#10b981')"></span><span style="background:#f59e0b" onclick="definirCor('#f59e0b')"></span><span style="background:#ef4444" onclick="definirCor('#ef4444')"></span><span style="background:#E1306C" onclick="definirCor('#E1306C')"></span><span style="background:#FF0000" onclick="definirCor('#FF0000')"></span><span style="background:#25D366" onclick="definirCor('#25D366')"></span></div></div></div>
-          <div class="campo full"><label class="toggle-label"><input type="checkbox" id="linkDestaque"><span class="toggle-switch"></span>Destacar este link</label></div>
+          <div class="campo full"><label>Nome *</label><input type="text" id="mpNome"></div>
+          <div class="campo full"><label>URL da Imagem</label><input type="url" id="mpImagem"></div>
+          <div class="campo"><label>Preço De</label><input type="number" id="mpPrecoOld" step="0.01"></div>
+          <div class="campo"><label>Preço Por *</label><input type="number" id="mpPreco" step="0.01"></div>
+          <div class="campo"><label>Loja</label><select id="mpLoja"><option value="amazon">Amazon</option><option value="shopee">Shopee</option><option value="mercadolivre">Mercado Livre</option><option value="americanas">Americanas</option><option value="outros">Outros</option></select></div>
+          <div class="campo"><label>Categoria</label><select id="mpCat"><option value="tecnologia">Tecnologia</option><option value="moda">Moda</option><option value="casa">Casa</option><option value="esporte">Esportes</option><option value="beleza">Beleza</option><option value="outros">Outros</option></select></div>
+          <div class="campo full"><label>Link Afiliado *</label><input type="url" id="mpAfiliado"></div>
         </div>
-        <div class="form-actions"><button class="btn-primary" onclick="salvarLink()"><i class="fas fa-check"></i> Salvar</button><button class="btn-ghost" onclick="toggleFormLink()">Cancelar</button></div>
-      </div>
-      <div id="listaLinks"></div>
-    </div>
-
-    <!-- PRODUTOS -->
-    <div class="page hidden" id="page-produtos">
-      <div class="page-header">
-        <div><h1>Produtos Afiliados</h1><p>Amazon, Shopee, Mercado Livre e mais</p></div>
-        <button class="btn-primary" onclick="toggleFormProduto()"><i class="fas fa-plus"></i> Novo Produto</button>
-      </div>
-      <div class="form-box hidden" id="formProduto">
-        <div class="form-box-header"><h3>Adicionar Produto</h3><button onclick="toggleFormProduto()"><i class="fas fa-times"></i></button></div>
-        <div class="tabs-mini">
-          <button class="tab-mini active" data-tab="auto" onclick="trocarTabProd('auto',this)">🔗 Cole o Link</button>
-          <button class="tab-mini" data-tab="manual" onclick="trocarTabProd('manual',this)">✏️ Manual</button>
-        </div>
-        <div id="tabAuto">
-          <div class="campo"><label>Link do Produto *</label>
-            <div class="link-row">
-              <span class="link-row-icone" id="lojaIcone">🔗</span>
-              <input type="url" id="prodUrl" placeholder="Cole o link do produto...">
-              <button class="btn-buscar" onclick="buscarProduto()"><i class="fas fa-search"></i> Buscar</button>
-            </div>
-          </div>
-          <div id="resultadoBusca" class="hidden">
-            <div class="form-grid" style="margin-top:16px">
-              <div class="campo full"><label>Nome do Produto</label><input type="text" id="prodNome"></div>
-              <div class="campo"><label>URL da Imagem</label><input type="url" id="prodImagem" placeholder="https://..."></div>
-              <div class="campo"><label>Preço De (R$)</label><input type="number" id="prodPrecoOld" step="0.01" placeholder="0,00"></div>
-              <div class="campo"><label>Preço Por (R$) *</label><input type="number" id="prodPreco" step="0.01" placeholder="0,00"></div>
-              <div class="campo"><label>Categoria</label><select id="prodCat"><option value="tecnologia">Tecnologia</option><option value="moda">Moda</option><option value="casa">Casa</option><option value="esporte">Esportes</option><option value="beleza">Beleza</option><option value="outros">Outros</option></select></div>
-              <div class="campo full"><label>Link de Afiliado</label><input type="url" id="prodAfiliado" placeholder="https://..."></div>
-            </div>
-            <div class="form-actions"><button class="btn-primary" onclick="salvarProdutoAuto()"><i class="fas fa-check"></i> Salvar Produto</button><button class="btn-ghost" onclick="cancelarBusca()">Cancelar</button></div>
-          </div>
-        </div>
-        <div id="tabManual" class="hidden">
-          <div class="form-grid">
-            <div class="campo full"><label>Nome *</label><input type="text" id="mpNome" placeholder="Nome do produto"></div>
-            <div class="campo full"><label>URL da Imagem</label><input type="url" id="mpImagem" placeholder="https://..."></div>
-            <div class="campo"><label>Preço De</label><input type="number" id="mpPrecoOld" step="0.01" placeholder="0,00"></div>
-            <div class="campo"><label>Preço Por *</label><input type="number" id="mpPreco" step="0.01" placeholder="0,00"></div>
-            <div class="campo"><label>Loja</label><select id="mpLoja"><option value="amazon">Amazon</option><option value="shopee">Shopee</option><option value="mercadolivre">Mercado Livre</option><option value="americanas">Americanas</option><option value="outros">Outros</option></select></div>
-            <div class="campo"><label>Categoria</label><select id="mpCat"><option value="tecnologia">Tecnologia</option><option value="moda">Moda</option><option value="casa">Casa</option><option value="esporte">Esportes</option><option value="beleza">Beleza</option><option value="outros">Outros</option></select></div>
-            <div class="campo full"><label>Link de Afiliado *</label><input type="url" id="mpAfiliado" placeholder="https://..."></div>
-          </div>
-          <div class="form-actions"><button class="btn-primary" onclick="salvarProdutoManual()"><i class="fas fa-check"></i> Adicionar</button><button class="btn-ghost" onclick="toggleFormProduto()">Cancelar</button></div>
-        </div>
-      </div>
-      <div class="filtros">
-        <button class="filtro active" onclick="filtrarProd('todos',this)">Todos</button>
-        <button class="filtro" onclick="filtrarProd('tecnologia',this)">Tech</button>
-        <button class="filtro" onclick="filtrarProd('moda',this)">Moda</button>
-        <button class="filtro" onclick="filtrarProd('casa',this)">Casa</button>
-        <button class="filtro" onclick="filtrarProd('esporte',this)">Esporte</button>
-        <button class="filtro" onclick="filtrarProd('beleza',this)">Beleza</button>
-      </div>
-      <div class="prod-grid" id="gridProdutos"></div>
-    </div>
-
-    <!-- IMPORTAR -->
-    <div class="page hidden" id="page-importar">
-      <div class="page-header"><div><h1>Importar Links</h1><p>Puxe links de outros apps</p></div></div>
-      <div class="import-grid">
-        <div class="import-card destaque">
-          <div class="import-card-header"><div class="import-logo" style="background:#000"><i class="fas fa-tree" style="color:#43E660"></i></div><div><h3>Linktree</h3><span class="badge-verde">Mais Popular</span></div></div>
-          <p>Cole o link do seu Linktree para importar todos os links</p>
-          <input type="url" id="urlLinktree" placeholder="https://linktr.ee/seu-usuario" class="input-import">
-          <button class="btn-primary btn-block" onclick="importarLinktree()"><i class="fas fa-download"></i> Importar do Linktree</button>
-          <div id="resultLinktree" class="resultado-import hidden"></div>
-        </div>
-        <div class="import-card">
-          <div class="import-card-header"><div class="import-logo" style="background:linear-gradient(45deg,#f09433,#dc2743,#bc1888)"><i class="fab fa-instagram"></i></div><div><h3>Instagram</h3></div></div>
-          <p>Adicione seu perfil</p>
-          <input type="text" id="igUser" placeholder="@seu-usuario" class="input-import">
-          <button class="btn-primary btn-block" onclick="importarRede('instagram')"><i class="fas fa-plus"></i> Adicionar</button>
-        </div>
-        <div class="import-card">
-          <div class="import-card-header"><div class="import-logo" style="background:#000"><i class="fab fa-tiktok"></i></div><div><h3>TikTok</h3></div></div>
-          <p>Adicione seu perfil</p>
-          <input type="text" id="ttUser" placeholder="@seu-usuario" class="input-import">
-          <button class="btn-primary btn-block" onclick="importarRede('tiktok')"><i class="fas fa-plus"></i> Adicionar</button>
-        </div>
-        <div class="import-card">
-          <div class="import-card-header"><div class="import-logo" style="background:#FF0000"><i class="fab fa-youtube"></i></div><div><h3>YouTube</h3></div></div>
-          <p>Adicione seu canal</p>
-          <input type="text" id="ytUser" placeholder="@seu-canal" class="input-import">
-          <button class="btn-primary btn-block" onclick="importarRede('youtube')"><i class="fas fa-plus"></i> Adicionar</button>
-        </div>
-        <div class="import-card">
-          <div class="import-card-header"><div class="import-logo" style="background:#25D366"><i class="fab fa-whatsapp"></i></div><div><h3>WhatsApp</h3></div></div>
-          <p>Adicione seu WhatsApp</p>
-          <input type="text" id="waUser" placeholder="+55 11 99999-9999" class="input-import">
-          <button class="btn-primary btn-block" onclick="importarRede('whatsapp')"><i class="fas fa-plus"></i> Adicionar</button>
-        </div>
-        <div class="import-card">
-          <div class="import-card-header"><div class="import-logo" style="background:#6366f1"><i class="fas fa-link"></i></div><div><h3>Qualquer Link</h3></div></div>
-          <p>Cole qualquer URL e detectamos automaticamente</p>
-          <input type="url" id="anyUrl" placeholder="https://..." class="input-import">
-          <button class="btn-primary btn-block" onclick="importarQualquerLink()"><i class="fas fa-magic"></i> Detectar e Adicionar</button>
-        </div>
+        <div class="form-actions"><button class="btn-primary" onclick="salvarProdutoManual()"><i class="fas fa-check"></i> Adicionar</button><button class="btn-ghost" onclick="toggleFormProduto()">Cancelar</button></div>
       </div>
     </div>
+    <div class="filtros">
+      <button class="filtro active" onclick="filtrarProd('todos',this)">Todos</button>
+      <button class="filtro" onclick="filtrarProd('tecnologia',this)">Tech</button>
+      <button class="filtro" onclick="filtrarProd('moda',this)">Moda</button>
+      <button class="filtro" onclick="filtrarProd('casa',this)">Casa</button>
+      <button class="filtro" onclick="filtrarProd('esporte',this)">Esporte</button>
+      <button class="filtro" onclick="filtrarProd('beleza',this)">Beleza</button>
+    </div>
+    <div class="prod-grid" id="gridProdutos"></div>
+  </div>
 
-    <!-- APARÊNCIA -->
-    <div class="page hidden" id="page-aparencia">
-      <div class="page-header"><div><h1>Aparência</h1><p>Personalize sua página</p></div><button class="btn-primary" onclick="verPagina()"><i class="fas fa-eye"></i> Preview</button></div>
-      <div class="aparencia-layout">
-        <div>
-          <div class="opcao-section">
-            <h3>🎨 Tema</h3>
-            <div class="temas-grid">
-              <div class="tema-card active" data-tema="dark" onclick="aplicarTema('dark')"><div class="tema-preview dark-tema"></div><span>Dark</span></div>
-              <div class="tema-card" data-tema="light" onclick="aplicarTema('light')"><div class="tema-preview light-tema"></div><span>Light</span></div>
-              <div class="tema-card" data-tema="gradient" onclick="aplicarTema('gradient')"><div class="tema-preview gradient-tema"></div><span>Gradient</span></div>
-              <div class="tema-card" data-tema="neon" onclick="aplicarTema('neon')"><div class="tema-preview neon-tema"></div><span>Neon</span></div>
-              <div class="tema-card" data-tema="ocean" onclick="aplicarTema('ocean')"><div class="tema-preview ocean-tema"></div><span>Ocean</span></div>
-              <div class="tema-card" data-tema="sunset" onclick="aplicarTema('sunset')"><div class="tema-preview sunset-tema"></div><span>Sunset</span></div>
-            </div>
-          </div>
-          <div class="opcao-section">
-            <h3>🔘 Estilo dos Botões</h3>
-            <div class="estilos-grid">
-              <button class="estilo-btn active" data-estilo="rounded" onclick="aplicarEstilo('rounded')"><div style="padding:6px 14px;background:#6366f1;color:#fff;border-radius:10px;font-size:.75rem">Link</div><span>Arredondado</span></button>
-              <button class="estilo-btn" data-estilo="pill" onclick="aplicarEstilo('pill')"><div style="padding:6px 14px;background:#6366f1;color:#fff;border-radius:50px;font-size:.75rem">Link</div><span>Pílula</span></button>
-              <button class="estilo-btn" data-estilo="square" onclick="aplicarEstilo('square')"><div style="padding:6px 14px;background:#6366f1;color:#fff;border-radius:2px;font-size:.75rem">Link</div><span>Quadrado</span></button>
-              <button class="estilo-btn" data-estilo="outline" onclick="aplicarEstilo('outline')"><div style="padding:6px 14px;background:transparent;color:#6366f1;border:2px solid #6366f1;border-radius:10px;font-size:.75rem">Link</div><span>Outline</span></button>
-            </div>
-          </div>
-          <div class="opcao-section">
-            <h3>🎯 Cor Principal</h3>
-            <div class="cores-grid">
-              <div class="cor-op" style="background:#6366f1" onclick="aplicarCor('#6366f1')"></div>
-              <div class="cor-op" style="background:#ec4899" onclick="aplicarCor('#ec4899')"></div>
-              <div class="cor-op" style="background:#10b981" onclick="aplicarCor('#10b981')"></div>
-              <div class="cor-op" style="background:#f59e0b" onclick="aplicarCor('#f59e0b')"></div>
-              <div class="cor-op" style="background:#ef4444" onclick="aplicarCor('#ef4444')"></div>
-              <div class="cor-op" style="background:#06b6d4" onclick="aplicarCor('#06b6d4')"></div>
-              <div class="cor-op" style="background:#8b5cf6" onclick="aplicarCor('#8b5cf6')"></div>
-              <div class="cor-op" style="background:#f97316" onclick="aplicarCor('#f97316')"></div>
-            </div>
+  <div class="page hidden" id="page-importar">
+    <div class="page-header"><div><h1>Importar Links</h1><p>Puxe automaticamente todos os links do Linktree</p></div></div>
+    <div class="import-grid">
+      <div class="import-card destaque">
+        <div class="import-card-header">
+          <div class="import-logo" style="background:#000"><i class="fas fa-tree" style="color:#43E660"></i></div>
+          <div><h3>Linktree - Importação Automática 🚀</h3><span class="badge-verde">Puxa TUDO do link</span></div>
+        </div>
+        <p>Cole o link do Linktree e nós vamos puxar <strong>todos os links, produtos, nome e foto</strong> automaticamente!</p>
+        <input type="url" id="urlLinktree" placeholder="https://linktr.ee/seu-usuario" class="input-import">
+        <button class="btn-primary btn-block" id="btnImportarLT" onclick="importarLinktreeReal()"><i class="fas fa-magic"></i> Puxar Tudo do Linktree</button>
+        <div id="resultLinktree"></div>
+      </div>
+      <div class="import-card">
+        <div class="import-card-header"><div class="import-logo" style="background:linear-gradient(45deg,#f09433,#dc2743,#bc1888)"><i class="fab fa-instagram"></i></div><div><h3>Instagram</h3></div></div>
+        <p>Adicione seu perfil</p>
+        <input type="text" id="igUser" placeholder="@seu-usuario" class="input-import">
+        <button class="btn-primary btn-block" onclick="importarRede('instagram')"><i class="fas fa-plus"></i> Adicionar</button>
+      </div>
+      <div class="import-card">
+        <div class="import-card-header"><div class="import-logo" style="background:#000"><i class="fab fa-tiktok"></i></div><div><h3>TikTok</h3></div></div>
+        <p>Adicione seu perfil</p>
+        <input type="text" id="ttUser" placeholder="@seu-usuario" class="input-import">
+        <button class="btn-primary btn-block" onclick="importarRede('tiktok')"><i class="fas fa-plus"></i> Adicionar</button>
+      </div>
+      <div class="import-card">
+        <div class="import-card-header"><div class="import-logo" style="background:#FF0000"><i class="fab fa-youtube"></i></div><div><h3>YouTube</h3></div></div>
+        <p>Adicione seu canal</p>
+        <input type="text" id="ytUser" placeholder="@seu-canal" class="input-import">
+        <button class="btn-primary btn-block" onclick="importarRede('youtube')"><i class="fas fa-plus"></i> Adicionar</button>
+      </div>
+      <div class="import-card">
+        <div class="import-card-header"><div class="import-logo" style="background:#25D366"><i class="fab fa-whatsapp"></i></div><div><h3>WhatsApp</h3></div></div>
+        <p>Adicione seu WhatsApp</p>
+        <input type="text" id="waUser" placeholder="+55 11 99999-9999" class="input-import">
+        <button class="btn-primary btn-block" onclick="importarRede('whatsapp')"><i class="fas fa-plus"></i> Adicionar</button>
+      </div>
+      <div class="import-card">
+        <div class="import-card-header"><div class="import-logo" style="background:#6366f1"><i class="fas fa-link"></i></div><div><h3>Qualquer Link</h3></div></div>
+        <p>Detectamos automaticamente</p>
+        <input type="url" id="anyUrl" placeholder="https://..." class="input-import">
+        <button class="btn-primary btn-block" onclick="importarQualquerLink()"><i class="fas fa-magic"></i> Detectar</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="page hidden" id="page-aparencia">
+    <div class="page-header"><div><h1>Aparência</h1><p>Personalize sua página</p></div><button class="btn-primary" onclick="verPagina()"><i class="fas fa-eye"></i> Preview</button></div>
+    <div class="aparencia-layout">
+      <div>
+        <div class="opcao-section">
+          <h3>🎨 Tema</h3>
+          <div class="temas-grid">
+            <div class="tema-card active" data-tema="dark" onclick="aplicarTema('dark')"><div class="tema-preview dark-tema"></div><span>Dark</span></div>
+            <div class="tema-card" data-tema="light" onclick="aplicarTema('light')"><div class="tema-preview light-tema"></div><span>Light</span></div>
+            <div class="tema-card" data-tema="gradient" onclick="aplicarTema('gradient')"><div class="tema-preview gradient-tema"></div><span>Gradient</span></div>
+            <div class="tema-card" data-tema="neon" onclick="aplicarTema('neon')"><div class="tema-preview neon-tema"></div><span>Neon</span></div>
+            <div class="tema-card" data-tema="ocean" onclick="aplicarTema('ocean')"><div class="tema-preview ocean-tema"></div><span>Ocean</span></div>
+            <div class="tema-card" data-tema="sunset" onclick="aplicarTema('sunset')"><div class="tema-preview sunset-tema"></div><span>Sunset</span></div>
           </div>
         </div>
-        <div class="aparencia-preview">
-          <h3>📱 Preview ao Vivo</h3>
-          <div class="celular-frame"><div class="celular-tela" id="telaCelular"></div></div>
+        <div class="opcao-section">
+          <h3>🔘 Estilo dos Botões</h3>
+          <div class="estilos-grid">
+            <button class="estilo-btn active" data-estilo="rounded" onclick="aplicarEstilo('rounded')"><div style="padding:6px 14px;background:#6366f1;color:#fff;border-radius:10px;font-size:.75rem">Link</div><span>Arredondado</span></button>
+            <button class="estilo-btn" data-estilo="pill" onclick="aplicarEstilo('pill')"><div style="padding:6px 14px;background:#6366f1;color:#fff;border-radius:50px;font-size:.75rem">Link</div><span>Pílula</span></button>
+            <button class="estilo-btn" data-estilo="square" onclick="aplicarEstilo('square')"><div style="padding:6px 14px;background:#6366f1;color:#fff;border-radius:2px;font-size:.75rem">Link</div><span>Quadrado</span></button>
+            <button class="estilo-btn" data-estilo="outline" onclick="aplicarEstilo('outline')"><div style="padding:6px 14px;background:transparent;color:#6366f1;border:2px solid #6366f1;border-radius:10px;font-size:.75rem">Link</div><span>Outline</span></button>
+          </div>
+        </div>
+        <div class="opcao-section">
+          <h3>🎯 Cor Principal</h3>
+          <div class="cores-grid">
+            <div class="cor-op" style="background:#6366f1" onclick="aplicarCor('#6366f1')"></div>
+            <div class="cor-op" style="background:#ec4899" onclick="aplicarCor('#ec4899')"></div>
+            <div class="cor-op" style="background:#10b981" onclick="aplicarCor('#10b981')"></div>
+            <div class="cor-op" style="background:#f59e0b" onclick="aplicarCor('#f59e0b')"></div>
+            <div class="cor-op" style="background:#ef4444" onclick="aplicarCor('#ef4444')"></div>
+            <div class="cor-op" style="background:#06b6d4" onclick="aplicarCor('#06b6d4')"></div>
+            <div class="cor-op" style="background:#8b5cf6" onclick="aplicarCor('#8b5cf6')"></div>
+            <div class="cor-op" style="background:#f97316" onclick="aplicarCor('#f97316')"></div>
+          </div>
+        </div>
+      </div>
+      <div class="aparencia-preview">
+        <h3>📱 Preview ao Vivo</h3>
+        <div class="celular-frame"><div class="celular-tela" id="telaCelular"></div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="page hidden" id="page-config">
+    <div class="page-header"><div><h1>Configurações</h1><p>Edite seu perfil</p></div></div>
+    <div class="config-layout">
+      <div class="config-card">
+        <h3>👤 Seu Perfil</h3>
+        <div class="avatar-edit">
+          <div class="avatar-grande" id="avatarGrande"><span id="avatarLetra">U</span></div>
+          <button class="btn-foto" onclick="document.getElementById('fotoUpload').click()"><i class="fas fa-camera"></i> Mudar Foto</button>
+          <input type="file" id="fotoUpload" accept="image/*" style="display:none" onchange="trocarFoto(event)">
+        </div>
+        <div class="form-grid">
+          <div class="campo full"><label>Nome</label><input type="text" id="cfgNome"></div>
+          <div class="campo full"><label>Usuário (URL)</label><div class="url-usuario"><span>linkvitrine.pro/</span><input type="text" id="cfgUsuario"></div></div>
+          <div class="campo full"><label>Bio</label><textarea id="cfgBio"></textarea></div>
+          <div class="campo full"><button class="btn-primary btn-block" onclick="salvarConfig()"><i class="fas fa-save"></i> Salvar</button></div>
+        </div>
+      </div>
+      <div class="config-card">
+        <h3>💾 Dados</h3>
+        <div class="form-actions" style="flex-direction:column">
+          <button class="btn-ghost btn-block" onclick="exportarDados()"><i class="fas fa-download"></i> Exportar Backup</button>
+          <button class="btn-danger btn-block" onclick="resetarTudo()"><i class="fas fa-trash"></i> Resetar Tudo</button>
         </div>
       </div>
     </div>
-
-    <!-- CONFIG -->
-    <div class="page hidden" id="page-config">
-      <div class="page-header"><div><h1>Configurações</h1><p>Edite seu perfil</p></div></div>
-      <div class="config-layout">
-        <div class="config-card">
-          <h3>👤 Seu Perfil</h3>
-          <div class="avatar-edit">
-            <div class="avatar-grande" id="avatarGrande"><span id="avatarLetra">U</span></div>
-            <button class="btn-foto" onclick="document.getElementById('fotoUpload').click()"><i class="fas fa-camera"></i> Mudar Foto</button>
-            <input type="file" id="fotoUpload" accept="image/*" style="display:none" onchange="trocarFoto(event)">
-          </div>
-          <div class="form-grid">
-            <div class="campo full"><label>Nome</label><input type="text" id="cfgNome" placeholder="Seu nome"></div>
-            <div class="campo full"><label>Usuário (URL)</label><div class="url-usuario"><span>linkvitrine.pro/</span><input type="text" id="cfgUsuario" placeholder="seu-usuario"></div></div>
-            <div class="campo full"><label>Bio</label><textarea id="cfgBio" placeholder="Fale sobre você..."></textarea></div>
-            <div class="campo full"><button class="btn-primary btn-block" onclick="salvarConfig()"><i class="fas fa-save"></i> Salvar Perfil</button></div>
-          </div>
-        </div>
-        <div class="config-card">
-          <h3>💾 Dados</h3>
-          <p style="color:var(--t2);font-size:.9rem;margin-bottom:16px">Faça backup ou redefina</p>
-          <div class="form-actions" style="flex-direction:column"><button class="btn-ghost btn-block" onclick="exportarDados()"><i class="fas fa-download"></i> Exportar Backup</button><button class="btn-danger btn-block" onclick="resetarTudo()"><i class="fas fa-trash"></i> Resetar Tudo</button></div>
-        </div>
-      </div>
-    </div>
-
   </div>
 </div>
 
-<!-- MODAL PREVIEW -->
 <div class="modal-overlay hidden" id="modalPreview">
   <div class="modal-top">
-    <span>📱 Preview da Página</span>
+    <span>📱 Preview</span>
     <div class="modal-devices">
       <button class="device-btn active" id="btnMobile" onclick="mudarDevice('mobile')"><i class="fas fa-mobile-alt"></i></button>
       <button class="device-btn" id="btnTablet" onclick="mudarDevice('tablet')"><i class="fas fa-tablet-alt"></i></button>
@@ -534,7 +503,8 @@ img{max-width:100%;display:block}
 
 <script>
 let dados={links:[],produtos:[],config:{nome:'Usuário',usuario:'usuario',bio:'🔥 Meus melhores links!',avatar:'',tema:'dark',estilo:'rounded',cor:'#6366f1'},cliques:{}};
-const CHAVE='linkvitrine_dados_v3';
+const CHAVE='linkvitrine_v4';
+let linksImportadosTemp=[];
 
 function carregar(){try{const s=localStorage.getItem(CHAVE);if(s)dados={...dados,...JSON.parse(s)}}catch(e){}}
 function salvar(){localStorage.setItem(CHAVE,JSON.stringify(dados))}
@@ -562,11 +532,10 @@ function renderTudo(){renderLinks();renderProdutos();renderCelular();atualizarSt
 
 function irPara(p){
   document.querySelectorAll('.page').forEach(el=>el.classList.add('hidden'));
-  const pg=document.getElementById('page-'+p);
-  if(pg)pg.classList.remove('hidden');
+  const pg=document.getElementById('page-'+p);if(pg)pg.classList.remove('hidden');
   document.querySelectorAll('.nav-item').forEach(n=>n.classList.toggle('active',n.dataset.page===p));
-  const titulos={dashboard:'Dashboard',links:'Meus Links',produtos:'Produtos',importar:'Importar',aparencia:'Aparência',config:'Configurações'};
-  document.getElementById('pageTitle').textContent=titulos[p]||p;
+  const t={dashboard:'Dashboard',links:'Meus Links',produtos:'Produtos',importar:'Importar',aparencia:'Aparência',config:'Configurações'};
+  document.getElementById('pageTitle').textContent=t[p]||p;
   if(p==='aparencia')renderCelular();
   fecharSidebar();
 }
@@ -589,17 +558,14 @@ function limparFormLink(){
   document.getElementById('linkDestaque').checked=false;
 }
 function definirCor(c){document.getElementById('linkCor').value=c}
-
 function autoDetectarLink(url){
   if(!url||!url.startsWith('http'))return;
   const info=detectarInfo(url);
-  if(!info)return;
-  if(!document.getElementById('linkTitulo').value)document.getElementById('linkTitulo').value=info.titulo;
+  if(!document.getElementById('linkTitulo').value&&info.titulo)document.getElementById('linkTitulo').value=info.titulo;
   document.getElementById('linkIcone').value=info.icone;
   document.getElementById('iconePreview').className=info.icone;
   document.getElementById('linkCor').value=info.cor;
 }
-
 function detectarInfo(url){
   const u=url.toLowerCase();
   const mapa=[
@@ -610,6 +576,7 @@ function detectarInfo(url){
     {t:'twitter',titulo:'Twitter',icone:'fab fa-twitter',cor:'#1DA1F2'},
     {t:'x.com',titulo:'X',icone:'fab fa-x-twitter',cor:'#000000'},
     {t:'facebook',titulo:'Facebook',icone:'fab fa-facebook',cor:'#1877F2'},
+    {t:'fb.com',titulo:'Facebook',icone:'fab fa-facebook',cor:'#1877F2'},
     {t:'linkedin',titulo:'LinkedIn',icone:'fab fa-linkedin',cor:'#0A66C2'},
     {t:'spotify',titulo:'Spotify',icone:'fab fa-spotify',cor:'#1DB954'},
     {t:'discord',titulo:'Discord',icone:'fab fa-discord',cor:'#5865F2'},
@@ -620,13 +587,22 @@ function detectarInfo(url){
     {t:'twitch',titulo:'Twitch',icone:'fab fa-twitch',cor:'#9146FF'},
     {t:'github',titulo:'GitHub',icone:'fab fa-github',cor:'#333333'},
     {t:'amazon',titulo:'Amazon',icone:'fab fa-amazon',cor:'#FF9900'},
+    {t:'amzn',titulo:'Amazon',icone:'fab fa-amazon',cor:'#FF9900'},
     {t:'shopee',titulo:'Shopee',icone:'fas fa-shopping-bag',cor:'#EE4D2D'},
     {t:'mercadolivre',titulo:'Mercado Livre',icone:'fas fa-shopping-cart',cor:'#FFD700'},
+    {t:'meli',titulo:'Mercado Livre',icone:'fas fa-shopping-cart',cor:'#FFD700'},
     {t:'hotmart',titulo:'Hotmart',icone:'fas fa-fire',cor:'#F04E23'},
-    {t:'linktr.ee',titulo:'Linktree',icone:'fas fa-tree',cor:'#43E660'}
+    {t:'kiwify',titulo:'Kiwify',icone:'fas fa-seedling',cor:'#10B981'},
+    {t:'eduzz',titulo:'Eduzz',icone:'fas fa-graduation-cap',cor:'#3B82F6'},
+    {t:'linktr.ee',titulo:'Linktree',icone:'fas fa-tree',cor:'#43E660'},
+    {t:'americanas',titulo:'Americanas',icone:'fas fa-store',cor:'#E60014'},
+    {t:'magalu',titulo:'Magalu',icone:'fas fa-store',cor:'#0086FF'},
+    {t:'magazineluiza',titulo:'Magalu',icone:'fas fa-store',cor:'#0086FF'},
+    {t:'aliexpress',titulo:'AliExpress',icone:'fas fa-box',cor:'#FF6600'}
   ];
   for(const i of mapa)if(u.includes(i.t))return i;
-  return{titulo:'',icone:'fas fa-link',cor:'#6366f1'};
+  try{return{titulo:new URL(url).hostname.replace('www.',''),icone:'fas fa-link',cor:'#6366f1'}}
+  catch{return{titulo:'',icone:'fas fa-link',cor:'#6366f1'}}
 }
 
 function salvarLink(){
@@ -636,8 +612,7 @@ function salvarLink(){
   if(editandoId){
     const i=dados.links.findIndex(l=>l.id===editandoId);
     if(i>=0)dados.links[i]={...dados.links[i],url,titulo,icone:document.getElementById('linkIcone').value,cor:document.getElementById('linkCor').value,destaque:document.getElementById('linkDestaque').checked};
-    editandoId=null;
-    toast('✅ Atualizado!');
+    editandoId=null;toast('✅ Atualizado!');
   }else{
     dados.links.unshift({id:Date.now().toString(),url,titulo,icone:document.getElementById('linkIcone').value,cor:document.getElementById('linkCor').value,destaque:document.getElementById('linkDestaque').checked,ativo:true,criadoEm:new Date().toISOString()});
     toast('✅ Link adicionado!');
@@ -647,7 +622,7 @@ function salvarLink(){
 
 function renderLinks(){
   const l=document.getElementById('listaLinks');
-  if(!dados.links.length){l.innerHTML='<div class="empty-state"><div class="empty-icon">🔗</div><h3>Nenhum link ainda</h3><p>Adicione seus primeiros links</p><button class="btn-primary" onclick="toggleFormLink()"><i class="fas fa-plus"></i> Adicionar</button></div>';return}
+  if(!dados.links.length){l.innerHTML='<div class="empty-state"><div class="empty-icon">🔗</div><h3>Nenhum link ainda</h3><p>Adicione ou importe do Linktree</p><button class="btn-primary" onclick="toggleFormLink()"><i class="fas fa-plus"></i> Adicionar</button></div>';return}
   l.innerHTML=dados.links.map(link=>`
     <div class="link-item">
       <div class="link-icone" style="background:${link.cor}"><i class="${link.icone}"></i></div>
@@ -659,7 +634,6 @@ function renderLinks(){
       </div>
     </div>`).join('');
 }
-
 function toggleLink(id){const l=dados.links.find(l=>l.id===id);if(l){l.ativo=!l.ativo;salvar();renderLinks();renderCelular()}}
 function editarLink(id){
   const l=dados.links.find(l=>l.id===id);if(!l)return;
@@ -682,7 +656,7 @@ function trocarTabProd(t,btn){
   document.getElementById('tabAuto').classList.toggle('hidden',t!=='auto');
   document.getElementById('tabManual').classList.toggle('hidden',t!=='manual');
 }
-function detectarLoja(url){const u=url.toLowerCase();if(u.includes('amazon')||u.includes('amzn'))return'amazon';if(u.includes('shopee'))return'shopee';if(u.includes('mercadolivre')||u.includes('mercadolibre'))return'mercadolivre';if(u.includes('americanas'))return'americanas';if(u.includes('magalu'))return'magalu';if(u.includes('aliexpress'))return'aliexpress';return'outros'}
+function detectarLoja(url){const u=url.toLowerCase();if(u.includes('amazon')||u.includes('amzn'))return'amazon';if(u.includes('shopee'))return'shopee';if(u.includes('mercadolivre')||u.includes('mercadolibre')||u.includes('meli'))return'mercadolivre';if(u.includes('americanas'))return'americanas';if(u.includes('magalu')||u.includes('magazineluiza'))return'magalu';if(u.includes('aliexpress'))return'aliexpress';return'outros'}
 function infoLoja(l){const m={amazon:{nome:'Amazon',icone:'📦',classe:'loja-amazon'},shopee:{nome:'Shopee',icone:'🛍️',classe:'loja-shopee'},mercadolivre:{nome:'Mercado Livre',icone:'🛒',classe:'loja-mercadolivre'},americanas:{nome:'Americanas',icone:'🏬',classe:'loja-outros'},magalu:{nome:'Magalu',icone:'🛒',classe:'loja-outros'},aliexpress:{nome:'AliExpress',icone:'📦',classe:'loja-outros'},outros:{nome:'Loja',icone:'🏪',classe:'loja-outros'}};return m[l]||m.outros}
 
 function buscarProduto(){
@@ -726,7 +700,7 @@ function cancelarBusca(){document.getElementById('resultadoBusca').classList.add
 function renderProdutos(filtro='todos'){
   const g=document.getElementById('gridProdutos');
   const lista=filtro==='todos'?dados.produtos:dados.produtos.filter(p=>p.categoria===filtro);
-  if(!lista.length){g.innerHTML='<div class="empty-state" style="grid-column:1/-1"><div class="empty-icon">📦</div><h3>Nenhum produto</h3><p>Adicione produtos afiliados</p><button class="btn-primary" onclick="toggleFormProduto()"><i class="fas fa-plus"></i> Adicionar</button></div>';return}
+  if(!lista.length){g.innerHTML='<div class="empty-state" style="grid-column:1/-1"><div class="empty-icon">📦</div><h3>Nenhum produto</h3><p>Importe do Linktree ou adicione manualmente</p><button class="btn-primary" onclick="toggleFormProduto()"><i class="fas fa-plus"></i> Adicionar</button></div>';return}
   g.innerHTML=lista.map(p=>{
     const il=infoLoja(p.loja);
     const desc=p.precoOld&&p.precoOld>p.preco?Math.round((1-p.preco/p.precoOld)*100):0;
@@ -743,29 +717,316 @@ function renderProdutos(filtro='todos'){
 function filtrarProd(c,btn){document.querySelectorAll('.filtro').forEach(f=>f.classList.remove('active'));if(btn)btn.classList.add('active');renderProdutos(c)}
 function removerProd(id){if(!confirm('Remover?'))return;dados.produtos=dados.produtos.filter(p=>p.id!==id);salvar();renderProdutos();atualizarStats();toast('🗑️ Removido')}
 
-async function importarLinktree(){
+// ============= IMPORTAÇÃO REAL DO LINKTREE ==============
+async function importarLinktreeReal(){
   const url=document.getElementById('urlLinktree').value.trim();
-  if(!url||!url.includes('linktr.ee')){toast('❌ URL inválida');return}
-  const r=document.getElementById('resultLinktree');
-  r.classList.remove('hidden');
-  r.innerHTML='<div style="display:flex;align-items:center;gap:10px;color:var(--t2)"><div style="width:16px;height:16px;border:2px solid var(--primary);border-top-color:transparent;border-radius:50%;animation:spin .8s linear infinite"></div>Importando...</div>';
-  const user=url.replace(/https?:\/\//,'').replace('linktr.ee/','').split('?')[0].split('/')[0].trim();
-  await new Promise(x=>setTimeout(x,1500));
-  const importados=[
-    {p:'instagram',url:`https://instagram.com/${user}`,titulo:`Instagram - @${user}`,icone:'fab fa-instagram',cor:'#E1306C'},
-    {p:'tiktok',url:`https://tiktok.com/@${user}`,titulo:`TikTok - @${user}`,icone:'fab fa-tiktok',cor:'#000000'},
-    {p:'youtube',url:`https://youtube.com/@${user}`,titulo:`YouTube - @${user}`,icone:'fab fa-youtube',cor:'#FF0000'}
-  ];
-  let add=0;
-  importados.forEach(i=>{
-    if(!dados.links.find(l=>l.url===i.url)){
-      dados.links.push({id:`lt_${i.p}_${Date.now()}`,url:i.url,titulo:i.titulo,icone:i.icone,cor:i.cor,destaque:i.p==='instagram',ativo:true,criadoEm:new Date().toISOString()});
-      add++;
+  const btn=document.getElementById('btnImportarLT');
+  const container=document.getElementById('resultLinktree');
+  
+  if(!url){toast('❌ Cole o link do Linktree');return}
+  if(!url.includes('linktr.ee')&&!url.includes('linktree')){toast('❌ Deve ser um link do Linktree (linktr.ee/usuario)');return}
+  
+  btn.disabled=true;
+  btn.innerHTML='<div class="spin" style="width:16px;height:16px;border:2px solid #fff;border-top-color:transparent;border-radius:50%;animation:spin .8s linear infinite"></div> Buscando...';
+  
+  container.innerHTML=`
+    <div class="resultado-import">
+      <div class="res-loading">
+        <div class="spin"></div>
+        Conectando ao Linktree...
+      </div>
+    </div>`;
+  
+  try{
+    const username=url.replace(/https?:\/\//,'').replace(/^www\./,'').replace('linktr.ee/','').replace('linktree.com/','').split('?')[0].split('#')[0].split('/')[0].trim();
+    
+    if(!username){throw new Error('Usuário não encontrado na URL')}
+    
+    // Tenta buscar o HTML do Linktree via proxy CORS
+    const proxies=[
+      `https://api.allorigins.win/get?url=${encodeURIComponent('https://linktr.ee/'+username)}`,
+      `https://corsproxy.io/?${encodeURIComponent('https://linktr.ee/'+username)}`,
+      `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent('https://linktr.ee/'+username)}`
+    ];
+    
+    let html=null;
+    let ultimoErro=null;
+    
+    for(const proxy of proxies){
+      try{
+        container.innerHTML=`<div class="resultado-import"><div class="res-loading"><div class="spin"></div>Tentando puxar dados de @${username}...</div></div>`;
+        const resp=await fetch(proxy,{method:'GET'});
+        if(!resp.ok)continue;
+        const data=await resp.json().catch(async()=>await resp.text());
+        html=(data.contents||data)||null;
+        if(typeof html==='string'&&html.length>500)break;
+      }catch(e){ultimoErro=e;continue}
+    }
+    
+    if(!html||typeof html!=='string'){
+      throw new Error('Não foi possível acessar o Linktree. Verifique se o link está correto.');
+    }
+    
+    // Extrair dados do JSON __NEXT_DATA__
+    const dadosExtraidos=extrairDadosLinktree(html,username);
+    
+    if(!dadosExtraidos||!dadosExtraidos.links||dadosExtraidos.links.length===0){
+      throw new Error('Não conseguimos encontrar links neste Linktree. Talvez o perfil seja privado ou tenha proteção.');
+    }
+    
+    linksImportadosTemp=dadosExtraidos.links.map((link,i)=>({...link,selecionado:true,tempId:'temp_'+i}));
+    
+    mostrarResultadoLinktree(dadosExtraidos,username);
+    
+  }catch(erro){
+    container.innerHTML=`
+      <div class="resultado-import">
+        <div class="res-erro">
+          ❌ ${erro.message||'Erro ao importar do Linktree'}
+          <br><br>
+          <small style="color:var(--t3)">💡 Dica: alguns Linktree têm proteção contra scraping. Tente novamente ou adicione os links manualmente.</small>
+        </div>
+      </div>`;
+    toast('❌ Erro ao importar');
+  }finally{
+    btn.disabled=false;
+    btn.innerHTML='<i class="fas fa-magic"></i> Puxar Tudo do Linktree';
+  }
+}
+
+function extrairDadosLinktree(html,username){
+  const result={username,nome:'',bio:'',avatar:'',links:[]};
+  
+  try{
+    // Método 1: __NEXT_DATA__
+    const nextDataMatch=html.match(/<script id="__NEXT_DATA__"[^>]*>([\s\S]*?)<\/script>/);
+    if(nextDataMatch){
+      const jsonData=JSON.parse(nextDataMatch[1]);
+      const pageProps=jsonData?.props?.pageProps;
+      
+      if(pageProps){
+        const account=pageProps.account||{};
+        result.nome=account.pageTitle||account.username||username;
+        result.bio=account.description||'';
+        result.avatar=account.profilePictureUrl||'';
+        
+        const links=pageProps.links||account.links||[];
+        for(const link of links){
+          if(link.url&&link.type!=='HEADER'){
+            const info=detectarInfo(link.url);
+            result.links.push({
+              url:link.url,
+              titulo:link.title||info.titulo||link.url,
+              icone:info.icone,
+              cor:info.cor,
+              thumbnail:link.thumbnailUrl||''
+            });
+          }
+        }
+      }
+    }
+    
+    // Método 2: Fallback - regex nos links do HTML
+    if(result.links.length===0){
+      const linkMatches=html.matchAll(/"url":"(https?:\/\/[^"]+)","title":"([^"]+)"/g);
+      for(const m of linkMatches){
+        const url=m[1].replace(/\\u002F/g,'/').replace(/\\\//g,'/');
+        const info=detectarInfo(url);
+        result.links.push({
+          url,
+          titulo:m[2],
+          icone:info.icone,
+          cor:info.cor,
+          thumbnail:''
+        });
+      }
+    }
+    
+    // Método 3: Extração básica pelo HTML puro
+    if(result.links.length===0){
+      const aTags=html.matchAll(/href="(https?:\/\/[^"]+)"[^>]*>([^<]{3,100})</g);
+      const urls=new Set();
+      for(const m of aTags){
+        const url=m[1];
+        if(!urls.has(url)&&!url.includes('linktr.ee')&&!url.includes('linktree.com')&&!url.includes('help.')&&!url.includes('.svg')){
+          urls.add(url);
+          const info=detectarInfo(url);
+          result.links.push({
+            url,
+            titulo:m[2].trim()||info.titulo||'Link',
+            icone:info.icone,
+            cor:info.cor,
+            thumbnail:''
+          });
+        }
+      }
+    }
+    
+    // Extrair nome/bio do title/meta se não tiver
+    if(!result.nome){
+      const titleMatch=html.match(/<title>([^<]+)<\/title>/);
+      if(titleMatch)result.nome=titleMatch[1].replace(/\s*\|\s*Linktree\s*$/i,'').trim();
+    }
+    if(!result.bio){
+      const descMatch=html.match(/<meta\s+name="description"\s+content="([^"]+)"/);
+      if(descMatch)result.bio=descMatch[1];
+    }
+    if(!result.avatar){
+      const imgMatch=html.match(/<meta\s+property="og:image"\s+content="([^"]+)"/);
+      if(imgMatch)result.avatar=imgMatch[1];
+    }
+    
+    if(!result.nome)result.nome=username;
+    
+    return result;
+  }catch(e){
+    console.error('Erro ao extrair:',e);
+    return null;
+  }
+}
+
+function mostrarResultadoLinktree(dados,username){
+  const container=document.getElementById('resultLinktree');
+  
+  const perfilHTML=`
+    <div class="res-perfil">
+      <div class="res-perfil-avatar">
+        ${dados.avatar?`<img src="${dados.avatar}" onerror="this.style.display='none'">`:dados.nome.charAt(0).toUpperCase()}
+      </div>
+      <div class="res-perfil-info">
+        <div class="res-perfil-nome">${dados.nome}</div>
+        <div class="res-perfil-bio">${dados.bio||'@'+username}</div>
+      </div>
+    </div>`;
+  
+  const linksHTML=linksImportadosTemp.map((link,i)=>`
+    <div class="res-link ${link.selecionado?'selecionado':''}" onclick="toggleImportLink(${i})">
+      <div class="res-link-check">${link.selecionado?'<i class="fas fa-check" style="font-size:.7rem"></i>':''}</div>
+      <div class="res-link-icone" style="background:${link.cor}"><i class="${link.icone}"></i></div>
+      <div class="res-link-info">
+        <div class="res-link-titulo">${link.titulo}</div>
+        <div class="res-link-url">${link.url}</div>
+      </div>
+    </div>`).join('');
+  
+  const isProduto=(url)=>{
+    const u=url.toLowerCase();
+    return u.includes('amazon')||u.includes('amzn')||u.includes('shopee')||u.includes('mercadolivre')||u.includes('meli')||u.includes('americanas')||u.includes('magalu')||u.includes('aliexpress')||u.includes('hotmart')||u.includes('kiwify')||u.includes('eduzz');
+  };
+  const totalProdutos=linksImportadosTemp.filter(l=>isProduto(l.url)).length;
+  
+  container.innerHTML=`
+    <div class="resultado-import">
+      <div class="res-header">
+        <i class="fas fa-check-circle" style="color:var(--success);font-size:1.2rem"></i>
+        <div>
+          <div>✅ ${linksImportadosTemp.length} links encontrados de @${username}</div>
+          ${totalProdutos>0?`<div style="font-size:.75rem;color:var(--t2);margin-top:2px">🔥 ${totalProdutos} são produtos afiliados</div>`:''}
+        </div>
+      </div>
+      ${perfilHTML}
+      <div class="res-body">
+        <div style="margin-bottom:10px;font-size:.8rem;color:var(--t2)">
+          <button onclick="selecionarTodosLT(true)" style="color:var(--primary);text-decoration:underline">Marcar todos</button>
+          &nbsp;|&nbsp;
+          <button onclick="selecionarTodosLT(false)" style="color:var(--t2);text-decoration:underline">Desmarcar</button>
+        </div>
+        ${linksHTML}
+      </div>
+      <div class="res-actions">
+        <button class="btn-primary" onclick="confirmarImportLinktree('${username}','${dados.nome.replace(/'/g,'')}','${(dados.bio||'').replace(/'/g,'')}','${dados.avatar||''}')">
+          <i class="fas fa-download"></i> Importar Selecionados
+        </button>
+        <button class="btn-ghost" onclick="cancelarImportLT()">Cancelar</button>
+      </div>
+    </div>`;
+}
+
+function toggleImportLink(i){
+  linksImportadosTemp[i].selecionado=!linksImportadosTemp[i].selecionado;
+  const el=document.querySelectorAll('.res-link')[i];
+  el.classList.toggle('selecionado',linksImportadosTemp[i].selecionado);
+  const check=el.querySelector('.res-link-check');
+  check.innerHTML=linksImportadosTemp[i].selecionado?'<i class="fas fa-check" style="font-size:.7rem"></i>':'';
+}
+function selecionarTodosLT(marcar){
+  linksImportadosTemp.forEach(l=>l.selecionado=marcar);
+  document.querySelectorAll('.res-link').forEach((el,i)=>{
+    el.classList.toggle('selecionado',marcar);
+    el.querySelector('.res-link-check').innerHTML=marcar?'<i class="fas fa-check" style="font-size:.7rem"></i>':'';
+  });
+}
+function cancelarImportLT(){
+  document.getElementById('resultLinktree').innerHTML='';
+  linksImportadosTemp=[];
+}
+
+function confirmarImportLinktree(username,nome,bio,avatar){
+  const selecionados=linksImportadosTemp.filter(l=>l.selecionado);
+  if(!selecionados.length){toast('❌ Selecione ao menos 1 link');return}
+  
+  let novosLinks=0;
+  let novosProdutos=0;
+  
+  // Atualizar perfil
+  if(nome&&dados.config.nome==='Usuário')dados.config.nome=nome;
+  if(bio&&!dados.config.bio.length)dados.config.bio=bio;
+  if(avatar&&!dados.config.avatar)dados.config.avatar=avatar;
+  if(username&&dados.config.usuario==='usuario')dados.config.usuario=username;
+  
+  selecionados.forEach(link=>{
+    const u=link.url.toLowerCase();
+    const isProduto=u.includes('amazon')||u.includes('amzn')||u.includes('shopee')||u.includes('mercadolivre')||u.includes('meli')||u.includes('americanas')||u.includes('magalu')||u.includes('aliexpress');
+    
+    if(isProduto){
+      // Adicionar como produto
+      if(!dados.produtos.find(p=>p.afiliado===link.url)){
+        const loja=detectarLoja(link.url);
+        dados.produtos.push({
+          id:'lt_p_'+Date.now()+'_'+novosProdutos,
+          nome:link.titulo,
+          imagem:link.thumbnail||'',
+          preco:0,precoOld:0,
+          loja,categoria:'outros',
+          afiliado:link.url,
+          criadoEm:new Date().toISOString()
+        });
+        novosProdutos++;
+      }
+    }else{
+      // Adicionar como link
+      if(!dados.links.find(l=>l.url===link.url)){
+        dados.links.push({
+          id:'lt_l_'+Date.now()+'_'+novosLinks,
+          url:link.url,
+          titulo:link.titulo,
+          icone:link.icone,
+          cor:link.cor,
+          destaque:false,ativo:true,
+          criadoEm:new Date().toISOString()
+        });
+        novosLinks++;
+      }
     }
   });
-  salvar();renderLinks();renderCelular();atualizarStats();
-  r.innerHTML=`<div style="color:var(--success)">✅ ${add} links importados de @${user}!<br><small style="color:var(--t2)">Edite os links na aba "Meus Links"</small></div>`;
-  toast(`✅ ${add} importados!`);
+  
+  salvar();
+  renderTudo();
+  iniciarUI();
+  
+  document.getElementById('resultLinktree').innerHTML=`
+    <div class="resultado-import">
+      <div class="res-sucesso">
+        🎉 <strong>Importação concluída!</strong><br>
+        ✅ ${novosLinks} novos links<br>
+        🔥 ${novosProdutos} novos produtos<br><br>
+        <button class="btn-primary" onclick="irPara('links')" style="margin-right:8px">Ver Links</button>
+        <button class="btn-primary" onclick="irPara('produtos')">Ver Produtos</button>
+      </div>
+    </div>`;
+  
+  toast(`✅ ${novosLinks+novosProdutos} itens importados!`);
+  linksImportadosTemp=[];
 }
 
 function importarRede(rede){
@@ -779,7 +1040,7 @@ function importarRede(rede){
     whatsapp:{url:`https://wa.me/${v.replace(/\D/g,'')}`,titulo:'WhatsApp',icone:'fab fa-whatsapp',cor:'#25D366'}
   };
   const c=cfgs[rede];
-  if(dados.links.find(l=>l.url===c.url)){toast(`ℹ️ ${c.titulo} já existe`);return}
+  if(dados.links.find(l=>l.url===c.url)){toast(`ℹ️ Já adicionado`);return}
   dados.links.unshift({id:`${rede}_${Date.now()}`,url:c.url,titulo:c.titulo,icone:c.icone,cor:c.cor,destaque:false,ativo:true,criadoEm:new Date().toISOString()});
   salvar();renderLinks();renderCelular();atualizarStats();
   document.getElementById(ids[rede]).value='';
@@ -796,7 +1057,7 @@ function importarQualquerLink(){
   dados.links.unshift({id:`any_${Date.now()}`,url,titulo,icone:info.icone,cor:info.cor,destaque:false,ativo:true,criadoEm:new Date().toISOString()});
   salvar();renderLinks();renderCelular();atualizarStats();
   document.getElementById('anyUrl').value='';
-  toast('✅ Link adicionado!');
+  toast('✅ Adicionado!');
 }
 
 function exportarDados(){
@@ -808,7 +1069,7 @@ function exportarDados(){
   toast('📤 Exportado!');
 }
 
-function aplicarTema(t){dados.config.tema=t;salvar();document.querySelectorAll('.tema-card').forEach(x=>x.classList.toggle('active',x.dataset.tema===t));renderCelular();toast(`🎨 Tema ${t}`)}
+function aplicarTema(t){dados.config.tema=t;salvar();document.querySelectorAll('.tema-card').forEach(x=>x.classList.toggle('active',x.dataset.tema===t));renderCelular();toast(`🎨 ${t}`)}
 function aplicarEstilo(e){dados.config.estilo=e;salvar();document.querySelectorAll('.estilo-btn').forEach(x=>x.classList.toggle('active',x.dataset.estilo===e));renderCelular()}
 function aplicarCor(c){dados.config.cor=c;salvar();renderCelular();toast('🎨 Cor atualizada')}
 
@@ -821,14 +1082,7 @@ function gerarHTML(mini=false){
   const c=dados.config;
   const links=dados.links.filter(l=>l.ativo);
   const prods=dados.produtos.slice(0,6);
-  const temas={
-    dark:{bg:'#0a0a14',text:'#f1f1ff',text2:'#8888a8',card:'#13131f',border:'rgba(255,255,255,.08)'},
-    light:{bg:'#f8f8fc',text:'#1a1a2e',text2:'#5a5a7a',card:'#fff',border:'rgba(0,0,0,.08)'},
-    gradient:{bg:'linear-gradient(135deg,#6366f1,#ec4899)',text:'#fff',text2:'rgba(255,255,255,.75)',card:'rgba(255,255,255,.12)',border:'rgba(255,255,255,.2)'},
-    neon:{bg:'#000',text:'#00ff88',text2:'#00aa55',card:'#0a0a0a',border:'rgba(0,255,136,.2)'},
-    ocean:{bg:'linear-gradient(135deg,#0c3547,#1a6b8a)',text:'#e0f4ff',text2:'rgba(224,244,255,.7)',card:'rgba(255,255,255,.08)',border:'rgba(255,255,255,.12)'},
-    sunset:{bg:'linear-gradient(135deg,#1a0533,#6b1a1a)',text:'#ffe4d6',text2:'rgba(255,228,214,.7)',card:'rgba(255,255,255,.08)',border:'rgba(255,150,100,.2)'}
-  };
+  const temas={dark:{bg:'#0a0a14',text:'#f1f1ff',text2:'#8888a8',card:'#13131f',border:'rgba(255,255,255,.08)'},light:{bg:'#f8f8fc',text:'#1a1a2e',text2:'#5a5a7a',card:'#fff',border:'rgba(0,0,0,.08)'},gradient:{bg:'linear-gradient(135deg,#6366f1,#ec4899)',text:'#fff',text2:'rgba(255,255,255,.75)',card:'rgba(255,255,255,.12)',border:'rgba(255,255,255,.2)'},neon:{bg:'#000',text:'#00ff88',text2:'#00aa55',card:'#0a0a0a',border:'rgba(0,255,136,.2)'},ocean:{bg:'linear-gradient(135deg,#0c3547,#1a6b8a)',text:'#e0f4ff',text2:'rgba(224,244,255,.7)',card:'rgba(255,255,255,.08)',border:'rgba(255,255,255,.12)'},sunset:{bg:'linear-gradient(135deg,#1a0533,#6b1a1a)',text:'#ffe4d6',text2:'rgba(255,228,214,.7)',card:'rgba(255,255,255,.08)',border:'rgba(255,150,100,.2)'}};
   const t=temas[c.tema]||temas.dark;const cor=c.cor;
   const btnR={rounded:'12px',pill:'50px',square:'2px',outline:'12px'};
   const btnBg={rounded:cor,pill:cor,square:cor,outline:'transparent'};
@@ -874,8 +1128,8 @@ function addDemo(){
     {id:'d4',url:'https://wa.me/5511999999999',titulo:'WhatsApp',icone:'fab fa-whatsapp',cor:'#25D366',destaque:false,ativo:true,criadoEm:new Date().toISOString()}
   ];
   dados.produtos=[
-    {id:'p1',nome:'Fone Bluetooth Premium',imagem:'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=300&q=80',preco:199.90,precoOld:349.90,loja:'amazon',categoria:'tecnologia',afiliado:'#',criadoEm:new Date().toISOString()},
-    {id:'p2',nome:'Smartwatch Esportivo',imagem:'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=300&q=80',preco:149.90,precoOld:299.90,loja:'shopee',categoria:'tecnologia',afiliado:'#',criadoEm:new Date().toISOString()}
+    {id:'p1',nome:'Fone Bluetooth',imagem:'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=300&q=80',preco:199.90,precoOld:349.90,loja:'amazon',categoria:'tecnologia',afiliado:'#',criadoEm:new Date().toISOString()},
+    {id:'p2',nome:'Smartwatch',imagem:'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=300&q=80',preco:149.90,precoOld:299.90,loja:'shopee',categoria:'tecnologia',afiliado:'#',criadoEm:new Date().toISOString()}
   ];
   salvar();renderTudo();iniciarUI();
 }
