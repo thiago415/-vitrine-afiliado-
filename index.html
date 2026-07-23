@@ -3,541 +3,384 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Vitrine Digital | Melhores Ofertas</title>
+    <title>LinkVitrine Pro | Seu Hub de Links e Ofertas</title>
+    <meta name="description" content="Centralize todos seus links, redes sociais e produtos afiliados em um só lugar">
     <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 </head>
-<body>
+<body class="theme-dark">
 
-<!-- NAVBAR -->
-<nav class="navbar" id="navbar">
-    <div class="container nav-wrap">
-        <a href="#" class="logo">
-            <i class="fas fa-bolt"></i>
-            <span>Vitrine<strong>Pro</strong></span>
-        </a>
-        <ul class="nav-links" id="navLinks">
-            <li><a href="#home">Início</a></li>
-            <li><a href="#produtos">Produtos</a></li>
-            <li><a href="#categorias">Categorias</a></li>
-            <li><a href="#admin" class="nav-admin"><i class="fas fa-cog"></i> Admin</a></li>
-        </ul>
-        <div class="nav-right">
-            <div class="search-wrap">
-                <input type="text" id="searchInput" placeholder="🔍 Buscar produtos...">
-            </div>
-            <button class="menu-btn" id="menuBtn">
+<!-- ===== SPLASH SCREEN ===== -->
+<div class="splash" id="splash">
+    <div class="splash-logo">
+        <div class="splash-icon">⚡</div>
+        <span>LinkVitrine<strong>Pro</strong></span>
+    </div>
+    <div class="splash-bar"><div class="splash-fill"></div></div>
+</div>
+
+<!-- ===== APP WRAPPER ===== -->
+<div class="app" id="app">
+
+    <!-- ===== SIDEBAR ===== -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-logo">
+            <span class="s-icon">⚡</span>
+            <span class="s-name">LinkVitrine<strong>Pro</strong></span>
+        </div>
+        <nav class="sidebar-nav">
+            <a href="#" class="snav-item active" data-page="dashboard">
+                <i class="fas fa-th-large"></i><span>Dashboard</span>
+            </a>
+            <a href="#" class="snav-item" data-page="links">
+                <i class="fas fa-link"></i><span>Meus Links</span>
+                <span class="snav-badge" id="badgeLinks">0</span>
+            </a>
+            <a href="#" class="snav-item" data-page="produtos">
+                <i class="fas fa-fire"></i><span>Produtos</span>
+                <span class="snav-badge" id="badgeProdutos">0</span>
+            </a>
+            <a href="#" class="snav-item" data-page="redes">
+                <i class="fas fa-share-nodes"></i><span>Redes Sociais</span>
+            </a>
+            <a href="#" class="snav-item" data-page="import">
+                <i class="fas fa-cloud-download-alt"></i><span>Importar</span>
+                <span class="snav-new">NEW</span>
+            </a>
+            <a href="#" class="snav-item" data-page="aparencia">
+                <i class="fas fa-palette"></i><span>Aparência</span>
+            </a>
+            <a href="#" class="snav-item" data-page="analytics">
+                <i class="fas fa-chart-line"></i><span>Analytics</span>
+            </a>
+            <a href="#" class="snav-item" data-page="config">
+                <i class="fas fa-cog"></i><span>Configurações</span>
+            </a>
+        </nav>
+        <div class="sidebar-bottom">
+            <button class="preview-btn" onclick="abrirPreview()">
+                <i class="fas fa-eye"></i> Ver Minha Página
+            </button>
+            <button class="share-btn" onclick="compartilhar()">
+                <i class="fas fa-share-alt"></i> Compartilhar
+            </button>
+        </div>
+    </aside>
+
+    <!-- ===== MAIN CONTENT ===== -->
+    <main class="main" id="main">
+
+        <!-- TOP BAR -->
+        <header class="topbar">
+            <button class="burger" id="burger" onclick="toggleSidebar()">
                 <i class="fas fa-bars"></i>
             </button>
-        </div>
-    </div>
-</nav>
-
-<!-- HERO -->
-<section class="hero" id="home">
-    <div class="hero-bg"></div>
-    <div class="container hero-content">
-        <div class="hero-text">
-            <div class="hero-badge">
-                <span class="badge-dot"></span>
-                🔥 Atualizando ofertas em tempo real
-            </div>
-            <h1>As Melhores Ofertas <span class="gtext">Reunidas</span> em Um Só Lugar</h1>
-            <p>Cole qualquer link de produto da Amazon, Shopee ou Mercado Livre e ele aparece automaticamente na vitrine!</p>
-            <div class="hero-btns">
-                <a href="#add-produto" class="btn btn-primary">
-                    <i class="fas fa-plus"></i> Adicionar Produto
-                </a>
-                <a href="#produtos" class="btn btn-ghost">
-                    <i class="fas fa-fire"></i> Ver Ofertas
-                </a>
-            </div>
-            <div class="hero-counters">
-                <div class="hcount">
-                    <strong id="countProdutos">0</strong>
-                    <span>Produtos</span>
-                </div>
-                <div class="hcount">
-                    <strong>3</strong>
-                    <span>Lojas</span>
-                </div>
-                <div class="hcount">
-                    <strong>Até 70%</strong>
-                    <span>de Desconto</span>
+            <div class="topbar-title" id="topbarTitle">Dashboard</div>
+            <div class="topbar-right">
+                <button class="tb-btn" onclick="toggleTheme()" title="Tema">
+                    <i class="fas fa-moon" id="themeIcon"></i>
+                </button>
+                <button class="tb-btn" onclick="abrirPreview()" title="Preview">
+                    <i class="fas fa-eye"></i>
+                </button>
+                <div class="tb-avatar" onclick="showPage('config')">
+                    <span id="avatarInitial">U</span>
                 </div>
             </div>
-        </div>
-        <div class="hero-visual">
-            <div class="hero-card float">
-                <div class="hcard-stores">
-                    <div class="store-badge amazon">
-                        <i class="fab fa-amazon"></i> Amazon
-                    </div>
-                    <div class="store-badge shopee">
-                        🛍️ Shopee
-                    </div>
-                    <div class="store-badge ml">
-                        🛒 Mercado Livre
-                    </div>
-                </div>
-                <div class="hcard-arrow">→</div>
-                <div class="hcard-result">
-                    <div class="hcard-img">📦</div>
-                    <div class="hcard-info">
-                        <span>Produto Adicionado!</span>
-                        <strong>R$ 99,90</strong>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="hero-wave">
-        <svg viewBox="0 0 1440 100"><path d="M0,50 C360,100 1080,0 1440,50 L1440,100 L0,100 Z" fill="var(--bg)"/></svg>
-    </div>
-</section>
+        </header>
 
-<!-- ADD PRODUTO - PAINEL ADMIN -->
-<section class="admin-panel" id="add-produto">
-    <div class="container">
-        <div class="admin-header">
-            <h2><i class="fas fa-magic"></i> Adicionar Produto Automaticamente</h2>
-            <p>Cole o link de qualquer produto e ele será exibido na vitrine</p>
-        </div>
+        <!-- ===== PAGES ===== -->
+        <div class="pages">
 
-        <div class="add-tabs">
-            <button class="add-tab active" data-tab="link">🔗 Colar Link</button>
-            <button class="add-tab" data-tab="manual">✏️ Manual</button>
-            <button class="add-tab" data-tab="bulk">📋 Em Massa</button>
-        </div>
-
-        <!-- Tab: Link Automático -->
-        <div class="tab-content active" id="tab-link">
-            <div class="link-form">
-                <div class="link-input-wrap">
-                    <div class="link-icon" id="linkIcon">🔗</div>
-                    <input type="url" id="linkInput" placeholder="Cole aqui o link do produto (Amazon, Shopee, Mercado Livre, qualquer loja)..." />
-                    <button class="btn-detect" id="detectBtn" onclick="detectarLink()">
-                        <i class="fas fa-search"></i> Detectar
+            <!-- PAGE: DASHBOARD -->
+            <div class="page active" id="page-dashboard">
+                <div class="page-header">
+                    <div>
+                        <h1>Olá, <span id="greetName">usuário</span>! 👋</h1>
+                        <p>Gerencie seus links e produtos em um só lugar</p>
+                    </div>
+                    <button class="btn btn-primary" onclick="showPage('import')">
+                        <i class="fas fa-cloud-download-alt"></i> Importar Links
                     </button>
                 </div>
-                <div class="link-examples">
-                    <span>Exemplos:</span>
-                    <button onclick="setExampleLink('amazon')" class="ex-btn">Amazon</button>
-                    <button onclick="setExampleLink('shopee')" class="ex-btn">Shopee</button>
-                    <button onclick="setExampleLink('ml')" class="ex-btn">Mercado Livre</button>
-                </div>
-            </div>
 
-            <!-- Preview após detectar -->
-            <div class="link-preview" id="linkPreview" style="display:none">
-                <div class="preview-loading" id="previewLoading">
-                    <div class="spinner"></div>
-                    <span>Buscando informações do produto...</span>
-                </div>
-                <div class="preview-result" id="previewResult" style="display:none">
-                    <div class="preview-img-wrap">
-                        <img id="prevImg" src="" alt="">
+                <!-- Stats -->
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon" style="--c:#6366f1">
+                            <i class="fas fa-link"></i>
+                        </div>
+                        <div class="stat-info">
+                            <strong id="stat-links">0</strong>
+                            <span>Links</span>
+                        </div>
+                        <div class="stat-chart blue"></div>
                     </div>
-                    <div class="preview-info">
-                        <div class="prev-store" id="prevStore"></div>
-                        <h3 id="prevTitle"></h3>
-                        <div class="prev-prices">
-                            <span class="prev-old" id="prevOld"></span>
-                            <strong class="prev-current" id="prevCurrent"></strong>
-                            <span class="prev-discount" id="prevDiscount"></span>
+                    <div class="stat-card">
+                        <div class="stat-icon" style="--c:#ec4899">
+                            <i class="fas fa-fire"></i>
                         </div>
-                        <div class="prev-fields">
-                            <div class="field-group">
-                                <label>Preço Original (R$)</label>
-                                <input type="number" id="editOldPrice" placeholder="0,00" step="0.01">
-                            </div>
-                            <div class="field-group">
-                                <label>Preço Atual (R$)</label>
-                                <input type="number" id="editCurrentPrice" placeholder="0,00" step="0.01">
-                            </div>
-                            <div class="field-group">
-                                <label>Categoria</label>
-                                <select id="editCategory">
-                                    <option value="tecnologia">Tecnologia</option>
-                                    <option value="moda">Moda</option>
-                                    <option value="casa">Casa & Decoração</option>
-                                    <option value="esporte">Esportes</option>
-                                    <option value="beleza">Beleza</option>
-                                    <option value="livros">Livros</option>
-                                    <option value="outros">Outros</option>
-                                </select>
-                            </div>
-                            <div class="field-group">
-                                <label>Seu link de afiliado</label>
-                                <input type="url" id="editAffLink" placeholder="Cole seu link de afiliado aqui">
+                        <div class="stat-info">
+                            <strong id="stat-produtos">0</strong>
+                            <span>Produtos</span>
+                        </div>
+                        <div class="stat-chart pink"></div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon" style="--c:#10b981">
+                            <i class="fas fa-mouse-pointer"></i>
+                        </div>
+                        <div class="stat-info">
+                            <strong id="stat-clicks">0</strong>
+                            <span>Cliques Hoje</span>
+                        </div>
+                        <div class="stat-chart green"></div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon" style="--c:#f59e0b">
+                            <i class="fas fa-share-nodes"></i>
+                        </div>
+                        <div class="stat-info">
+                            <strong id="stat-social">0</strong>
+                            <span>Redes Sociais</span>
+                        </div>
+                        <div class="stat-chart yellow"></div>
+                    </div>
+                </div>
+
+                <!-- Quick Actions -->
+                <div class="section-title">Ações Rápidas</div>
+                <div class="quick-grid">
+                    <button class="quick-card" onclick="showPage('import')">
+                        <div class="qc-icon" style="--c:#6366f1"><i class="fab fa-instagram"></i></div>
+                        <span>Importar do Linktree</span>
+                        <small>Cole seu link</small>
+                    </button>
+                    <button class="quick-card" onclick="showPage('links');openAddLink()">
+                        <div class="qc-icon" style="--c:#ec4899"><i class="fas fa-plus"></i></div>
+                        <span>Adicionar Link</span>
+                        <small>Link personalizado</small>
+                    </button>
+                    <button class="quick-card" onclick="showPage('produtos');openAddProduto()">
+                        <div class="qc-icon" style="--c:#f59e0b"><i class="fas fa-tag"></i></div>
+                        <span>Adicionar Produto</span>
+                        <small>Amazon, Shopee, ML</small>
+                    </button>
+                    <button class="quick-card" onclick="showPage('aparencia')">
+                        <div class="qc-icon" style="--c:#10b981"><i class="fas fa-palette"></i></div>
+                        <span>Personalizar</span>
+                        <small>Tema e aparência</small>
+                    </button>
+                    <button class="quick-card" onclick="showPage('redes')">
+                        <div class="qc-icon" style="--c:#8b5cf6"><i class="fas fa-share-nodes"></i></div>
+                        <span>Redes Sociais</span>
+                        <small>Conectar perfis</small>
+                    </button>
+                    <button class="quick-card" onclick="abrirPreview()">
+                        <div class="qc-icon" style="--c:#06b6d4"><i class="fas fa-mobile-alt"></i></div>
+                        <span>Ver Preview</span>
+                        <small>Como ficou sua página</small>
+                    </button>
+                </div>
+
+                <!-- Preview Rápido -->
+                <div class="section-title">Preview da Página</div>
+                <div class="dash-preview">
+                    <div class="dash-preview-phone">
+                        <div class="phone-frame">
+                            <div class="phone-screen" id="dashPhoneScreen">
+                                <div class="mini-profile">
+                                    <div class="mini-avatar" id="miniAvatar">U</div>
+                                    <div class="mini-name" id="miniName">Seu Nome</div>
+                                    <div class="mini-bio" id="miniBio">Sua bio aqui</div>
+                                </div>
+                                <div class="mini-links" id="miniLinks">
+                                    <div class="mini-link-placeholder">
+                                        <i class="fas fa-link"></i> Adicione seus links
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                        <div class="prev-actions">
-                            <button class="btn btn-primary" onclick="adicionarProduto()">
-                                <i class="fas fa-plus"></i> Adicionar à Vitrine
+                    </div>
+                    <div class="dash-preview-actions">
+                        <h3>Sua Página Pública</h3>
+                        <p>Veja como seus seguidores verão sua vitrine de links e produtos</p>
+                        <div class="preview-url">
+                            <i class="fas fa-globe"></i>
+                            <span id="previewUrl">linkvitrine.pro/seu-usuario</span>
+                            <button onclick="copiarUrl()"><i class="fas fa-copy"></i></button>
+                        </div>
+                        <div class="preview-actions">
+                            <button class="btn btn-primary" onclick="abrirPreview()">
+                                <i class="fas fa-eye"></i> Abrir Preview
                             </button>
-                            <button class="btn btn-ghost" onclick="cancelarPreview()">
-                                Cancelar
+                            <button class="btn btn-ghost" onclick="compartilhar()">
+                                <i class="fas fa-share-alt"></i> Compartilhar
                             </button>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
 
-        <!-- Tab: Manual -->
-        <div class="tab-content" id="tab-manual">
-            <div class="manual-form">
-                <div class="form-grid">
-                    <div class="field-group full">
-                        <label>Nome do Produto *</label>
-                        <input type="text" id="mTitle" placeholder="Ex: Fone de Ouvido Bluetooth Premium">
+            <!-- PAGE: LINKS -->
+            <div class="page" id="page-links">
+                <div class="page-header">
+                    <div>
+                        <h1>Meus Links</h1>
+                        <p>Gerencie e organize seus links</p>
                     </div>
-                    <div class="field-group full">
-                        <label>URL da Imagem</label>
-                        <input type="url" id="mImage" placeholder="https://..." oninput="previewManualImg(this.value)">
-                        <div class="img-preview" id="manualImgPreview"></div>
+                    <button class="btn btn-primary" id="addLinkBtn" onclick="openAddLink()">
+                        <i class="fas fa-plus"></i> Novo Link
+                    </button>
+                </div>
+
+                <!-- Add Link Form -->
+                <div class="form-card" id="addLinkForm" style="display:none">
+                    <div class="form-card-header">
+                        <h3><i class="fas fa-link"></i> Adicionar Link</h3>
+                        <button onclick="closeAddLink()"><i class="fas fa-times"></i></button>
                     </div>
-                    <div class="field-group">
-                        <label>Preço Original (R$)</label>
-                        <input type="number" id="mOldPrice" placeholder="0,00" step="0.01">
-                    </div>
-                    <div class="field-group">
-                        <label>Preço Atual (R$) *</label>
-                        <input type="number" id="mCurrentPrice" placeholder="0,00" step="0.01">
-                    </div>
-                    <div class="field-group">
-                        <label>Categoria *</label>
-                        <select id="mCategory">
-                            <option value="tecnologia">Tecnologia</option>
-                            <option value="moda">Moda</option>
-                            <option value="casa">Casa & Decoração</option>
-                            <option value="esporte">Esportes</option>
-                            <option value="beleza">Beleza</option>
-                            <option value="livros">Livros</option>
-                            <option value="outros">Outros</option>
-                        </select>
-                    </div>
-                    <div class="field-group">
-                        <label>Loja</label>
-                        <select id="mStore">
-                            <option value="amazon">Amazon</option>
-                            <option value="shopee">Shopee</option>
-                            <option value="mercadolivre">Mercado Livre</option>
-                            <option value="outros">Outros</option>
-                        </select>
-                    </div>
-                    <div class="field-group full">
-                        <label>Link de Afiliado *</label>
-                        <input type="url" id="mAffLink" placeholder="https://... (seu link de afiliado)">
-                    </div>
-                    <div class="field-group">
-                        <label>Avaliação (1-5)</label>
-                        <input type="number" id="mRating" placeholder="4.5" min="1" max="5" step="0.1">
-                    </div>
-                    <div class="field-group">
-                        <label>Nº de Avaliações</label>
-                        <input type="number" id="mReviews" placeholder="0">
-                    </div>
-                    <div class="field-group full">
-                        <label>Destaque</label>
-                        <div class="toggle-group">
-                            <label class="toggle">
-                                <input type="checkbox" id="mHot">
-                                <span class="toggle-slider"></span>
-                                🔥 Marcar como HOT
-                            </label>
-                            <label class="toggle">
-                                <input type="checkbox" id="mNew">
-                                <span class="toggle-slider"></span>
-                                ✨ Marcar como NOVO
-                            </label>
+                    <div class="form-grid">
+                        <div class="fg full">
+                            <label>URL do Link *</label>
+                            <div class="url-input-wrap">
+                                <input type="url" id="linkUrl" placeholder="https://..." oninput="detectLinkInfo(this.value)">
+                                <div class="url-favicon" id="urlFavicon">🔗</div>
+                            </div>
+                        </div>
+                        <div class="fg">
+                            <label>Título *</label>
+                            <input type="text" id="linkTitle" placeholder="Ex: Meu Instagram">
+                        </div>
+                        <div class="fg">
+                            <label>Ícone</label>
+                            <div class="icon-picker">
+                                <input type="text" id="linkIcon" placeholder="fas fa-link" value="fas fa-link">
+                                <div class="icon-preview"><i id="linkIconPreview" class="fas fa-link"></i></div>
+                            </div>
+                        </div>
+                        <div class="fg">
+                            <label>Cor do Botão</label>
+                            <div class="color-row">
+                                <input type="color" id="linkColor" value="#6366f1">
+                                <div class="color-presets">
+                                    <span onclick="setColor('#6366f1','linkColor')" style="background:#6366f1"></span>
+                                    <span onclick="setColor('#ec4899','linkColor')" style="background:#ec4899"></span>
+                                    <span onclick="setColor('#10b981','linkColor')" style="background:#10b981"></span>
+                                    <span onclick="setColor('#f59e0b','linkColor')" style="background:#f59e0b"></span>
+                                    <span onclick="setColor('#ef4444','linkColor')" style="background:#ef4444"></span>
+                                    <span onclick="setColor('#06b6d4','linkColor')" style="background:#06b6d4"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="fg">
+                            <label>Categoria</label>
+                            <select id="linkCat">
+                                <option value="geral">Geral</option>
+                                <option value="social">Redes Sociais</option>
+                                <option value="loja">Loja</option>
+                                <option value="conteudo">Conteúdo</option>
+                                <option value="contato">Contato</option>
+                            </select>
+                        </div>
+                        <div class="fg">
+                            <label>Destaque</label>
+                            <div class="toggle-row">
+                                <label class="tgl">
+                                    <input type="checkbox" id="linkHighlight">
+                                    <span class="tgl-s"></span>
+                                    Destacar link
+                                </label>
+                                <label class="tgl">
+                                    <input type="checkbox" id="linkNewTab" checked>
+                                    <span class="tgl-s"></span>
+                                    Abrir nova aba
+                                </label>
+                            </div>
+                        </div>
+                        <div class="fg full actions-row">
+                            <button class="btn btn-primary" onclick="adicionarLink()">
+                                <i class="fas fa-plus"></i> Adicionar
+                            </button>
+                            <button class="btn btn-ghost" onclick="closeAddLink()">Cancelar</button>
                         </div>
                     </div>
                 </div>
-                <button class="btn btn-primary btn-lg" onclick="adicionarManual()">
-                    <i class="fas fa-plus"></i> Adicionar Produto
-                </button>
-            </div>
-        </div>
 
-        <!-- Tab: Em Massa -->
-        <div class="tab-content" id="tab-bulk">
-            <div class="bulk-form">
-                <p class="bulk-info">
-                    <i class="fas fa-info-circle"></i>
-                    Cole um link por linha. Adicione automaticamente vários produtos de uma vez.
-                </p>
-                <textarea id="bulkLinks" placeholder="https://amzn.to/exemplo1&#10;https://shopee.com.br/exemplo2&#10;https://mercadolivre.com.br/exemplo3"></textarea>
-                <div class="bulk-actions">
-                    <button class="btn btn-primary" onclick="adicionarEmMassa()">
-                        <i class="fas fa-rocket"></i> Adicionar Todos
+                <!-- Links List -->
+                <div class="links-list" id="linksList">
+                    <div class="empty-box" id="emptyLinks">
+                        <div class="eb-icon">🔗</div>
+                        <h3>Nenhum link ainda</h3>
+                        <p>Adicione links ou importe do Linktree</p>
+                        <button class="btn btn-primary" onclick="openAddLink()">
+                            <i class="fas fa-plus"></i> Adicionar Primeiro Link
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PAGE: PRODUTOS -->
+            <div class="page" id="page-produtos">
+                <div class="page-header">
+                    <div>
+                        <h1>Produtos Afiliados</h1>
+                        <p>Amazon, Shopee, Mercado Livre e mais</p>
+                    </div>
+                    <button class="btn btn-primary" onclick="openAddProduto()">
+                        <i class="fas fa-plus"></i> Novo Produto
                     </button>
-                    <span id="bulkProgress"></span>
                 </div>
-            </div>
-        </div>
-    </div>
-</section>
 
-<!-- CATEGORIAS -->
-<section class="cats-section" id="categorias">
-    <div class="container">
-        <div class="sec-header">
-            <span class="sec-tag">Navegar</span>
-            <h2>Categorias</h2>
-        </div>
-        <div class="cats-grid" id="catsGrid">
-            <div class="cat-card active" onclick="filtrar('todos')" data-cat="todos">
-                <div class="cat-icon" style="--c:#6366f1">
-                    <i class="fas fa-th"></i>
-                </div>
-                <span>Todos</span>
-                <small id="count-todos">0</small>
-            </div>
-            <div class="cat-card" onclick="filtrar('tecnologia')" data-cat="tecnologia">
-                <div class="cat-icon" style="--c:#6366f1">
-                    <i class="fas fa-laptop"></i>
-                </div>
-                <span>Tecnologia</span>
-                <small id="count-tecnologia">0</small>
-            </div>
-            <div class="cat-card" onclick="filtrar('moda')" data-cat="moda">
-                <div class="cat-icon" style="--c:#ec4899">
-                    <i class="fas fa-shirt"></i>
-                </div>
-                <span>Moda</span>
-                <small id="count-moda">0</small>
-            </div>
-            <div class="cat-card" onclick="filtrar('casa')" data-cat="casa">
-                <div class="cat-icon" style="--c:#f59e0b">
-                    <i class="fas fa-couch"></i>
-                </div>
-                <span>Casa</span>
-                <small id="count-casa">0</small>
-            </div>
-            <div class="cat-card" onclick="filtrar('esporte')" data-cat="esporte">
-                <div class="cat-icon" style="--c:#10b981">
-                    <i class="fas fa-dumbbell"></i>
-                </div>
-                <span>Esportes</span>
-                <small id="count-esporte">0</small>
-            </div>
-            <div class="cat-card" onclick="filtrar('beleza')" data-cat="beleza">
-                <div class="cat-icon" style="--c:#f43f5e">
-                    <i class="fas fa-spa"></i>
-                </div>
-                <span>Beleza</span>
-                <small id="count-beleza">0</small>
-            </div>
-            <div class="cat-card" onclick="filtrar('livros')" data-cat="livros">
-                <div class="cat-icon" style="--c:#8b5cf6">
-                    <i class="fas fa-book"></i>
-                </div>
-                <span>Livros</span>
-                <small id="count-livros">0</small>
-            </div>
-            <div class="cat-card" onclick="filtrar('outros')" data-cat="outros">
-                <div class="cat-icon" style="--c:#64748b">
-                    <i class="fas fa-box"></i>
-                </div>
-                <span>Outros</span>
-                <small id="count-outros">0</small>
-            </div>
-        </div>
-    </div>
-</section>
+                <!-- Add Produto -->
+                <div class="form-card" id="addProdutoForm" style="display:none">
+                    <div class="form-card-header">
+                        <h3><i class="fas fa-tag"></i> Adicionar Produto</h3>
+                        <button onclick="closeAddProduto()"><i class="fas fa-times"></i></button>
+                    </div>
 
-<!-- PRODUTOS -->
-<section class="produtos-section" id="produtos">
-    <div class="container">
-        <div class="sec-header">
-            <div class="sec-title-wrap">
-                <span class="sec-tag">Ofertas</span>
-                <h2>Produtos em <span class="gtext">Destaque</span></h2>
-            </div>
-            <div class="sort-wrap">
-                <select id="sortSelect" onchange="sortProdutos()">
-                    <option value="recentes">Mais Recentes</option>
-                    <option value="menor-preco">Menor Preço</option>
-                    <option value="maior-desconto">Maior Desconto</option>
-                    <option value="avaliacao">Melhor Avaliação</option>
-                </select>
-            </div>
-        </div>
+                    <div class="prod-tabs">
+                        <button class="ptab active" data-ptab="auto">🔗 Cole o Link</button>
+                        <button class="ptab" data-ptab="manual">✏️ Manual</button>
+                    </div>
 
-        <!-- Empty State -->
-        <div class="empty-state" id="emptyState">
-            <div class="empty-icon">📦</div>
-            <h3>Nenhum produto ainda</h3>
-            <p>Adicione produtos usando o painel acima colando links de afiliado</p>
-            <a href="#add-produto" class="btn btn-primary">
-                <i class="fas fa-plus"></i> Adicionar Primeiro Produto
-            </a>
-        </div>
-
-        <div class="produtos-grid" id="produtosGrid"></div>
-
-        <div class="load-more-wrap" id="loadMoreWrap" style="display:none">
-            <button class="btn btn-ghost btn-lg" onclick="loadMore()">
-                <i class="fas fa-chevron-down"></i> Carregar Mais
-            </button>
-        </div>
-    </div>
-</section>
-
-<!-- ADMIN PANEL -->
-<section class="admin-manage" id="admin">
-    <div class="container">
-        <div class="sec-header">
-            <h2><i class="fas fa-cog"></i> Gerenciar Produtos</h2>
-            <div class="admin-actions">
-                <button class="btn btn-ghost" onclick="exportarJSON()">
-                    <i class="fas fa-download"></i> Exportar
-                </button>
-                <button class="btn btn-ghost" onclick="importarJSON()">
-                    <i class="fas fa-upload"></i> Importar
-                </button>
-                <button class="btn btn-danger" onclick="limparTudo()">
-                    <i class="fas fa-trash"></i> Limpar Tudo
-                </button>
-            </div>
-        </div>
-        <div class="admin-table-wrap">
-            <table class="admin-table" id="adminTable">
-                <thead>
-                    <tr>
-                        <th>Produto</th>
-                        <th>Preço</th>
-                        <th>Loja</th>
-                        <th>Categoria</th>
-                        <th>Ações</th>
-                    </tr>
-                </thead>
-                <tbody id="adminTableBody"></tbody>
-            </table>
-            <div class="admin-empty" id="adminEmpty">
-                <p>Nenhum produto cadastrado</p>
-            </div>
-        </div>
-    </div>
-</section>
-
-<!-- FOOTER -->
-<footer class="footer">
-    <div class="container">
-        <div class="footer-top">
-            <div class="footer-brand">
-                <a href="#" class="logo">
-                    <i class="fas fa-bolt"></i>
-                    <span>Vitrine<strong>Pro</strong></span>
-                </a>
-                <p>Sua vitrine de afiliados automática. Adicione produtos de qualquer loja e compartilhe suas ofertas.</p>
-                <div class="footer-social">
-                    <a href="#"><i class="fab fa-instagram"></i></a>
-                    <a href="#"><i class="fab fa-whatsapp"></i></a>
-                    <a href="#"><i class="fab fa-telegram"></i></a>
-                    <a href="#"><i class="fab fa-youtube"></i></a>
-                </div>
-            </div>
-            <div class="footer-links">
-                <h4>Lojas Parceiras</h4>
-                <ul>
-                    <li><a href="#"><i class="fab fa-amazon"></i> Amazon Brasil</a></li>
-                    <li><a href="#">🛍️ Shopee</a></li>
-                    <li><a href="#">🛒 Mercado Livre</a></li>
-                    <li><a href="#">🛒 Americanas</a></li>
-                </ul>
-            </div>
-            <div class="footer-links">
-                <h4>Afiliados</h4>
-                <ul>
-                    <li><a href="https://associados.amazon.com.br" target="_blank">Amazon Associates</a></li>
-                    <li><a href="https://affiliate.shopee.com.br" target="_blank">Shopee Afiliados</a></li>
-                    <li><a href="https://www.mercadolivre.com.br/afiliados" target="_blank">ML Afiliados</a></li>
-                </ul>
-            </div>
-        </div>
-        <div class="footer-bottom">
-            <p>&copy; 2024 Vitrine Pro. Este site contém links de afiliados.</p>
-        </div>
-    </div>
-</footer>
-
-<!-- BACK TO TOP -->
-<button class="btt" id="btt" onclick="window.scrollTo({top:0,behavior:'smooth'})">
-    <i class="fas fa-chevron-up"></i>
-</button>
-
-<!-- TOAST -->
-<div class="toast" id="toast">
-    <span id="toastIcon">✅</span>
-    <span id="toastMsg">Sucesso!</span>
-</div>
-
-<!-- Modal de Edição -->
-<div class="modal-overlay" id="modalOverlay">
-    <div class="modal" id="modal">
-        <div class="modal-header">
-            <h3>Editar Produto</h3>
-            <button onclick="fecharModal()"><i class="fas fa-times"></i></button>
-        </div>
-        <div class="modal-body">
-            <input type="hidden" id="editId">
-            <div class="form-grid">
-                <div class="field-group full">
-                    <label>Nome do Produto</label>
-                    <input type="text" id="editTitle">
-                </div>
-                <div class="field-group full">
-                    <label>URL da Imagem</label>
-                    <input type="url" id="editImageUrl">
-                </div>
-                <div class="field-group">
-                    <label>Preço Original</label>
-                    <input type="number" id="editOldPriceM" step="0.01">
-                </div>
-                <div class="field-group">
-                    <label>Preço Atual</label>
-                    <input type="number" id="editCurrentPriceM" step="0.01">
-                </div>
-                <div class="field-group">
-                    <label>Categoria</label>
-                    <select id="editCategoryM">
-                        <option value="tecnologia">Tecnologia</option>
-                        <option value="moda">Moda</option>
-                        <option value="casa">Casa</option>
-                        <option value="esporte">Esportes</option>
-                        <option value="beleza">Beleza</option>
-                        <option value="livros">Livros</option>
-                        <option value="outros">Outros</option>
-                    </select>
-                </div>
-                <div class="field-group">
-                    <label>Loja</label>
-                    <select id="editStoreM">
-                        <option value="amazon">Amazon</option>
-                        <option value="shopee">Shopee</option>
-                        <option value="mercadolivre">Mercado Livre</option>
-                        <option value="outros">Outros</option>
-                    </select>
-                </div>
-                <div class="field-group full">
-                    <label>Link de Afiliado</label>
-                    <input type="url" id="editAffLinkM">
-                </div>
-            </div>
-        </div>
-        <div class="modal-footer">
-            <button class="btn btn-primary" onclick="salvarEdicao()">Salvar</button>
-            <button class="btn btn-ghost" onclick="fecharModal()">Cancelar</button>
-        </div>
-    </div>
-</div>
-
-<input type="file" id="importFile" accept=".json" style="display:none" onchange="processarImport(event)">
-
-<script src="script.js"></script>
-</body>
-</html>
+                    <!-- Auto -->
+                    <div class="ptab-content active" id="ptab-auto">
+                        <div class="fg full">
+                            <label>Link do Produto *</label>
+                            <div class="link-detect-wrap">
+                                <div class="store-detect" id="storeDetect">🔗</div>
+                                <input type="url" id="prodUrl" placeholder="Cole o link do produto (Amazon, Shopee, ML, Americanas...)">
+                                <button class="btn-fetch" onclick="fetchProduto()">
+                                    <i class="fas fa-magic"></i> Buscar
+                                </button>
+                            </div>
+                        </div>
+                        <div class="fetch-result" id="fetchResult" style="display:none">
+                            <div class="fr-img">
+                                <img id="frImg" src="" alt="">
+                                <div class="fr-store" id="frStore"></div>
+                            </div>
+                            <div class="fr-info">
+                                <input type="text" id="frTitle" class="fr-title-input" placeholder="Nome do produto">
+                                <div class="fr-prices">
+                                    <div class="fg">
+                                        <label>Preço Original</label>
+                                        <input type="number" id="frOldPrice" placeholder="0,00" step="0.01">
+                                    </div>
+                                    <div class="fg">
+                                        <label>Preço Atual *</label>
+                                        <input type="number" id="frCurrentPrice" placeholder="0,00" step="0.01">
+                                    </div>
+                                </div>
+                                <div class="fg">
+                                    <label>Link de Afiliado</label>
+                                    <input type="url" id="frAffLink" placeholder="Seu link de afiliado">
+                                </div>
+                                <div class="fg">
+                                    <label>Categoria</label>
+                                    <select id="frCat">
+                                        <option value="tecnologia">Tecnologia</option>
+                                        <option value="moda">Moda</op
