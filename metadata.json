@@ -1,6 +1,6 @@
 {
-  "name": "Thiago Lino - Links",
-  "description": "Social links and showcase page for Thiago Lino, including top recommended items and channels.",
+  "name": "Thiago Lino - Vitrine de Afiliado & Creator Hub",
+  "description": "Plataforma completa para gestão e divulgação de links de afiliado, infoprodutos, cursos, redes sociais integradas e serviços.",
   "requestFramePermissions": [],
   "majorCapabilities": [
     "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"

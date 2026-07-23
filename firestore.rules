@@ -1,43 +1,8 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-    
-    function isAdmin() {
-      return request.auth != null && (
-        request.auth.token.email == 'thiagolino974@gmail.com' ||
-        (request.auth.token.keys().hasAll(['email']) && request.auth.token.email.matches('(?i)thiagolino974@gmail.com'))
-      );
-    }
-
-    // Users collection (affiliates / vitrines)
-    match /users/{userId} {
-      allow read: if true;
-      allow create: if request.auth != null && request.auth.uid == userId;
-      allow update, delete: if request.auth != null && (
-        request.auth.uid == userId || isAdmin()
-      );
-    }
-
-    // System collection (global notice)
-    match /system/{docId} {
-      allow read: if true;
-      allow write, delete: if isAdmin();
-    }
-
-    // Support tickets collection
-    match /support_tickets/{ticketId} {
-      allow create: if true;
-      allow read, update, delete: if request.auth != null && (
-        isAdmin() ||
-        resource.data.targetProfileUid == request.auth.uid ||
-        resource.data.uid == request.auth.uid
-      );
-    }
-
-    // Analytics collection
-    match /analytics/{username} {
-      allow read, create, update: if true;
-      allow delete: if isAdmin();
+    match /{document=**} {
+      allow read, write: if true;
     }
   }
 }

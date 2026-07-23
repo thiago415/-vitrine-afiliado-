@@ -1,32 +1,43 @@
 {
-  "collections": {
+  "entities": {
     "users": {
-      "schema": {
-        "uid": "string",
-        "username": "string",
-        "displayName": "string",
-        "bio": "string",
-        "avatarEmoji": "string",
-        "theme": "string",
-        "socials": "object",
-        "links": "array",
-        "createdAt": "timestamp"
+      "title": "Users",
+      "description": "Affiliate profile accounts",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string" },
+        "name": { "type": "string" },
+        "handle": { "type": "string" },
+        "bio": { "type": "string" },
+        "avatarUrl": { "type": "string" },
+        "whatsappNumber": { "type": "string" },
+        "telegramChannel": { "type": "string" },
+        "email": { "type": "string" },
+        "createdAt": { "type": "string" }
       },
-      "indexes": [
-        {
-          "fields": [
-            { "fieldPath": "username", "order": "ASCENDING" }
-          ]
-        }
-      ]
+      "required": ["uid", "name", "handle"]
     },
-    "support_tickets": {
-      "schema": {
-        "uid": "string?",
-        "email": "string",
-        "description": "string",
-        "createdAt": "timestamp"
-      }
+    "products": {
+      "title": "Affiliate Products",
+      "description": "Products and affiliate links for each user",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "titlePt": { "type": "string" },
+        "titleEn": { "type": "string" },
+        "descPt": { "type": "string" },
+        "descEn": { "type": "string" },
+        "price": { "type": "number" },
+        "originalPrice": { "type": "number" },
+        "coupon": { "type": "string" },
+        "url": { "type": "string" },
+        "platform": { "type": "string" },
+        "category": { "type": "string" },
+        "imageUrl": { "type": "string" },
+        "badge": { "type": "string" },
+        "clicks": { "type": "number" }
+      },
+      "required": ["userId", "titlePt", "url", "platform"]
     }
   }
 }
