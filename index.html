@@ -1,13 +1,608 @@
 <!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>✨</text></svg>" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Thiago Lino - Links & Showcase</title>
-  </head>
-  <body class="bg-slate-950 text-slate-100 min-h-screen antialiased">
-    <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
-  </body>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vitrine Digital | As Melhores Ofertas da Internet</title>
+    <meta name="description" content="Encontre os melhores produtos com preços incríveis. Ofertas selecionadas especialmente para você.">
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body>
+
+    <!-- NAVBAR -->
+    <nav class="navbar" id="navbar">
+        <div class="container nav-container">
+            <a href="#" class="logo">
+                <i class="fas fa-store"></i>
+                <span>Vitrine<strong>Digital</strong></span>
+            </a>
+            <ul class="nav-links" id="navLinks">
+                <li><a href="#home">Início</a></li>
+                <li><a href="#ofertas">Ofertas</a></li>
+                <li><a href="#categorias">Categorias</a></li>
+                <li><a href="#depoimentos">Depoimentos</a></li>
+                <li><a href="#contato">Contato</a></li>
+            </ul>
+            <div class="nav-actions">
+                <button class="search-btn" id="searchToggle">
+                    <i class="fas fa-search"></i>
+                </button>
+                <button class="menu-toggle" id="menuToggle">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+            </div>
+        </div>
+        <!-- Search Bar -->
+        <div class="search-bar" id="searchBar">
+            <div class="container">
+                <input type="text" placeholder="Buscar produtos..." id="searchInput">
+                <button><i class="fas fa-search"></i></button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- HERO SECTION -->
+    <section class="hero" id="home">
+        <div class="hero-particles" id="particles"></div>
+        <div class="container hero-container">
+            <div class="hero-content" data-animate="fade-right">
+                <span class="hero-badge">🔥 Ofertas Imperdíveis</span>
+                <h1>Descubra os <span class="gradient-text">Melhores Produtos</span> com Preços Incríveis</h1>
+                <p>Selecionamos as melhores ofertas da internet para você economizar de verdade. Produtos de qualidade com os menores preços.</p>
+                <div class="hero-buttons">
+                    <a href="#ofertas" class="btn btn-primary btn-lg">
+                        <i class="fas fa-fire"></i> Ver Ofertas
+                    </a>
+                    <a href="#categorias" class="btn btn-outline btn-lg">
+                        <i class="fas fa-th-large"></i> Categorias
+                    </a>
+                </div>
+                <div class="hero-stats">
+                    <div class="stat">
+                        <strong>500+</strong>
+                        <span>Produtos</span>
+                    </div>
+                    <div class="stat">
+                        <strong>10k+</strong>
+                        <span>Clientes</span>
+                    </div>
+                    <div class="stat">
+                        <strong>98%</strong>
+                        <span>Satisfação</span>
+                    </div>
+                </div>
+            </div>
+            <div class="hero-image" data-animate="fade-left">
+                <div class="hero-card floating">
+                    <div class="hero-card-inner">
+                        <i class="fas fa-shopping-bag"></i>
+                        <span>Até 70% OFF</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="hero-wave">
+            <svg viewBox="0 0 1440 120" preserveAspectRatio="none">
+                <path d="M0,60 C360,120 1080,0 1440,60 L1440,120 L0,120 Z" fill="var(--bg-primary)"></path>
+            </svg>
+        </div>
+    </section>
+
+    <!-- BENEFITS BAR -->
+    <section class="benefits">
+        <div class="container">
+            <div class="benefits-grid">
+                <div class="benefit-item" data-animate="fade-up">
+                    <div class="benefit-icon">
+                        <i class="fas fa-truck-fast"></i>
+                    </div>
+                    <div class="benefit-text">
+                        <strong>Entrega Rápida</strong>
+                        <span>Para todo o Brasil</span>
+                    </div>
+                </div>
+                <div class="benefit-item" data-animate="fade-up" data-delay="100">
+                    <div class="benefit-icon">
+                        <i class="fas fa-shield-halved"></i>
+                    </div>
+                    <div class="benefit-text">
+                        <strong>Compra Segura</strong>
+                        <span>Sites confiáveis</span>
+                    </div>
+                </div>
+                <div class="benefit-item" data-animate="fade-up" data-delay="200">
+                    <div class="benefit-icon">
+                        <i class="fas fa-percent"></i>
+                    </div>
+                    <div class="benefit-text">
+                        <strong>Melhores Preços</strong>
+                        <span>Ofertas exclusivas</span>
+                    </div>
+                </div>
+                <div class="benefit-item" data-animate="fade-up" data-delay="300">
+                    <div class="benefit-icon">
+                        <i class="fas fa-headset"></i>
+                    </div>
+                    <div class="benefit-text">
+                        <strong>Suporte 24h</strong>
+                        <span>Sempre disponível</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CATEGORIAS -->
+    <section class="categorias" id="categorias">
+        <div class="container">
+            <div class="section-header" data-animate="fade-up">
+                <span class="section-tag">Navegue</span>
+                <h2>Categorias <span class="gradient-text">Populares</span></h2>
+                <p>Encontre exatamente o que procura navegando por nossas categorias</p>
+            </div>
+            <div class="categorias-grid">
+                <div class="categoria-card" data-animate="fade-up" data-delay="0" onclick="filterProducts('tecnologia')">
+                    <div class="categoria-icon" style="--cat-color: #6366f1">
+                        <i class="fas fa-laptop"></i>
+                    </div>
+                    <h3>Tecnologia</h3>
+                    <span>25 produtos</span>
+                </div>
+                <div class="categoria-card" data-animate="fade-up" data-delay="100" onclick="filterProducts('moda')">
+                    <div class="categoria-icon" style="--cat-color: #ec4899">
+                        <i class="fas fa-shirt"></i>
+                    </div>
+                    <h3>Moda</h3>
+                    <span>40 produtos</span>
+                </div>
+                <div class="categoria-card" data-animate="fade-up" data-delay="200" onclick="filterProducts('casa')">
+                    <div class="categoria-icon" style="--cat-color: #f59e0b">
+                        <i class="fas fa-couch"></i>
+                    </div>
+                    <h3>Casa & Decoração</h3>
+                    <span>30 produtos</span>
+                </div>
+                <div class="categoria-card" data-animate="fade-up" data-delay="300" onclick="filterProducts('esporte')">
+                    <div class="categoria-icon" style="--cat-color: #10b981">
+                        <i class="fas fa-dumbbell"></i>
+                    </div>
+                    <h3>Esportes</h3>
+                    <span>20 produtos</span>
+                </div>
+                <div class="categoria-card" data-animate="fade-up" data-delay="400" onclick="filterProducts('beleza')">
+                    <div class="categoria-icon" style="--cat-color: #f43f5e">
+                        <i class="fas fa-spa"></i>
+                    </div>
+                    <h3>Beleza</h3>
+                    <span>35 produtos</span>
+                </div>
+                <div class="categoria-card" data-animate="fade-up" data-delay="500" onclick="filterProducts('livros')">
+                    <div class="categoria-icon" style="--cat-color: #8b5cf6">
+                        <i class="fas fa-book"></i>
+                    </div>
+                    <h3>Livros</h3>
+                    <span>50 produtos</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- OFERTAS / PRODUTOS -->
+    <section class="ofertas" id="ofertas">
+        <div class="container">
+            <div class="section-header" data-animate="fade-up">
+                <span class="section-tag">Imperdíveis</span>
+                <h2>Ofertas em <span class="gradient-text">Destaque</span></h2>
+                <p>Produtos selecionados com os melhores descontos</p>
+            </div>
+
+            <!-- Filtro -->
+            <div class="filter-bar" data-animate="fade-up">
+                <button class="filter-btn active" onclick="filterProducts('todos')">Todos</button>
+                <button class="filter-btn" onclick="filterProducts('tecnologia')">Tecnologia</button>
+                <button class="filter-btn" onclick="filterProducts('moda')">Moda</button>
+                <button class="filter-btn" onclick="filterProducts('casa')">Casa</button>
+                <button class="filter-btn" onclick="filterProducts('esporte')">Esportes</button>
+                <button class="filter-btn" onclick="filterProducts('beleza')">Beleza</button>
+            </div>
+
+            <div class="produtos-grid" id="produtosGrid">
+                <!-- Produto 1 -->
+                <div class="produto-card" data-category="tecnologia" data-animate="fade-up">
+                    <div class="produto-badges">
+                        <span class="badge badge-discount">-35%</span>
+                        <span class="badge badge-hot">🔥 HOT</span>
+                    </div>
+                    <button class="wishlist-btn" onclick="toggleWishlist(this)">
+                        <i class="far fa-heart"></i>
+                    </button>
+                    <div class="produto-image">
+                        <img src="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400&q=80" alt="Fone de Ouvido Bluetooth" loading="lazy">
+                    </div>
+                    <div class="produto-info">
+                        <span class="produto-category">Tecnologia</span>
+                        <h3>Fone de Ouvido Bluetooth Premium</h3>
+                        <div class="produto-rating">
+                            <div class="stars">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star-half-alt"></i>
+                            </div>
+                            <span>(4.5) 234 avaliações</span>
+                        </div>
+                        <div class="produto-price">
+                            <span class="price-old">R$ 299,90</span>
+                            <span class="price-current">R$ 194,90</span>
+                        </div>
+                        <div class="produto-installment">
+                            <i class="far fa-credit-card"></i>
+                            em até 12x de R$ 16,24
+                        </div>
+                        <a href="#" class="btn btn-primary btn-block" target="_blank" rel="noopener">
+                            <i class="fas fa-external-link-alt"></i> Ver Oferta
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Produto 2 -->
+                <div class="produto-card" data-category="tecnologia" data-animate="fade-up" data-delay="100">
+                    <div class="produto-badges">
+                        <span class="badge badge-discount">-40%</span>
+                    </div>
+                    <button class="wishlist-btn" onclick="toggleWishlist(this)">
+                        <i class="far fa-heart"></i>
+                    </button>
+                    <div class="produto-image">
+                        <img src="https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=400&q=80" alt="Smartwatch Esportivo" loading="lazy">
+                    </div>
+                    <div class="produto-info">
+                        <span class="produto-category">Tecnologia</span>
+                        <h3>Smartwatch Esportivo Multifuncional</h3>
+                        <div class="produto-rating">
+                            <div class="stars">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="far fa-star"></i>
+                            </div>
+                            <span>(4.0) 189 avaliações</span>
+                        </div>
+                        <div class="produto-price">
+                            <span class="price-old">R$ 499,90</span>
+                            <span class="price-current">R$ 299,90</span>
+                        </div>
+                        <div class="produto-installment">
+                            <i class="far fa-credit-card"></i>
+                            em até 10x de R$ 29,99
+                        </div>
+                        <a href="#" class="btn btn-primary btn-block" target="_blank" rel="noopener">
+                            <i class="fas fa-external-link-alt"></i> Ver Oferta
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Produto 3 -->
+                <div class="produto-card" data-category="moda" data-animate="fade-up" data-delay="200">
+                    <div class="produto-badges">
+                        <span class="badge badge-discount">-50%</span>
+                        <span class="badge badge-hot">🔥 HOT</span>
+                    </div>
+                    <button class="wishlist-btn" onclick="toggleWishlist(this)">
+                        <i class="far fa-heart"></i>
+                    </button>
+                    <div class="produto-image">
+                        <img src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=400&q=80" alt="Tênis Esportivo" loading="lazy">
+                    </div>
+                    <div class="produto-info">
+                        <span class="produto-category">Moda</span>
+                        <h3>Tênis Esportivo Ultra Confort</h3>
+                        <div class="produto-rating">
+                            <div class="stars">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                            </div>
+                            <span>(5.0) 512 avaliações</span>
+                        </div>
+                        <div class="produto-price">
+                            <span class="price-old">R$ 399,90</span>
+                            <span class="price-current">R$ 199,90</span>
+                        </div>
+                        <div class="produto-installment">
+                            <i class="far fa-credit-card"></i>
+                            em até 6x de R$ 33,32
+                        </div>
+                        <a href="#" class="btn btn-primary btn-block" target="_blank" rel="noopener">
+                            <i class="fas fa-external-link-alt"></i> Ver Oferta
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Produto 4 -->
+                <div class="produto-card" data-category="casa" data-animate="fade-up" data-delay="0">
+                    <div class="produto-badges">
+                        <span class="badge badge-discount">-25%</span>
+                    </div>
+                    <button class="wishlist-btn" onclick="toggleWishlist(this)">
+                        <i class="far fa-heart"></i>
+                    </button>
+                    <div class="produto-image">
+                        <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&q=80" alt="Luminária LED" loading="lazy">
+                    </div>
+                    <div class="produto-info">
+                        <span class="produto-category">Casa & Decoração</span>
+                        <h3>Luminária LED Inteligente RGB</h3>
+                        <div class="produto-rating">
+                            <div class="stars">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star-half-alt"></i>
+                            </div>
+                            <span>(4.5) 98 avaliações</span>
+                        </div>
+                        <div class="produto-price">
+                            <span class="price-old">R$ 189,90</span>
+                            <span class="price-current">R$ 142,42</span>
+                        </div>
+                        <div class="produto-installment">
+                            <i class="far fa-credit-card"></i>
+                            em até 3x de R$ 47,47
+                        </div>
+                        <a href="#" class="btn btn-primary btn-block" target="_blank" rel="noopener">
+                            <i class="fas fa-external-link-alt"></i> Ver Oferta
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Produto 5 -->
+                <div class="produto-card" data-category="esporte" data-animate="fade-up" data-delay="100">
+                    <div class="produto-badges">
+                        <span class="badge badge-discount">-30%</span>
+                    </div>
+                    <button class="wishlist-btn" onclick="toggleWishlist(this)">
+                        <i class="far fa-heart"></i>
+                    </button>
+                    <div class="produto-image">
+                        <img src="https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?w=400&q=80" alt="Kit Fitness" loading="lazy">
+                    </div>
+                    <div class="produto-info">
+                        <span class="produto-category">Esportes</span>
+                        <h3>Kit Fitness Completo para Treino</h3>
+                        <div class="produto-rating">
+                            <div class="stars">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="far fa-star"></i>
+                            </div>
+                            <span>(4.0) 156 avaliações</span>
+                        </div>
+                        <div class="produto-price">
+                            <span class="price-old">R$ 249,90</span>
+                            <span class="price-current">R$ 174,93</span>
+                        </div>
+                        <div class="produto-installment">
+                            <i class="far fa-credit-card"></i>
+                            em até 5x de R$ 34,99
+                        </div>
+                        <a href="#" class="btn btn-primary btn-block" target="_blank" rel="noopener">
+                            <i class="fas fa-external-link-alt"></i> Ver Oferta
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Produto 6 -->
+                <div class="produto-card" data-category="beleza" data-animate="fade-up" data-delay="200">
+                    <div class="produto-badges">
+                        <span class="badge badge-discount">-45%</span>
+                        <span class="badge badge-hot">🔥 HOT</span>
+                    </div>
+                    <button class="wishlist-btn" onclick="toggleWishlist(this)">
+                        <i class="far fa-heart"></i>
+                    </button>
+                    <div class="produto-image">
+                        <img src="https://images.unsplash.com/photo-1596462502278-27bfdc403348?w=400&q=80" alt="Kit Skincare" loading="lazy">
+                    </div>
+                    <div class="produto-info">
+                        <span class="produto-category">Beleza</span>
+                        <h3>Kit Skincare Premium Anti-Idade</h3>
+                        <div class="produto-rating">
+                            <div class="stars">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                            </div>
+                            <span>(5.0) 340 avaliações</span>
+                        </div>
+                        <div class="produto-price">
+                            <span class="price-old">R$ 359,90</span>
+                            <span class="price-current">R$ 197,94</span>
+                        </div>
+                        <div class="produto-installment">
+                            <i class="far fa-credit-card"></i>
+                            em até 6x de R$ 32,99
+                        </div>
+                        <a href="#" class="btn btn-primary btn-block" target="_blank" rel="noopener">
+                            <i class="fas fa-external-link-alt"></i> Ver Oferta
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- BANNER CTA -->
+    <section class="cta-banner">
+        <div class="container">
+            <div class="cta-content" data-animate="fade-up">
+                <div class="cta-text">
+                    <h2>📬 Receba as Melhores Ofertas</h2>
+                    <p>Cadastre-se e receba notificações de ofertas exclusivas direto no seu e-mail!</p>
+                </div>
+                <form class="cta-form" onsubmit="handleSubscribe(event)">
+                    <input type="email" placeholder="Seu melhor e-mail" required>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-paper-plane"></i> Inscrever
+                    </button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- DEPOIMENTOS -->
+    <section class="depoimentos" id="depoimentos">
+        <div class="container">
+            <div class="section-header" data-animate="fade-up">
+                <span class="section-tag">Feedback</span>
+                <h2>O que Nossos <span class="gradient-text">Clientes</span> Dizem</h2>
+                <p>Histórias reais de pessoas que economizaram com nossas indicações</p>
+            </div>
+            <div class="depoimentos-grid">
+                <div class="depoimento-card" data-animate="fade-up" data-delay="0">
+                    <div class="depoimento-stars">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <p>"Encontrei produtos incríveis com preços que não achei em nenhum outro lugar. Recomendo muito!"</p>
+                    <div class="depoimento-author">
+                        <div class="author-avatar">
+                            <img src="https://i.pravatar.cc/100?img=1" alt="Maria Silva">
+                        </div>
+                        <div class="author-info">
+                            <strong>Maria Silva</strong>
+                            <span>Comprou 5 produtos</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="depoimento-card" data-animate="fade-up" data-delay="100">
+                    <div class="depoimento-stars">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <p>"Site excelente! Consegui economizar mais de R$ 500 nas compras do mês. Os descontos são reais!"</p>
+                    <div class="depoimento-author">
+                        <div class="author-avatar">
+                            <img src="https://i.pravatar.cc/100?img=3" alt="João Santos">
+                        </div>
+                        <div class="author-info">
+                            <strong>João Santos</strong>
+                            <span>Comprou 8 produtos</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="depoimento-card" data-animate="fade-up" data-delay="200">
+                    <div class="depoimento-stars">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star-half-alt"></i>
+                    </div>
+                    <p>"Prático e confiável. Sempre confiro as ofertas antes de comprar qualquer coisa. Virou meu site favorito!"</p>
+                    <div class="depoimento-author">
+                        <div class="author-avatar">
+                            <img src="https://i.pravatar.cc/100?img=5" alt="Ana Oliveira">
+                        </div>
+                        <div class="author-info">
+                            <strong>Ana Oliveira</strong>
+                            <span>Comprou 12 produtos</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="footer" id="contato">
+        <div class="footer-top">
+            <div class="container">
+                <div class="footer-grid">
+                    <div class="footer-col">
+                        <a href="#" class="footer-logo">
+                            <i class="fas fa-store"></i>
+                            <span>Vitrine<strong>Digital</strong></span>
+                        </a>
+                        <p>Sua vitrine de ofertas online. Encontre os melhores produtos com os menores preços da internet.</p>
+                        <div class="footer-social">
+                            <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                            <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                            <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+                            <a href="#" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+                            <a href="#" aria-label="TikTok"><i class="fab fa-tiktok"></i></a>
+                        </div>
+                    </div>
+                    <div class="footer-col">
+                        <h4>Links Rápidos</h4>
+                        <ul>
+                            <li><a href="#home">Início</a></li>
+                            <li><a href="#ofertas">Ofertas</a></li>
+                            <li><a href="#categorias">Categorias</a></li>
+                            <li><a href="#depoimentos">Depoimentos</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-col">
+                        <h4>Categorias</h4>
+                        <ul>
+                            <li><a href="#">Tecnologia</a></li>
+                            <li><a href="#">Moda</a></li>
+                            <li><a href="#">Casa & Decoração</a></li>
+                            <li><a href="#">Esportes</a></li>
+                            <li><a href="#">Beleza</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-col">
+                        <h4>Contato</h4>
+                        <ul class="contact-list">
+                            <li><i class="fas fa-envelope"></i> contato@vitrinedigital.com</li>
+                            <li><i class="fab fa-whatsapp"></i> (11) 99999-9999</li>
+                            <li><i class="fas fa-map-marker-alt"></i> São Paulo, SP</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <div class="container">
+                <p>&copy; 2024 Vitrine Digital. Todos os direitos reservados.</p>
+                <p>Este site contém links de afiliados. Ao comprar através dos nossos links, podemos receber uma comissão.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- BACK TO TOP -->
+    <button class="back-to-top" id="backToTop" aria-label="Voltar ao topo">
+        <i class="fas fa-chevron-up"></i>
+    </button>
+
+    <!-- Toast Notification -->
+    <div class="toast" id="toast">
+        <i class="fas fa-check-circle"></i>
+        <span id="toastMessage">Ação realizada com sucesso!</span>
+    </div>
+
+    <script src="script.js"></script>
+</body>
 </html>
