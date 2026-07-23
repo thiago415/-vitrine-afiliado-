@@ -1,1434 +1,1075 @@
 /* =============================================
-   LINKVITRINE PRO - Script Completo
-   Sistema de links + afiliados + importação
+   LINKVITRINE PRO
 ============================================= */
 
-// ===== STATE =====
-let state = {
-  links: [],
-  produtos: [],
-  sociais: {},
-  config: {
-    name: 'Usuário',
-    username: 'usuario',
-    bio: 'Seus melhores links aqui 🔥',
-    email: '',
-    avatar: '',
-    theme: 'dark',
-    btnStyle: 'rounded',
-    primaryColor: '#6366f1'
-  },
-  clicks: {},
-  analytics: {}
+// ===== DADOS =====
+let dados = {
+    links: [],
+    produtos: [],
+    config: {
+        nome: 'Usuário',
+        usuario: 'usuario',
+        bio: '🔥 Meus melhores links aqui!',
+        avatar: '',
+        tema: 'dark',
+        estilo: 'rounded',
+        cor: '#6366f1'
+    },
+    cliques: {}
 };
 
-const DB = 'linkvitrine_v2';
+const CHAVE = 'linkvitrine_dados';
 
-// ===== LOAD / SAVE =====
-function loadState() {
-  try {
-    const saved = localStorage.getItem(DB);
-    if (saved) state = { ...state, ...JSON.parse(saved) };
-  } catch(e) {}
+function carregarDados() {
+    try {
+        const s = localStorage.getItem(CHAVE);
+        if (s) dados = { ...dados, ...JSON.parse(s) };
+    } catch(e) {}
 }
 
-function saveState() {
-  try {
-    localStorage.setItem(DB, JSON.stringify(state));
-  } catch(e) {}
+function salvarDados() {
+    localStorage.setItem(CHAVE, JSON.stringify(dados));
 }
 
-// ===== INIT =====
+// ===== INICIAR =====
 document.addEventListener('DOMContentLoaded', () => {
-  loadState();
+    carregarDados();
+    iniciarUI();
+    renderizarTudo();
 
-  // Splash
-  setTimeout(() => {
-    document.getElementById('splash').classList.add('hidden');
-    document.getElementById('app').style.opacity = '1';
-  }, 1800);
-
-  initUI();
-  renderAll();
-  setupEvents();
-  setupSocialGrid();
-
-  // Demo data se vazio
-  if (!state.links.length && !state.produtos.length) {
-    addDemoData();
-  }
+    if (!dados.links.length && !dados.produtos.length) {
+        addDadosDemo();
+    }
 });
 
-function initUI() {
-  // Aplicar config
-  document.getElementById('greetName').textContent = state.config.name;
-  document.getElementById('previewUrl').textContent =
-    `linkvitrine.pro/${state.config.username}`;
-  document.getElementById('avatarInitial').textContent =
-    state.config.name.charAt(0).toUpperCase();
+function iniciarUI() {
+    const cfg = dados.config;
+    document.getElementById('nomeUsuario').textContent = cfg.nome;
+    document.getElementById('urlPublica').textContent = `linkvitrine.pro/${cfg.usuario}`;
+    document.getElementById('cfgNome').value = cfg.nome;
+    document.getElementById('cfgUsuario').value = cfg.usuario;
+    document.getElementById('cfgBio').value = cfg.bio;
 
-  // Config form
-  document.getElementById('cfgName').value = state.config.name;
-  document.getElementById('cfgUser').value = state.config.username;
-  document.getElementById('cfgBio').value = state.config.bio;
-  document.getElementById('cfgEmail').value = state.config.email || '';
+    // Avatar
+    if (cfg.avatar) {
+        atualizarAvatar(cfg.avatar);
+    } else {
+        document.getElementById('avatarLetra').textContent = cfg.nome.charAt(0).toUpperCase();
+    }
 
-  // Avatar
-  if (state.config.avatar) {
-    document.getElementById('tb-avatar') &&
-      (document.querySelector('.tb-avatar').innerHTML = `<img src="${state.config.avatar}">`);
-  }
+    // Tema ativo
+    document.querySelectorAll('.tema-card').forEach(t => {
+        t.classList.toggle('active', t.dataset.tema === cfg.tema);
+    });
 
-  // Tema
-  document.body.className = `theme-${state.config.theme === 'light' ? 'light' : 'dark'}`;
-  document.getElementById('themeIcon').className =
-    state.config.theme === 'light' ? 'fas fa-sun' : 'fas fa-moon';
+    // Estilo ativo
+    document.querySelectorAll('.estilo-btn').forEach(b => {
+        b.classList.toggle('active', b.dataset.estilo === cfg.estilo);
+    });
 }
 
-function renderAll() {
-  renderLinks();
-  renderProdutos();
-  renderMiniPreview();
-  renderAnalytics();
-  updateStats();
+function renderizarTudo() {
+    renderLinks();
+    renderProdutos();
+    renderPreviewRapido();
+    renderPreviewCelular();
+    atualizarStats();
 }
 
 // ===== NAVEGAÇÃO =====
-function showPage(id) {
-  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-  document.querySelectorAll('.snav-item').forEach(n => n.classList.remove('active'));
+function irPara(pagina) {
+    // Esconder todas as páginas
+    document.querySelectorAll('.page').forEach(p => p.classList.add('hidden'));
 
-  const page = document.getElementById(`page-${id}`);
-  if (page) page.classList.add('active');
+    // Mostrar página alvo
+    const paginaEl = document.getElementById(pagina);
+    if (paginaEl) paginaEl.classList.remove('hidden');
 
-  const nav = document.querySelector(`[data-page="${id}"]`);
-  if (nav) nav.classList.add('active');
+    // Atualizar nav
+    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+    const navAtivo = document.querySelector(`.nav-item[onclick*="${pagina}"]`);
+    if (navAtivo) navAtivo.classList.add('active');
 
-  const titles = {
-    dashboard: 'Dashboard', links: 'Meus Links', produtos: 'Produtos',
-    redes: 'Redes Sociais', import: 'Importar Links',
-    aparencia: 'Aparência', analytics: 'Analytics', config: 'Configurações'
-  };
-  document.getElementById('topbarTitle').textContent = titles[id] || id;
+    // Título topbar
+    const titulos = {
+        dashboard: 'Dashboard',
+        links: 'Meus Links',
+        produtos: 'Produtos',
+        importar: 'Importar Links',
+        aparencia: 'Aparência',
+        config: 'Configurações'
+    };
+    document.getElementById('pageTitle').textContent = titulos[pagina] || pagina;
 
-  // Fechar sidebar mobile
-  closeSidebarMobile();
+    // Renderizar preview ao abrir aparência
+    if (pagina === 'aparencia') renderPreviewCelular();
 
-  // Renderizar live preview se aparência
-  if (id === 'aparencia') renderLivePreview();
+    fecharSidebar();
 }
 
-function setupEvents() {
-  // Nav items
-  document.querySelectorAll('.snav-item').forEach(item => {
-    item.addEventListener('click', (e) => {
-      e.preventDefault();
-      showPage(item.dataset.page);
-    });
-  });
-
-  // Prod tabs
-  document.querySelectorAll('.ptab').forEach(tab => {
-    tab.addEventListener('click', () => {
-      document.querySelectorAll('.ptab').forEach(t => t.classList.remove('active'));
-      document.querySelectorAll('.ptab-content').forEach(t => t.classList.remove('active'));
-      tab.classList.add('active');
-      document.getElementById(`ptab-${tab.dataset.ptab}`)?.classList.add('active');
-    });
-  });
-
-  // Icon preview
-  const iconInput = document.getElementById('linkIcon');
-  if (iconInput) {
-    iconInput.addEventListener('input', () => {
-      document.getElementById('linkIconPreview').className = iconInput.value;
-    });
-  }
-
-  // Search na página links
-  const searchInput = document.getElementById('searchInput');
-  if (searchInput) {
-    searchInput.addEventListener('input', (e) => {
-      filterLinks(e.target.value);
-    });
-  }
-
-  // Detectar URL de link
-  const linkUrl = document.getElementById('linkUrl');
-  if (linkUrl) {
-    linkUrl.addEventListener('input', (e) => detectLinkInfo(e.target.value));
-  }
-
-  // Detectar URL de produto
-  const prodUrl = document.getElementById('prodUrl');
-  if (prodUrl) {
-    prodUrl.addEventListener('input', (e) => {
-      const loja = detectStore(e.target.value);
-      const info = getStoreInfo(loja);
-      document.getElementById('storeDetect').textContent = info.icon;
-    });
-  }
+// ===== SIDEBAR =====
+function abrirSidebar() {
+    document.getElementById('sidebar').classList.add('aberta');
+    document.getElementById('overlay').classList.add('show');
 }
 
-// ===== SIDEBAR ===== 
-function toggleSidebar() {
-  const sidebar = document.getElementById('sidebar');
-  const overlay = document.getElementById('sidebarOverlay');
-  sidebar.classList.toggle('open');
-  overlay.classList.toggle('show');
-}
-
-function closeSidebarMobile() {
-  if (window.innerWidth <= 900) {
-    document.getElementById('sidebar').classList.remove('open');
-    document.getElementById('sidebarOverlay').classList.remove('show');
-  }
+function fecharSidebar() {
+    document.getElementById('sidebar').classList.remove('aberta');
+    document.getElementById('overlay').classList.remove('show');
 }
 
 // ===== LINKS =====
-function openAddLink() {
-  const form = document.getElementById('addLinkForm');
-  form.style.display = 'block';
-  form.scrollIntoView({ behavior: 'smooth' });
+let editandoLinkId = null;
+
+function toggleFormLink() {
+    const form = document.getElementById('formLink');
+    const aberto = !form.classList.contains('hidden');
+
+    if (aberto) {
+        form.classList.add('hidden');
+        limparFormLink();
+        editandoLinkId = null;
+    } else {
+        form.classList.remove('hidden');
+        form.scrollIntoView({ behavior: 'smooth' });
+    }
+
+    // Resetar botão
+    const btnAdd = document.querySelector('#page-links .btn-primary');
+    if (btnAdd) {
+        btnAdd.innerHTML = '<i class="fas fa-plus"></i> Novo Link';
+        btnAdd.onclick = toggleFormLink;
+    }
 }
 
-function closeAddLink() {
-  document.getElementById('addLinkForm').style.display = 'none';
-  clearLinkForm();
+function limparFormLink() {
+    document.getElementById('linkUrl').value = '';
+    document.getElementById('linkTitulo').value = '';
+    document.getElementById('linkIcone').value = 'fas fa-link';
+    document.getElementById('iconePreview').className = 'fas fa-link';
+    document.getElementById('linkCor').value = '#6366f1';
+    document.getElementById('linkDestaque').checked = false;
 }
 
-function clearLinkForm() {
-  ['linkUrl', 'linkTitle'].forEach(id => {
-    const el = document.getElementById(id);
-    if (el) el.value = '';
-  });
-  document.getElementById('linkIcon').value = 'fas fa-link';
-  document.getElementById('linkIconPreview').className = 'fas fa-link';
-  document.getElementById('urlFavicon').textContent = '🔗';
-  document.getElementById('linkColor').value = '#6366f1';
+function definirCor(cor) {
+    document.getElementById('linkCor').value = cor;
 }
 
-function detectLinkInfo(url) {
-  if (!url || !url.startsWith('http')) return;
+function autoDetectarLink(url) {
+    if (!url || !url.startsWith('http')) return;
 
-  const loja = detectStore(url);
-  const info = getStoreInfo(loja);
-  document.getElementById('urlFavicon').textContent = info.icon;
+    const info = detectarInfoLink(url);
+    if (!info) return;
 
-  // Auto-preencher título e ícone
-  const titleEl = document.getElementById('linkTitle');
-  const iconEl = document.getElementById('linkIcon');
-
-  const autoInfo = getAutoLinkInfo(url);
-  if (autoInfo && !titleEl.value) {
-    titleEl.value = autoInfo.title;
-    iconEl.value = autoInfo.icon;
-    document.getElementById('linkIconPreview').className = autoInfo.icon;
-    document.getElementById('linkColor').value = autoInfo.color;
-    setColor(autoInfo.color, 'linkColor');
-  }
+    if (!document.getElementById('linkTitulo').value) {
+        document.getElementById('linkTitulo').value = info.titulo;
+    }
+    document.getElementById('linkIcone').value = info.icone;
+    document.getElementById('iconePreview').className = info.icone;
+    document.getElementById('linkCor').value = info.cor;
 }
 
-function getAutoLinkInfo(url) {
-  const u = url.toLowerCase();
-  const map = [
-    { test: 'instagram.com', title: 'Instagram', icon: 'fab fa-instagram', color: '#E1306C' },
-    { test: 'tiktok.com', title: 'TikTok', icon: 'fab fa-tiktok', color: '#000000' },
-    { test: 'youtube.com', title: 'YouTube', icon: 'fab fa-youtube', color: '#FF0000' },
-    { test: 'youtu.be', title: 'YouTube', icon: 'fab fa-youtube', color: '#FF0000' },
-    { test: 'twitter.com', title: 'Twitter / X', icon: 'fab fa-twitter', color: '#1DA1F2' },
-    { test: 'x.com', title: 'X (Twitter)', icon: 'fab fa-x-twitter', color: '#000000' },
-    { test: 'facebook.com', title: 'Facebook', icon: 'fab fa-facebook', color: '#1877F2' },
-    { test: 'linkedin.com', title: 'LinkedIn', icon: 'fab fa-linkedin', color: '#0A66C2' },
-    { test: 'spotify.com', title: 'Spotify', icon: 'fab fa-spotify', color: '#1DB954' },
-    { test: 'discord.com', title: 'Discord', icon: 'fab fa-discord', color: '#5865F2' },
-    { test: 'discord.gg', title: 'Discord', icon: 'fab fa-discord', color: '#5865F2' },
-    { test: 'whatsapp.com', title: 'WhatsApp', icon: 'fab fa-whatsapp', color: '#25D366' },
-    { test: 'wa.me', title: 'WhatsApp', icon: 'fab fa-whatsapp', color: '#25D366' },
-    { test: 'telegram', title: 'Telegram', icon: 'fab fa-telegram', color: '#26A5E4' },
-    { test: 'twitch.tv', title: 'Twitch', icon: 'fab fa-twitch', color: '#9146FF' },
-    { test: 'github.com', title: 'GitHub', icon: 'fab fa-github', color: '#333333' },
-    { test: 'amazon.com', title: 'Amazon', icon: 'fab fa-amazon', color: '#FF9900' },
-    { test: 'shopee.com', title: 'Shopee', icon: 'fas fa-shopping-bag', color: '#EE4D2D' },
-    { test: 'mercadolivre', title: 'Mercado Livre', icon: 'fas fa-shopping-cart', color: '#FFD700' },
-    { test: 'hotmart.com', title: 'Hotmart', icon: 'fas fa-fire', color: '#F04E23' },
-    { test: 'eduzz.com', title: 'Eduzz', icon: 'fas fa-graduation-cap', color: '#3B82F6' },
-    { test: 'kiwify.com', title: 'Kiwify', icon: 'fas fa-seedling', color: '#10B981' },
-  ];
+function detectarInfoLink(url) {
+    const u = url.toLowerCase();
+    const mapa = [
+        { test: 'instagram.com', titulo: 'Instagram', icone: 'fab fa-instagram', cor: '#E1306C' },
+        { test: 'tiktok.com', titulo: 'TikTok', icone: 'fab fa-tiktok', cor: '#000000' },
+        { test: 'youtube.com', titulo: 'YouTube', icone: 'fab fa-youtube', cor: '#FF0000' },
+        { test: 'youtu.be', titulo: 'YouTube', icone: 'fab fa-youtube', cor: '#FF0000' },
+        { test: 'twitter.com', titulo: 'Twitter', icone: 'fab fa-twitter', cor: '#1DA1F2' },
+        { test: 'x.com', titulo: 'X (Twitter)', icone: 'fab fa-x-twitter', cor: '#000000' },
+        { test: 'facebook.com', titulo: 'Facebook', icone: 'fab fa-facebook', cor: '#1877F2' },
+        { test: 'linkedin.com', titulo: 'LinkedIn', icone: 'fab fa-linkedin', cor: '#0A66C2' },
+        { test: 'spotify.com', titulo: 'Spotify', icone: 'fab fa-spotify', cor: '#1DB954' },
+        { test: 'discord', titulo: 'Discord', icone: 'fab fa-discord', cor: '#5865F2' },
+        { test: 'wa.me', titulo: 'WhatsApp', icone: 'fab fa-whatsapp', cor: '#25D366' },
+        { test: 'whatsapp', titulo: 'WhatsApp', icone: 'fab fa-whatsapp', cor: '#25D366' },
+        { test: 'telegram', titulo: 'Telegram', icone: 'fab fa-telegram', cor: '#26A5E4' },
+        { test: 'twitch', titulo: 'Twitch', icone: 'fab fa-twitch', cor: '#9146FF' },
+        { test: 'github', titulo: 'GitHub', icone: 'fab fa-github', cor: '#333333' },
+        { test: 'amazon', titulo: 'Amazon', icone: 'fab fa-amazon', cor: '#FF9900' },
+        { test: 'shopee', titulo: 'Shopee', icone: 'fas fa-shopping-bag', cor: '#EE4D2D' },
+        { test: 'mercadolivre', titulo: 'Mercado Livre', icone: 'fas fa-shopping-cart', cor: '#FFD700' },
+        { test: 'hotmart', titulo: 'Hotmart', icone: 'fas fa-fire', cor: '#F04E23' },
+        { test: 'linktr.ee', titulo: 'Linktree', icone: 'fas fa-tree', cor: '#43E660' },
+    ];
 
-  for (const item of map) {
-    if (u.includes(item.test)) return item;
-  }
-  return null;
+    for (const item of mapa) {
+        if (u.includes(item.test)) return item;
+    }
+
+    return { titulo: '', icone: 'fas fa-link', cor: '#6366f1' };
 }
 
-function adicionarLink() {
-  const url = document.getElementById('linkUrl').value.trim();
-  const title = document.getElementById('linkTitle').value.trim();
+function salvarLink() {
+    const url = document.getElementById('linkUrl').value.trim();
+    const titulo = document.getElementById('linkTitulo').value.trim();
 
-  if (!url || !title) {
-    showToast('❌ URL e título são obrigatórios');
-    return;
-  }
+    if (!url || !titulo) {
+        toast('❌ URL e título são obrigatórios!');
+        return;
+    }
 
-  const link = {
-    id: Date.now().toString(),
-    url,
-    title,
-    icon: document.getElementById('linkIcon').value || 'fas fa-link',
-    color: document.getElementById('linkColor').value || '#6366f1',
-    category: document.getElementById('linkCat').value,
-    highlight: document.getElementById('linkHighlight').checked,
-    newTab: document.getElementById('linkNewTab').checked,
-    active: true,
-    clicks: 0,
-    createdAt: new Date().toISOString()
-  };
+    if (editandoLinkId) {
+        // Editar existente
+        const idx = dados.links.findIndex(l => l.id === editandoLinkId);
+        if (idx >= 0) {
+            dados.links[idx] = {
+                ...dados.links[idx],
+                url,
+                titulo,
+                icone: document.getElementById('linkIcone').value || 'fas fa-link',
+                cor: document.getElementById('linkCor').value || '#6366f1',
+                destaque: document.getElementById('linkDestaque').checked
+            };
+        }
+        editandoLinkId = null;
+        toast('✅ Link atualizado!');
+    } else {
+        // Novo link
+        const link = {
+            id: Date.now().toString(),
+            url,
+            titulo,
+            icone: document.getElementById('linkIcone').value || 'fas fa-link',
+            cor: document.getElementById('linkCor').value || '#6366f1',
+            destaque: document.getElementById('linkDestaque').checked,
+            ativo: true,
+            criadoEm: new Date().toISOString()
+        };
+        dados.links.unshift(link);
+        toast('✅ Link adicionado!');
+    }
 
-  state.links.unshift(link);
-  saveState();
-  renderLinks();
-  renderMiniPreview();
-  updateStats();
-  closeAddLink();
-  showToast('✅ Link adicionado!');
+    salvarDados();
+    renderLinks();
+    renderPreviewRapido();
+    renderPreviewCelular();
+    atualizarStats();
+    toggleFormLink();
 }
 
-function renderLinks(filter = '') {
-  const list = document.getElementById('linksList');
-  const empty = document.getElementById('emptyLinks');
-  const badge = document.getElementById('badgeLinks');
+function renderLinks() {
+    const lista = document.getElementById('listaLinks');
+    const semLinks = document.getElementById('semLinks');
 
-  let links = state.links;
-  if (filter) {
-    links = links.filter(l =>
-      l.title.toLowerCase().includes(filter) ||
-      l.url.toLowerCase().includes(filter)
-    );
-  }
+    if (!lista) return;
 
-  badge.textContent = state.links.length;
+    if (!dados.links.length) {
+        semLinks.classList.remove('hidden');
+        lista.innerHTML = '';
+        lista.appendChild(semLinks);
+        return;
+    }
 
-  if (!links.length) {
-    list.innerHTML = '';
-    empty.classList.add('show');
-    return;
-  }
-
-  empty.classList.remove('show');
-  list.innerHTML = links.map(link => createLinkItemHTML(link)).join('');
-}
-
-function createLinkItemHTML(link) {
-  const autoInfo = getAutoLinkInfo(link.url);
-  const icon = link.icon || autoInfo?.icon || 'fas fa-link';
-  const color = link.color || autoInfo?.color || '#6366f1';
-
-  return `
-    <div class="link-item" data-id="${link.id}">
-      <span class="li-drag">⠿</span>
-      <div class="li-icon" style="background:${color}">
-        <i class="${icon}"></i>
-      </div>
-      <div class="li-info">
-        <div class="li-title">${link.title}</div>
-        <div class="li-url">${link.url}</div>
-      </div>
-      ${link.highlight ? '<span class="li-badge">⭐ Destaque</span>' : ''}
-      <div class="li-clicks">
-        <i class="fas fa-mouse-pointer"></i>
-        ${state.clicks[link.id] || 0}
-      </div>
-      <div class="li-actions">
-        <button class="li-act li-toggle ${link.active ? 'on' : ''}"
-          onclick="toggleLink('${link.id}')" title="${link.active ? 'Desativar' : 'Ativar'}">
-          <i class="fas fa-${link.active ? 'toggle-on' : 'toggle-off'}"></i>
-        </button>
-        <button class="li-act li-edit" onclick="editarLink('${link.id}')" title="Editar">
-          <i class="fas fa-pen"></i>
-        </button>
-        <button class="li-act li-del" onclick="removerLink('${link.id}')" title="Remover">
-          <i class="fas fa-trash"></i>
-        </button>
-      </div>
-    </div>
-  `;
+    semLinks.classList.add('hidden');
+    lista.innerHTML = dados.links.map(link => `
+        <div class="link-item" data-id="${link.id}">
+            <div class="link-icone" style="background:${link.cor || '#6366f1'}">
+                <i class="${link.icone || 'fas fa-link'}"></i>
+            </div>
+            <div class="link-info">
+                <div class="link-titulo">${link.titulo}</div>
+                <div class="link-url">${link.url}</div>
+            </div>
+            <div class="link-acoes">
+                <button class="btn-acao btn-toggle ${link.ativo ? 'ativo' : ''}"
+                    onclick="toggleLink('${link.id}')" title="${link.ativo ? 'Desativar' : 'Ativar'}">
+                    <i class="fas fa-${link.ativo ? 'toggle-on' : 'toggle-off'}"></i>
+                </button>
+                <button class="btn-acao btn-editar"
+                    onclick="editarLink('${link.id}')" title="Editar">
+                    <i class="fas fa-pen"></i>
+                </button>
+                <button class="btn-acao btn-deletar"
+                    onclick="removerLink('${link.id}')" title="Remover">
+                    <i class="fas fa-trash"></i>
+                </button>
+            </div>
+        </div>
+    `).join('') + semLinks.outerHTML;
 }
 
 function toggleLink(id) {
-  const link = state.links.find(l => l.id === id);
-  if (link) {
-    link.active = !link.active;
-    saveState();
-    renderLinks();
-    renderMiniPreview();
-  }
-}
-
-function removerLink(id) {
-  if (!confirm('Remover este link?')) return;
-  state.links = state.links.filter(l => l.id !== id);
-  saveState();
-  renderLinks();
-  renderMiniPreview();
-  updateStats();
-  showToast('🗑️ Link removido');
+    const link = dados.links.find(l => l.id === id);
+    if (link) {
+        link.ativo = !link.ativo;
+        salvarDados();
+        renderLinks();
+        renderPreviewRapido();
+        renderPreviewCelular();
+    }
 }
 
 function editarLink(id) {
-  const link = state.links.find(l => l.id === id);
-  if (!link) return;
+    const link = dados.links.find(l => l.id === id);
+    if (!link) return;
 
-  openAddLink();
-  document.getElementById('linkUrl').value = link.url;
-  document.getElementById('linkTitle').value = link.title;
-  document.getElementById('linkIcon').value = link.icon;
-  document.getElementById('linkIconPreview').className = link.icon;
-  document.getElementById('linkColor').value = link.color;
-  document.getElementById('linkCat').value = link.category;
-  document.getElementById('linkHighlight').checked = link.highlight;
-  document.getElementById('linkNewTab').checked = link.newTab;
+    editandoLinkId = id;
+    irPara('links');
 
-  // Substituir botão para editar
-  const btn = document.querySelector('#addLinkForm .btn-primary');
-  if (btn) {
-    btn.textContent = '💾 Salvar';
-    btn.onclick = () => salvarEdicaoLink(id);
-  }
+    const form = document.getElementById('formLink');
+    form.classList.remove('hidden');
+
+    document.getElementById('linkUrl').value = link.url;
+    document.getElementById('linkTitulo').value = link.titulo;
+    document.getElementById('linkIcone').value = link.icone;
+    document.getElementById('iconePreview').className = link.icone;
+    document.getElementById('linkCor').value = link.cor;
+    document.getElementById('linkDestaque').checked = link.destaque;
+
+    form.scrollIntoView({ behavior: 'smooth' });
+
+    const btnSalvar = form.querySelector('.btn-primary');
+    if (btnSalvar) btnSalvar.innerHTML = '<i class="fas fa-save"></i> Salvar Edição';
 }
 
-function salvarEdicaoLink(id) {
-  const idx = state.links.findIndex(l => l.id === id);
-  if (idx < 0) return;
-
-  state.links[idx] = {
-    ...state.links[idx],
-    url: document.getElementById('linkUrl').value.trim(),
-    title: document.getElementById('linkTitle').value.trim(),
-    icon: document.getElementById('linkIcon').value,
-    color: document.getElementById('linkColor').value,
-    category: document.getElementById('linkCat').value,
-    highlight: document.getElementById('linkHighlight').checked,
-    newTab: document.getElementById('linkNewTab').checked
-  };
-
-  saveState();
-  renderLinks();
-  renderMiniPreview();
-  closeAddLink();
-  showToast('✅ Link atualizado!');
-}
-
-function filterLinks(query) {
-  renderLinks(query.toLowerCase());
+function removerLink(id) {
+    if (!confirm('Remover este link?')) return;
+    dados.links = dados.links.filter(l => l.id !== id);
+    salvarDados();
+    renderLinks();
+    renderPreviewRapido();
+    renderPreviewCelular();
+    atualizarStats();
+    toast('🗑️ Link removido');
 }
 
 // ===== PRODUTOS =====
-function openAddProduto() {
-  const form = document.getElementById('addProdutoForm');
-  form.style.display = 'block';
-  form.scrollIntoView({ behavior: 'smooth' });
+function toggleFormProduto() {
+    const form = document.getElementById('formProduto');
+    form.classList.toggle('hidden');
+    if (!form.classList.contains('hidden')) {
+        form.scrollIntoView({ behavior: 'smooth' });
+    }
 }
 
 function closeAddProduto() {
-  document.getElementById('addProdutoForm').style.display = 'none';
-  document.getElementById('fetchResult').style.display = 'none';
+    document.getElementById('formProduto').classList.add('hidden');
 }
 
-function detectStore(url) {
-  if (!url) return 'outros';
-  const u = url.toLowerCase();
-  if (u.includes('amazon') || u.includes('amzn')) return 'amazon';
-  if (u.includes('shopee')) return 'shopee';
-  if (u.includes('mercadolivre') || u.includes('mercadolibre') || u.includes('meli.com')) return 'mercadolivre';
-  if (u.includes('americanas')) return 'americanas';
-  if (u.includes('magalu') || u.includes('magazineluiza')) return 'magalu';
-  if (u.includes('aliexpress')) return 'aliexpress';
-  if (u.includes('casasbahia')) return 'casasbahia';
-  return 'outros';
+function trocarTabProd(tab, btn) {
+    document.querySelectorAll('.tab-mini').forEach(t => t.classList.remove('active'));
+    btn.classList.add('active');
+
+    document.getElementById('tabAuto').classList.toggle('hidden', tab !== 'auto');
+    document.getElementById('tabManual').classList.toggle('hidden', tab !== 'manual');
 }
 
-function getStoreInfo(store) {
-  const s = {
-    amazon: { nome: 'Amazon', icon: '📦', color: '#FF9900', class: 'store-amazon' },
-    shopee: { nome: 'Shopee', icon: '🛍️', color: '#EE4D2D', class: 'store-shopee' },
-    mercadolivre: { nome: 'Mercado Livre', icon: '🛒', color: '#FFD700', class: 'store-mercadolivre' },
-    americanas: { nome: 'Americanas', icon: '🏬', color: '#e60014', class: 'store-outros' },
-    magalu: { nome: 'Magalu', icon: '🛒', color: '#0086ff', class: 'store-outros' },
-    aliexpress: { nome: 'AliExpress', icon: '📦', color: '#ff6600', class: 'store-outros' },
-    casasbahia: { nome: 'Casas Bahia', icon: '🏪', color: '#f7a800', class: 'store-outros' },
-    outros: { nome: 'Loja', icon: '🏪', color: '#6366f1', class: 'store-outros' }
-  };
-  return s[store] || s.outros;
+function detectarLoja(url) {
+    const u = url.toLowerCase();
+    if (u.includes('amazon') || u.includes('amzn')) return 'amazon';
+    if (u.includes('shopee')) return 'shopee';
+    if (u.includes('mercadolivre') || u.includes('mercadolibre')) return 'mercadolivre';
+    if (u.includes('americanas')) return 'americanas';
+    if (u.includes('magalu') || u.includes('magazineluiza')) return 'magalu';
+    if (u.includes('aliexpress')) return 'aliexpress';
+    return 'outros';
 }
 
-async function fetchProduto() {
-  const url = document.getElementById('prodUrl').value.trim();
-  if (!url) { showToast('❌ Cole um link'); return; }
-
-  try { new URL(url); } catch { showToast('❌ URL inválida'); return; }
-
-  const store = detectStore(url);
-  const info = getStoreInfo(store);
-
-  document.getElementById('storeDetect').textContent = info.icon;
-  document.getElementById('fetchResult').style.display = 'grid';
-  document.getElementById('frImg').src = '';
-  document.getElementById('frImg').parentElement.innerHTML = `
-    <div style="font-size:3rem;text-align:center;padding:30px">${info.icon}</div>
-    <div class="fr-store ${info.class}">${info.icon} ${info.nome}</div>
-  `;
-  document.getElementById('frTitle').value = '';
-  document.getElementById('frAffLink').value = url;
-
-  // Extrair nome da URL
-  const nome = extrairNomeProduto(url, store);
-  document.getElementById('frTitle').value = nome;
-
-  showToast(`${info.icon} ${info.nome} detectado! Preencha os dados.`);
+function getInfoLoja(loja) {
+    const lojas = {
+        amazon:       { nome: 'Amazon',        icone: '📦', classeCSS: 'loja-amazon' },
+        shopee:       { nome: 'Shopee',         icone: '🛍️', classeCSS: 'loja-shopee' },
+        mercadolivre: { nome: 'Mercado Livre',  icone: '🛒', classeCSS: 'loja-mercadolivre' },
+        americanas:   { nome: 'Americanas',     icone: '🏬', classeCSS: 'loja-outros' },
+        magalu:       { nome: 'Magalu',         icone: '🛒', classeCSS: 'loja-outros' },
+        aliexpress:   { nome: 'AliExpress',     icone: '📦', classeCSS: 'loja-outros' },
+        outros:       { nome: 'Loja',           icone: '🏪', classeCSS: 'loja-outros' }
+    };
+    return lojas[loja] || lojas.outros;
 }
 
-function extrairNomeProduto(url, store) {
-  try {
-    const urlObj = new URL(url);
-    const path = urlObj.pathname.split('/').filter(Boolean);
+function buscarProduto() {
+    const url = document.getElementById('prodUrl').value.trim();
+    if (!url) { toast('❌ Cole o link do produto'); return; }
 
-    if (store === 'amazon') {
-      const dpIdx = path.findIndex(p => p === 'dp');
-      if (dpIdx > 0) {
-        return decodeURIComponent(path[dpIdx - 1])
-          .replace(/-/g, ' ')
-          .replace(/\b\w/g, c => c.toUpperCase())
-          .substring(0, 80);
-      }
-    }
+    try { new URL(url); } catch { toast('❌ URL inválida'); return; }
 
-    if (store === 'mercadolivre') {
-      const last = path[path.length - 1];
-      return last.replace(/-MLB.*/g, '').replace(/-/g, ' ')
-        .replace(/\b\w/g, c => c.toUpperCase()).substring(0, 80);
-    }
+    const loja = detectarLoja(url);
+    const info = getInfoLoja(loja);
 
-    if (store === 'shopee') {
-      const last = path[path.length - 1];
-      return last.replace(/-i\.\d+\.\d+/g, '').replace(/-/g, ' ')
-        .replace(/\b\w/g, c => c.toUpperCase()).substring(0, 80);
-    }
+    document.getElementById('lojaIcone').textContent = info.icone;
+    document.getElementById('resultadoBusca').classList.remove('hidden');
+    document.getElementById('prodNome').value = extrairNomeProduto(url, loja);
+    document.getElementById('prodAfiliado').value = url;
 
-    // Genérico
-    const last = path[path.length - 1];
-    if (last && last.length > 3) {
-      return decodeURIComponent(last).replace(/[-_]/g, ' ')
-        .replace(/\b\w/g, c => c.toUpperCase()).substring(0, 80);
-    }
+    toast(`${info.icone} ${info.nome} detectado! Preencha os dados.`);
+}
 
-    return `Produto - ${getStoreInfo(store).nome}`;
-  } catch {
-    return `Produto - ${getStoreInfo(store).nome}`;
-  }
+function extrairNomeProduto(url, loja) {
+    try {
+        const u = new URL(url);
+        const partes = u.pathname.split('/').filter(Boolean);
+
+        if (loja === 'amazon') {
+            const idx = partes.findIndex(p => p === 'dp');
+            if (idx > 0) return capitalize(decodeURIComponent(partes[idx - 1]).replace(/-/g, ' ')).substring(0, 80);
+        }
+        if (loja === 'mercadolivre') {
+            const ultimo = partes[partes.length - 1];
+            return capitalize(ultimo.replace(/-MLB.*/g, '').replace(/-/g, ' ')).substring(0, 80);
+        }
+        if (loja === 'shopee') {
+            const ultimo = partes[partes.length - 1];
+            return capitalize(ultimo.replace(/-i\.\d+\.\d+/g, '').replace(/-/g, ' ')).substring(0, 80);
+        }
+
+        const ultimo = partes[partes.length - 1];
+        if (ultimo && ultimo.length > 3) {
+            return capitalize(decodeURIComponent(ultimo).replace(/[-_]/g, ' ')).substring(0, 80);
+        }
+    } catch(e) {}
+
+    return `Produto - ${getInfoLoja(loja).nome}`;
+}
+
+function capitalize(str) {
+    return str.split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase()).join(' ');
 }
 
 function salvarProdutoAuto() {
-  const url = document.getElementById('prodUrl').value.trim();
-  const title = document.getElementById('frTitle').value.trim();
-  const currentPrice = parseFloat(document.getElementById('frCurrentPrice').value) || 0;
-  const oldPrice = parseFloat(document.getElementById('frOldPrice').value) || 0;
-  const affLink = document.getElementById('frAffLink').value.trim() || url;
-  const category = document.getElementById('frCat').value;
-  const store = detectStore(url);
+    const nome = document.getElementById('prodNome').value.trim();
+    const afiliado = document.getElementById('prodAfiliado').value.trim();
+    const url = document.getElementById('prodUrl').value.trim();
 
-  if (!title || !affLink) {
-    showToast('❌ Nome e link são obrigatórios');
-    return;
-  }
+    if (!nome) { toast('❌ Nome é obrigatório'); return; }
 
-  const produto = {
-    id: Date.now().toString(),
-    title,
-    image: '',
-    currentPrice,
-    oldPrice,
-    store,
-    category,
-    affLink,
-    rating: 4.5,
-    reviews: Math.floor(Math.random() * 400) + 50,
-    hot: false,
-    isNew: true,
-    createdAt: new Date().toISOString()
-  };
+    const loja = detectarLoja(url);
+    const produto = {
+        id: Date.now().toString(),
+        nome,
+        imagem: document.getElementById('prodImagem').value.trim(),
+        precoOld: parseFloat(document.getElementById('prodPrecoOld').value) || 0,
+        preco: parseFloat(document.getElementById('prodPreco').value) || 0,
+        loja,
+        categoria: document.getElementById('prodCat').value,
+        afiliado: afiliado || url,
+        criadoEm: new Date().toISOString()
+    };
 
-  state.produtos.unshift(produto);
-  saveState();
-  renderProdutos();
-  updateStats();
-  closeAddProduto();
-  document.getElementById('fetchResult').style.display = 'none';
-  document.getElementById('prodUrl').value = '';
-  showToast('✅ Produto adicionado!');
+    dados.produtos.unshift(produto);
+    salvarDados();
+    renderProdutos();
+    atualizarStats();
+    cancelarBusca();
+    closeAddProduto();
+    toast('✅ Produto adicionado!');
 }
 
 function salvarProdutoManual() {
-  const title = document.getElementById('mpTitle').value.trim();
-  const affLink = document.getElementById('mpAffLink').value.trim();
+    const nome = document.getElementById('mpNome').value.trim();
+    const afiliado = document.getElementById('mpAfiliado').value.trim();
 
-  if (!title || !affLink) {
-    showToast('❌ Nome e link são obrigatórios');
-    return;
-  }
+    if (!nome || !afiliado) { toast('❌ Nome e link são obrigatórios'); return; }
 
-  const produto = {
-    id: Date.now().toString(),
-    title,
-    image: document.getElementById('mpImage').value.trim(),
-    currentPrice: parseFloat(document.getElementById('mpCurrentPrice').value) || 0,
-    oldPrice: parseFloat(document.getElementById('mpOldPrice').value) || 0,
-    store: document.getElementById('mpStore').value,
-    category: document.getElementById('mpCat').value,
-    affLink,
-    rating: 4.5,
-    reviews: Math.floor(Math.random() * 300) + 20,
-    hot: false,
-    isNew: true,
-    createdAt: new Date().toISOString()
-  };
+    const produto = {
+        id: Date.now().toString(),
+        nome,
+        imagem: document.getElementById('mpImagem').value.trim(),
+        precoOld: parseFloat(document.getElementById('mpPrecoOld').value) || 0,
+        preco: parseFloat(document.getElementById('mpPreco').value) || 0,
+        loja: document.getElementById('mpLoja').value,
+        categoria: document.getElementById('mpCat').value,
+        afiliado,
+        criadoEm: new Date().toISOString()
+    };
 
-  state.produtos.unshift(produto);
-  saveState();
-  renderProdutos();
-  updateStats();
-  closeAddProduto();
-  showToast('✅ Produto adicionado!');
+    dados.produtos.unshift(produto);
+    salvarDados();
+    renderProdutos();
+    atualizarStats();
+    closeAddProduto();
+    toast('✅ Produto adicionado!');
 }
 
-function cancelFetch() {
-  document.getElementById('fetchResult').style.display = 'none';
-  document.getElementById('prodUrl').value = '';
-  document.getElementById('storeDetect').textContent = '🔗';
+function cancelarBusca() {
+    document.getElementById('resultadoBusca').classList.add('hidden');
+    document.getElementById('prodUrl').value = '';
+    document.getElementById('lojaIcone').textContent = '🔗';
 }
 
-function renderProdutos(filter = 'todos') {
-  const grid = document.getElementById('prodGrid');
-  const empty = document.getElementById('emptyProd');
-  const badge = document.getElementById('badgeProdutos');
+function renderProdutos(filtro = 'todos') {
+    const grid = document.getElementById('gridProdutos');
+    const semProd = document.getElementById('semProdutos');
 
-  badge.textContent = state.produtos.length;
+    const lista = filtro === 'todos'
+        ? dados.produtos
+        : dados.produtos.filter(p => p.categoria === filtro);
 
-  const lista = filter === 'todos'
-    ? state.produtos
-    : state.produtos.filter(p => p.category === filter);
+    if (!lista.length) {
+        grid.innerHTML = '';
+        semProd.classList.remove('hidden');
+        grid.appendChild(semProd);
+        return;
+    }
 
-  if (!lista.length) {
-    grid.innerHTML = '';
-    empty.classList.add('show');
-    return;
-  }
+    semProd.classList.add('hidden');
 
-  empty.classList.remove('show');
-  grid.innerHTML = lista.map((p, i) => createProdCardHTML(p, i)).join('');
-}
+    grid.innerHTML = lista.map(p => {
+        const infoLoja = getInfoLoja(p.loja);
+        const desc = p.precoOld && p.precoOld > p.preco
+            ? Math.round((1 - p.preco / p.precoOld) * 100) : 0;
 
-function createProdCardHTML(p, i) {
-  const info = getStoreInfo(p.store);
-  const desc = p.oldPrice && p.oldPrice > p.currentPrice
-    ? Math.round((1 - p.currentPrice / p.oldPrice) * 100) : 0;
+        const imgHTML = p.imagem
+            ? `<img src="${p.imagem}" alt="${p.nome}"
+                onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">`
+            : '';
 
-  const img = p.image
-    ? `<img src="${p.image}" alt="${p.title}" loading="lazy"
-        onerror="this.style.display='none'">`
-    : `<span style="font-size:2.5rem">${info.icon}</span>`;
-
-  return `
-    <div class="prod-card" style="animation-delay:${i * 0.05}s">
-      <div class="pc-img">
-        ${img}
-        ${desc > 0 ? `<div class="pc-discount">-${desc}%</div>` : ''}
-        <button class="pc-wish" onclick="toggleFavProd(this)" aria-label="Favorito">
-          <i class="far fa-heart"></i>
-        </button>
-        <div class="pc-store ${info.class}">${info.icon} ${info.nome}</div>
-      </div>
-      <div class="pc-body">
-        <span class="pc-cat">${formatCat(p.category)}</span>
-        <h3 class="pc-title" title="${p.title}">${p.title}</h3>
-        <div class="pc-price">
-          ${p.oldPrice > 0 ? `<span class="pc-old">R$ ${fmt(p.oldPrice)}</span>` : ''}
-          <span class="pc-now">${p.currentPrice > 0 ? `R$ ${fmt(p.currentPrice)}` : 'Ver preço'}</span>
-        </div>
-        <div class="pc-actions">
-          <a href="${p.affLink}" target="_blank" rel="noopener nofollow"
-            class="btn btn-primary" style="flex:1;font-size:.8rem"
-            onclick="regClick('prod_${p.id}')">
-            <i class="fas fa-external-link-alt"></i> Ver Oferta
-          </a>
-          <button class="pc-del" onclick="removerProd('${p.id}')">
-            <i class="fas fa-trash"></i>
-          </button>
-        </div>
-      </div>
-    </div>
-  `;
+        return `
+            <div class="prod-card">
+                <div class="prod-img">
+                    ${imgHTML}
+                    <span style="${p.imagem ? 'display:none' : ''}">${infoLoja.icone}</span>
+                    ${desc > 0 ? `<div class="prod-desc">-${desc}%</div>` : ''}
+                    <div class="prod-loja ${infoLoja.classeCSS}">${infoLoja.icone} ${infoLoja.nome}</div>
+                </div>
+                <div class="prod-body">
+                    <div class="prod-nome">${p.nome}</div>
+                    <div class="prod-preco">
+                        ${p.precoOld > 0 ? `<span class="preco-de">R$ ${fmt(p.precoOld)}</span>` : ''}
+                        <span class="preco-por">${p.preco > 0 ? `R$ ${fmt(p.preco)}` : 'Ver preço'}</span>
+                    </div>
+                    <div class="prod-acoes">
+                        <a href="${p.afiliado}" target="_blank" rel="noopener nofollow"
+                            class="btn-primary" style="flex:1;font-size:.8rem;justify-content:center">
+                            <i class="fas fa-external-link-alt"></i> Ver Oferta
+                        </a>
+                        <button class="btn-acao btn-deletar" onclick="removerProduto('${p.id}')">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        `;
+    }).join('') + semProd.outerHTML;
 }
 
 function filtrarProd(cat, btn) {
-  document.querySelectorAll('.pf-btn').forEach(b => b.classList.remove('active'));
-  if (btn) btn.classList.add('active');
-  renderProdutos(cat);
+    document.querySelectorAll('.filtro').forEach(f => f.classList.remove('active'));
+    if (btn) btn.classList.add('active');
+    renderProdutos(cat);
 }
 
-function removerProd(id) {
-  if (!confirm('Remover este produto?')) return;
-  state.produtos = state.produtos.filter(p => p.id !== id);
-  saveState();
-  renderProdutos();
-  updateStats();
-  showToast('🗑️ Produto removido');
+function removerProduto(id) {
+    if (!confirm('Remover este produto?')) return;
+    dados.produtos = dados.produtos.filter(p => p.id !== id);
+    salvarDados();
+    renderProdutos();
+    atualizarStats();
+    toast('🗑️ Produto removido');
 }
 
-function toggleFavProd(btn) {
-  btn.classList.toggle('active');
-  const i = btn.querySelector('i');
-  i.classList.toggle('far');
-  i.classList.toggle('fas');
-}
-
-// ===== REDES SOCIAIS =====
-const redesConfig = [
-  { key: 'instagram', nome: 'Instagram', icon: 'fab fa-instagram', bg: 'linear-gradient(45deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888)', placeholder: '@seu-usuario' },
-  { key: 'tiktok', nome: 'TikTok', icon: 'fab fa-tiktok', bg: '#000', placeholder: '@seu-usuario' },
-  { key: 'youtube', nome: 'YouTube', icon: 'fab fa-youtube', bg: '#FF0000', placeholder: '@seu-canal' },
-  { key: 'twitter', nome: 'X (Twitter)', icon: 'fab fa-x-twitter', bg: '#000', placeholder: '@usuario' },
-  { key: 'facebook', nome: 'Facebook', icon: 'fab fa-facebook', bg: '#1877F2', placeholder: 'facebook.com/pagina' },
-  { key: 'linkedin', nome: 'LinkedIn', icon: 'fab fa-linkedin', bg: '#0A66C2', placeholder: 'linkedin.com/in/usuario' },
-  { key: 'spotify', nome: 'Spotify', icon: 'fab fa-spotify', bg: '#1DB954', placeholder: 'link do perfil' },
-  { key: 'discord', nome: 'Discord', icon: 'fab fa-discord', bg: '#5865F2', placeholder: 'discord.gg/servidor' },
-  { key: 'whatsapp', nome: 'WhatsApp', icon: 'fab fa-whatsapp', bg: '#25D366', placeholder: '+55 11 99999-9999' },
-  { key: 'telegram', nome: 'Telegram', icon: 'fab fa-telegram', bg: '#26A5E4', placeholder: '@seu-canal' },
-  { key: 'twitch', nome: 'Twitch', icon: 'fab fa-twitch', bg: '#9146FF', placeholder: 'twitch.tv/usuario' },
-  { key: 'github', nome: 'GitHub', icon: 'fab fa-github', bg: '#24292e', placeholder: 'github.com/usuario' },
-];
-
-function setupSocialGrid() {
-  const grid = document.getElementById('socialGrid');
-  if (!grid) return;
-
-  grid.innerHTML = redesConfig.map(r => `
-    <div class="social-card">
-      <div class="sc-header">
-        <div class="sc-icon" style="background:${r.bg}">
-          <i class="${r.icon}"></i>
-        </div>
-        <div class="sc-info">
-          <strong>${r.nome}</strong>
-          <span>${state.sociais[r.key] ? '✅ Conectado' : 'Não conectado'}</span>
-        </div>
-      </div>
-      <input type="text" class="sc-input" id="social-${r.key}"
-        value="${state.sociais[r.key] || ''}" placeholder="${r.placeholder}">
-      <button class="sc-save" onclick="salvarSocial('${r.key}')">
-        <i class="fas fa-save"></i> Salvar
-      </button>
-    </div>
-  `).join('');
-}
-
-function salvarSocial(key) {
-  const val = document.getElementById(`social-${key}`)?.value.trim();
-  if (val) {
-    state.sociais[key] = val;
-    // Adicionar como link automaticamente
-    const info = redesConfig.find(r => r.key === key);
-    const autoInfo = getAutoLinkInfo(val.startsWith('http') ? val : `https://${key}.com/${val}`);
-
-    const existeLink = state.links.find(l => l.url.includes(key));
-    if (!existeLink && info) {
-      const url = val.startsWith('http') ? val : `https://${key}.com/${val.replace('@', '')}`;
-      state.links.push({
-        id: `social_${key}`,
-        url,
-        title: info.nome,
-        icon: info.icon,
-        color: autoInfo?.color || '#6366f1',
-        category: 'social',
-        highlight: false,
-        newTab: true,
-        active: true,
-        clicks: 0,
-        createdAt: new Date().toISOString()
-      });
-    }
-    saveState();
-    renderLinks();
-    renderMiniPreview();
-    updateStats(key);
-    setupSocialGrid();
-    showToast(`✅ ${info?.nome} salvo!`);
-  } else {
-    delete state.sociais[key];
-    state.links = state.links.filter(l => l.id !== `social_${key}`);
-    saveState();
-    renderLinks();
-    setupSocialGrid();
-    showToast('🗑️ Removido');
-  }
-}
-
-// ===== IMPORTAR LINKTREE =====
+// ===== IMPORTAR =====
 async function importarLinktree() {
-  const url = document.getElementById('linktreeUrl').value.trim();
-  if (!url || !url.includes('linktr.ee')) {
-    showToast('❌ Cole uma URL do Linktree válida (linktr.ee/usuario)');
-    return;
-  }
+    const url = document.getElementById('urlLinktree').value.trim();
 
-  const result = document.getElementById('linktreeResult');
-  result.style.display = 'block';
-  result.innerHTML = `
-    <div style="display:flex;align-items:center;gap:10px;color:var(--t2)">
-      <div style="width:20px;height:20px;border:2px solid var(--primary);border-top-color:transparent;border-radius:50%;animation:spin .8s linear infinite"></div>
-      Importando links do Linktree...
-    </div>
-  `;
+    if (!url) { toast('❌ Cole o link do Linktree'); return; }
+    if (!url.includes('linktr.ee')) { toast('❌ URL deve ser do Linktree (linktr.ee/usuario)'); return; }
 
-  try {
-    // Extrair username do Linktree
-    const username = url.replace('https://', '').replace('http://', '')
-      .replace('linktr.ee/', '').split('/')[0].split('?')[0];
-
-    // Simular importação (API pública não permite CORS)
-    // Em produção: usar servidor proxy ou a API oficial do Linktree
-    await new Promise(r => setTimeout(r, 2000));
-
-    const linksImportados = await simularImportLinktree(username, url);
-
-    linksImportados.forEach(link => {
-      const existe = state.links.find(l => l.url === link.url);
-      if (!existe) state.links.push(link);
-    });
-
-    saveState();
-    renderLinks();
-    renderMiniPreview();
-    updateStats();
-
-    result.innerHTML = `
-      <div style="color:var(--success)">
-        ✅ ${linksImportados.length} links importados do @${username}!
-        <br><small style="color:var(--t2)">Verifique e edite os links conforme necessário.</small>
-      </div>
+    const resultado = document.getElementById('resultLinktree');
+    resultado.classList.remove('hidden');
+    resultado.innerHTML = `
+        <div style="display:flex;align-items:center;gap:10px;color:var(--t2)">
+            <div style="width:18px;height:18px;border:2px solid var(--primary);border-top-color:transparent;border-radius:50%;animation:spin .8s linear infinite;flex-shrink:0"></div>
+            Importando links do Linktree...
+        </div>
     `;
 
-    showToast(`✅ ${linksImportados.length} links importados!`);
-
-  } catch(e) {
-    result.innerHTML = `<div style="color:var(--danger)">❌ Erro ao importar. Use a aba "Manual" para adicionar seus links.</div>`;
-    showToast('❌ Não foi possível importar automaticamente');
-  }
-}
-
-async function simularImportLinktree(username, url) {
-  // Detecção inteligente baseada no username
-  // Em produção real, usar: https://api.linktree.com/v1/profile/{username}
-  // ou um proxy CORS
-
-  const baseLinks = [
-    {
-      id: `lt_${Date.now()}_1`,
-      url: `https://instagram.com/${username}`,
-      title: 'Instagram',
-      icon: 'fab fa-instagram',
-      color: '#E1306C',
-      category: 'social',
-      highlight: false,
-      newTab: true,
-      active: true,
-      clicks: 0,
-      createdAt: new Date().toISOString()
-    },
-    {
-      id: `lt_${Date.now()}_2`,
-      url: `https://tiktok.com/@${username}`,
-      title: 'TikTok',
-      icon: 'fab fa-tiktok',
-      color: '#000000',
-      category: 'social',
-      highlight: false,
-      newTab: true,
-      active: true,
-      clicks: 0,
-      createdAt: new Date().toISOString()
-    },
-    {
-      id: `lt_${Date.now()}_3`,
-      url: `https://youtube.com/@${username}`,
-      title: 'YouTube',
-      icon: 'fab fa-youtube',
-      color: '#FF0000',
-      category: 'social',
-      highlight: false,
-      newTab: true,
-      active: true,
-      clicks: 0,
-      createdAt: new Date().toISOString()
-    }
-  ];
-
-  return baseLinks;
-}
-
-// ===== IMPORTAR INSTAGRAM =====
-async function importarInstagram() {
-  const user = document.getElementById('igUser').value.trim().replace('@', '');
-  if (!user) { showToast('❌ Digite seu usuário'); return; }
-
-  const link = {
-    id: `ig_${Date.now()}`,
-    url: `https://instagram.com/${user}`,
-    title: `Instagram - @${user}`,
-    icon: 'fab fa-instagram',
-    color: '#E1306C',
-    category: 'social',
-    highlight: true,
-    newTab: true,
-    active: true,
-    clicks: 0,
-    createdAt: new Date().toISOString()
-  };
-
-  const existe = state.links.find(l => l.url.includes('instagram.com/' + user));
-  if (!existe) {
-    state.links.unshift(link);
-    saveState();
-    renderLinks();
-    renderMiniPreview();
-    showToast('✅ Instagram adicionado!');
-  } else {
-    showToast('ℹ️ Instagram já adicionado');
-  }
-}
-
-// ===== IMPORTAR TIKTOK =====
-async function importarTikTok() {
-  const user = document.getElementById('ttUser').value.trim().replace('@', '');
-  if (!user) { showToast('❌ Digite seu usuário'); return; }
-
-  const link = {
-    id: `tt_${Date.now()}`,
-    url: `https://tiktok.com/@${user}`,
-    title: `TikTok - @${user}`,
-    icon: 'fab fa-tiktok',
-    color: '#000000',
-    category: 'social',
-    highlight: false,
-    newTab: true,
-    active: true,
-    clicks: 0,
-    createdAt: new Date().toISOString()
-  };
-
-  const existe = state.links.find(l => l.url.includes('tiktok.com/@' + user));
-  if (!existe) {
-    state.links.unshift(link);
-    saveState();
-    renderLinks();
-    renderMiniPreview();
-    showToast('✅ TikTok adicionado!');
-  } else {
-    showToast('ℹ️ TikTok já adicionado');
-  }
-}
-
-// ===== IMPORTAR YOUTUBE =====
-async function importarYoutube() {
-  const user = document.getElementById('ytUser').value.trim();
-  if (!user) { showToast('❌ Digite seu canal'); return; }
-
-  const url = user.startsWith('http') ? user : `https://youtube.com/@${user.replace('@', '')}`;
-  const link = {
-    id: `yt_${Date.now()}`,
-    url,
-    title: `YouTube - ${user}`,
-    icon: 'fab fa-youtube',
-    color: '#FF0000',
-    category: 'social',
-    highlight: false,
-    newTab: true,
-    active: true,
-    clicks: 0,
-    createdAt: new Date().toISOString()
-  };
-
-  state.links.unshift(link);
-  saveState();
-  renderLinks();
-  renderMiniPreview();
-  showToast('✅ YouTube adicionado!');
-}
-
-// ===== IMPORTAR GENÉRICO =====
-async function importarGenerico() {
-  const url = document.getElementById('beaconsUrl').value.trim();
-  if (!url) { showToast('❌ Cole uma URL'); return; }
-
-  try { new URL(url); } catch { showToast('❌ URL inválida'); return; }
-
-  const info = getAutoLinkInfo(url);
-  const link = {
-    id: `gen_${Date.now()}`,
-    url,
-    title: info?.title || new URL(url).hostname,
-    icon: info?.icon || 'fas fa-link',
-    color: info?.color || '#6366f1',
-    category: 'geral',
-    highlight: false,
-    newTab: true,
-    active: true,
-    clicks: 0,
-    createdAt: new Date().toISOString()
-  };
-
-  state.links.unshift(link);
-  saveState();
-  renderLinks();
-  renderMiniPreview();
-  showToast('✅ Link importado!');
-}
-
-// ===== EXPORT / IMPORT JSON =====
-function exportarDados() {
-  const data = JSON.stringify(state, null, 2);
-  const blob = new Blob([data], { type: 'application/json' });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = `linkvitrine-backup-${Date.now()}.json`;
-  a.click();
-  URL.revokeObjectURL(url);
-  showToast('📤 Backup exportado!');
-}
-
-function importarJSON(event) {
-  const file = event.target.files[0];
-  if (!file) return;
-  const reader = new FileReader();
-  reader.onload = e => {
     try {
-      const data = JSON.parse(e.target.result);
-      if (data.links || data.produtos) {
-        if (data.links) state.links = [...(data.links || []), ...state.links];
-        if (data.produtos) state.produtos = [...(data.produtos || []), ...state.produtos];
-        if (data.config) state.config = { ...state.config, ...data.config };
-        saveState();
-        renderAll();
-        initUI();
-        showToast(`✅ Dados importados com sucesso!`);
-      } else {
-        showToast('❌ Arquivo inválido');
-      }
-    } catch {
-      showToast('❌ Erro ao ler arquivo');
+        const username = url
+            .replace(/https?:\/\//, '')
+            .replace('linktr.ee/', '')
+            .split('?')[0]
+            .split('/')[0]
+            .trim();
+
+        await new Promise(r => setTimeout(r, 1500));
+
+        // Criar links baseados no username detectado
+        const linksImportados = [
+            { plataforma: 'instagram', usuario: username },
+            { plataforma: 'tiktok', usuario: username },
+            { plataforma: 'youtube', usuario: username },
+        ].map(({ plataforma, usuario }) => {
+            const info = detectarInfoLink(`https://${plataforma}.com/${usuario}`);
+            const urls = {
+                instagram: `https://instagram.com/${usuario}`,
+                tiktok: `https://tiktok.com/@${usuario}`,
+                youtube: `https://youtube.com/@${usuario}`,
+            };
+            return {
+                id: `lt_${plataforma}_${Date.now()}`,
+                url: urls[plataforma],
+                titulo: `${info.titulo} - @${username}`,
+                icone: info.icone,
+                cor: info.cor,
+                destaque: plataforma === 'instagram',
+                ativo: true,
+                criadoEm: new Date().toISOString()
+            };
+        });
+
+        // Adicionar apenas os que não existem
+        let adicionados = 0;
+        linksImportados.forEach(link => {
+            const existe = dados.links.find(l => l.url === link.url);
+            if (!existe) {
+                dados.links.push(link);
+                adicionados++;
+            }
+        });
+
+        salvarDados();
+        renderLinks();
+        renderPreviewRapido();
+        atualizarStats();
+
+        resultado.innerHTML = `
+            <div style="color:var(--success)">
+                ✅ ${adicionados} links importados do @${username}!<br>
+                <small style="color:var(--t2)">Edite os links conforme necessário na aba "Meus Links"</small>
+            </div>
+        `;
+
+        toast(`✅ ${adicionados} links importados!`);
+
+    } catch(e) {
+        resultado.innerHTML = `
+            <div style="color:var(--danger)">
+                ❌ Erro ao importar. Adicione os links manualmente.
+            </div>
+        `;
+        toast('❌ Erro na importação');
     }
-  };
-  reader.readAsText(file);
-  event.target.value = '';
+}
+
+function importarRedeSocial(rede) {
+    const ids = {
+        instagram: 'igUser',
+        tiktok: 'ttUser',
+        youtube: 'ytUser',
+        whatsapp: 'waUser',
+        telegram: 'tgUser'
+    };
+
+    const valor = document.getElementById(ids[rede])?.value.trim();
+    if (!valor) { toast(`❌ Digite seu usuário`); return; }
+
+    const configs = {
+        instagram: {
+            url: `https://instagram.com/${valor.replace('@', '')}`,
+            titulo: `Instagram - @${valor.replace('@', '')}`,
+            icone: 'fab fa-instagram',
+            cor: '#E1306C'
+        },
+        tiktok: {
+            url: `https://tiktok.com/@${valor.replace('@', '')}`,
+            titulo: `TikTok - @${valor.replace('@', '')}`,
+            icone: 'fab fa-tiktok',
+            cor: '#000000'
+        },
+        youtube: {
+            url: valor.startsWith('http') ? valor : `https://youtube.com/@${valor.replace('@', '')}`,
+            titulo: `YouTube - ${valor}`,
+            icone: 'fab fa-youtube',
+            cor: '#FF0000'
+        },
+        whatsapp: {
+            url: `https://wa.me/${valor.replace(/\D/g, '')}`,
+            titulo: 'WhatsApp',
+            icone: 'fab fa-whatsapp',
+            cor: '#25D366'
+        },
+        telegram: {
+            url: `https://t.me/${valor.replace('@', '')}`,
+            titulo: `Telegram - ${valor}`,
+            icone: 'fab fa-telegram',
+            cor: '#26A5E4'
+        }
+    };
+
+    const cfg = configs[rede];
+    if (!cfg) return;
+
+    const existe = dados.links.find(l => l.url === cfg.url);
+    if (existe) { toast(`ℹ️ ${cfg.titulo} já adicionado`); return; }
+
+    dados.links.unshift({
+        id: `${rede}_${Date.now()}`,
+        url: cfg.url,
+        titulo: cfg.titulo,
+        icone: cfg.icone,
+        cor: cfg.cor,
+        destaque: false,
+        ativo: true,
+        criadoEm: new Date().toISOString()
+    });
+
+    salvarDados();
+    renderLinks();
+    renderPreviewRapido();
+    renderPreviewCelular();
+    atualizarStats();
+    toast(`✅ ${cfg.titulo} adicionado!`);
+
+    if (document.getElementById(ids[rede])) {
+        document.getElementById(ids[rede]).value = '';
+    }
+}
+
+function importarQualquerLink() {
+    const url = document.getElementById('anyUrl').value.trim();
+    if (!url) { toast('❌ Cole uma URL'); return; }
+
+    try { new URL(url); } catch { toast('❌ URL inválida'); return; }
+
+    const info = detectarInfoLink(url);
+    let titulo = info.titulo;
+
+    if (!titulo) {
+        try {
+            titulo = new URL(url).hostname.replace('www.', '');
+        } catch {
+            titulo = 'Link';
+        }
+    }
+
+    dados.links.unshift({
+        id: `any_${Date.now()}`,
+        url,
+        titulo,
+        icone: info.icone,
+        cor: info.cor,
+        destaque: false,
+        ativo: true,
+        criadoEm: new Date().toISOString()
+    });
+
+    salvarDados();
+    renderLinks();
+    renderPreviewRapido();
+    renderPreviewCelular();
+    atualizarStats();
+    document.getElementById('anyUrl').value = '';
+    toast(`✅ Link adicionado!`);
+}
+
+// ===== EXPORT / IMPORT =====
+function exportarDados() {
+    const json = JSON.stringify(dados, null, 2);
+    const blob = new Blob([json], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `linkvitrine-backup-${Date.now()}.json`;
+    a.click();
+    URL.revokeObjectURL(url);
+    toast('📤 Backup exportado!');
+}
+
+function importarJson(event) {
+    const arquivo = event.target.files[0];
+    if (!arquivo) return;
+
+    const reader = new FileReader();
+    reader.onload = e => {
+        try {
+            const importado = JSON.parse(e.target.result);
+            if (importado.links || importado.produtos) {
+                if (importado.links) dados.links = [...(importado.links || []), ...dados.links];
+                if (importado.produtos) dados.produtos = [...(importado.produtos || []), ...dados.produtos];
+                if (importado.config) dados.config = { ...dados.config, ...importado.config };
+                salvarDados();
+                renderizarTudo();
+                iniciarUI();
+                toast('✅ Dados importados!');
+            } else {
+                toast('❌ Arquivo inválido');
+            }
+        } catch {
+            toast('❌ Erro ao ler arquivo');
+        }
+    };
+    reader.readAsText(arquivo);
+    event.target.value = '';
 }
 
 // ===== APARÊNCIA =====
-function setThemePage(theme) {
-  state.config.theme = theme;
-  saveState();
-  document.querySelectorAll('.theme-card').forEach(c => {
-    c.classList.toggle('active', c.dataset.theme === theme);
-  });
-  renderLivePreview();
-  showToast(`🎨 Tema ${theme} aplicado!`);
+function aplicarTema(tema) {
+    dados.config.tema = tema;
+    salvarDados();
+
+    document.querySelectorAll('.tema-card').forEach(t => {
+        t.classList.toggle('active', t.dataset.tema === tema);
+    });
+
+    renderPreviewCelular();
+    toast(`🎨 Tema ${tema} aplicado!`);
 }
 
-function setBtnStyle(style) {
-  state.config.btnStyle = style;
-  saveState();
-  document.querySelectorAll('.bstyle').forEach(b => {
-    b.classList.toggle('active', b.dataset.style === style);
-  });
-  renderLivePreview();
+function aplicarEstilo(estilo) {
+    dados.config.estilo = estilo;
+    salvarDados();
+
+    document.querySelectorAll('.estilo-btn').forEach(b => {
+        b.classList.toggle('active', b.dataset.estilo === estilo);
+    });
+
+    renderPreviewCelular();
 }
 
-function setPrimaryColor(color) {
-  state.config.primaryColor = color;
-  saveState();
-  renderLivePreview();
-  showToast('🎨 Cor atualizada!');
-}
-
-function setColor(color, inputId) {
-  const el = document.getElementById(inputId);
-  if (el) el.value = color;
-}
-
-function renderLivePreview() {
-  const screen = document.getElementById('liveScreen');
-  if (!screen) return;
-  screen.innerHTML = generatePublicPageHTML(true);
-}
-
-function generatePublicPageHTML(isPreview = false) {
-  const cfg = state.config;
-  const links = state.links.filter(l => l.active);
-  const produtos = state.produtos.slice(0, 4);
-
-  const themes = {
-    dark: { bg: '#0a0a14', bg2: '#1a1a2e', text: '#f1f1ff', text2: '#8888a8', card: '#13131f', border: 'rgba(255,255,255,0.07)' },
-    light: { bg: '#f8f8fc', bg2: '#ffffff', text: '#1a1a2e', text2: '#5a5a7a', card: '#ffffff', border: 'rgba(0,0,0,0.08)' },
-    gradient: { bg: 'linear-gradient(135deg,#6366f1,#ec4899)', bg2: 'rgba(255,255,255,0.1)', text: '#ffffff', text2: 'rgba(255,255,255,0.8)', card: 'rgba(255,255,255,0.1)', border: 'rgba(255,255,255,0.2)' },
-    neon: { bg: '#000', bg2: '#0a0a0a', text: '#00ff88', text2: '#00cc66', card: '#0a0a0a', border: 'rgba(0,255,136,0.2)' },
-    ocean: { bg: 'linear-gradient(135deg,#0c3547,#1a6b8a)', bg2: 'rgba(255,255,255,0.05)', text: '#e0f4ff', text2: 'rgba(224,244,255,0.7)', card: 'rgba(255,255,255,0.08)', border: 'rgba(255,255,255,0.1)' },
-    sunset: { bg: 'linear-gradient(135deg,#1a0533,#6b1a1a)', bg2: 'rgba(255,255,255,0.05)', text: '#ffe4d6', text2: 'rgba(255,228,214,0.7)', card: 'rgba(255,255,255,0.08)', border: 'rgba(255,150,100,0.2)' }
-  };
-
-  const t = themes[cfg.theme] || themes.dark;
-  const primary = cfg.primaryColor || '#6366f1';
-
-  const btnRadius = { rounded: '12px', pill: '50px', square: '4px', outline: '12px' };
-  const btnBg = { rounded: primary, pill: primary, square: primary, outline: 'transparent' };
-  const btnBorder = { rounded: 'none', pill: 'none', square: 'none', outline: `2px solid ${primary}` };
-  const btnColor = { rounded: '#fff', pill: '#fff', square: '#fff', outline: primary };
-
-  const style = cfg.btnStyle || 'rounded';
-
-  const avatarContent = cfg.avatar
-    ? `<img src="${cfg.avatar}" style="width:100%;height:100%;border-radius:50%;object-fit:cover">`
-    : `<span style="font-size:${isPreview ? '1rem' : '2rem'};font-weight:700;color:#fff">${cfg.name.charAt(0).toUpperCase()}</span>`;
-
-  const linksHTML = links.length
-    ? links.map(l => `
-        <a href="${isPreview ? '#' : l.url}" ${!isPreview ? 'target="_blank"' : ''}
-          style="display:flex;align-items:center;gap:${isPreview ? '8px' : '14px'};
-            padding:${isPreview ? '8px 12px' : '14px 20px'};
-            background:${btnBg[style]};
-            border:${btnBorder[style]};
-            border-radius:${btnRadius[style]};
-            color:${btnColor[style]};
-            text-decoration:none;
-            font-weight:600;
-            font-size:${isPreview ? '.6rem' : '.95rem'};
-            transition:all .2s;
-            margin-bottom:${isPreview ? '5px' : '12px'};
-            ${l.highlight ? `box-shadow:0 0 20px ${primary}40;` : ''}">
-          <i class="${l.icon}" style="font-size:${isPreview ? '.7rem' : '1.1rem'}"></i>
-          ${l.title}
-        </a>
-      `).join('')
-    : `<p style="text-align:center;color:${t.text2};font-size:${isPreview ? '.6rem' : '.9rem'}">Nenhum link cadastrado</p>`;
-
-  const prodHTML = produtos.length ? `
-    <div style="margin-top:${isPreview ? '12px' : '32px'}">
-      <h3 style="text-align:center;font-size:${isPreview ? '.65rem' : '1rem'};font-weight:700;color:${t.text};margin-bottom:${isPreview ? '8px' : '16px'}">
-        🔥 Ofertas
-      </h3>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:${isPreview ? '5px' : '12px'}">
-        ${produtos.map(p => {
-          const si = getStoreInfo(p.store);
-          return `
-            <a href="${isPreview ? '#' : p.affLink}" ${!isPreview ? 'target="_blank"' : ''}
-              style="background:${t.card};border:1px solid ${t.border};border-radius:${isPreview ? '6px' : '12px'};
-                overflow:hidden;text-decoration:none;display:block;transition:all .2s">
-              <div style="height:${isPreview ? '35px' : '80px'};background:${t.bg2};display:flex;align-items:center;justify-content:center;font-size:${isPreview ? '1rem' : '1.8rem'}">
-                ${p.image ? `<img src="${p.image}" style="width:100%;height:100%;object-fit:cover">` : si.icon}
-              </div>
-              <div style="padding:${isPreview ? '4px' : '10px'}">
-                <p style="font-size:${isPreview ? '.5rem' : '.78rem'};color:${t.text};font-weight:600;margin-bottom:${isPreview ? '2px' : '4px'};overflow:hidden;display:-webkit-box;-webkit-line-clamp:1;-webkit-box-orient:vertical">${p.title}</p>
-                <p style="font-size:${isPreview ? '.55rem' : '.85rem'};color:#10b981;font-weight:800">${p.currentPrice > 0 ? `R$ ${fmt(p.currentPrice)}` : 'Ver'}</p>
-              </div>
-            </a>
-          `;
-        }).join('')}
-      </div>
-    </div>
-  ` : '';
-
-  const socialLinks = Object.entries(state.sociais).slice(0, 6).map(([key, val]) => {
-    const r = redesConfig.find(r => r.key === key);
-    if (!r || !val) return '';
-    const url = val.startsWith('http') ? val : `https://${key}.com/${val.replace('@', '')}`;
-    return `
-      <a href="${isPreview ? '#' : url}" ${!isPreview ? 'target="_blank"' : ''}
-        style="width:${isPreview ? '20px' : '38px'};height:${isPreview ? '20px' : '38px'};
-          border-radius:50%;background:${t.card};border:1px solid ${t.border};
-          display:flex;align-items:center;justify-content:center;
-          color:${t.text};text-decoration:none;font-size:${isPreview ? '.55rem' : '.9rem'};
-          transition:all .2s">
-        <i class="${r.icon}"></i>
-      </a>
-    `;
-  }).join('');
-
-  return `
-    <!DOCTYPE html>
-    <html lang="pt-BR">
-    <head>
-      <meta charset="UTF-8">
-      <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <title>${cfg.name} | LinkVitrine Pro</title>
-      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-      <style>
-        *{margin:0;padding:0;box-sizing:border-box}
-        body{font-family:'Inter',sans-serif;min-height:100vh;background:${t.bg};display:flex;align-items:flex-start;justify-content:center;padding:${isPreview ? '0' : '40px 16px'}}
-        a:hover{opacity:.85;transform:translateY(-1px)}
-        ${isPreview ? 'body{overflow:hidden;padding:0}' : ''}
-      </style>
-      <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
-    </head>
-    <body>
-      <div style="width:100%;max-width:${isPreview ? '100%' : '480px'};padding:${isPreview ? '16px 12px' : '0'}">
-        <!-- Profile -->
-        <div style="text-align:center;margin-bottom:${isPreview ? '12px' : '28px'}">
-          <div style="width:${isPreview ? '50px' : '88px'};height:${isPreview ? '50px' : '88px'};border-radius:50%;background:linear-gradient(135deg,${primary},#ec4899);margin:0 auto ${isPreview ? '8px' : '14px'};display:flex;align-items:center;justify-content:center;border:3px solid ${t.border};overflow:hidden">
-            ${avatarContent}
-          </div>
-          <h1 style="font-size:${isPreview ? '.75rem' : '1.2rem'};font-weight:800;color:${t.text};margin-bottom:${isPreview ? '3px' : '6px'}">${cfg.name}</h1>
-          <p style="font-size:${isPreview ? '.55rem' : '.88rem'};color:${t.text2};margin-bottom:${isPreview ? '8px' : '16px'};line-height:1.5">${cfg.bio}</p>
-          ${socialLinks ? `<div style="display:flex;gap:${isPreview ? '5px' : '8px'};justify-content:center;margin-bottom:${isPreview ? '10px' : '20px'}">${socialLinks}</div>` : ''}
-        </div>
-        <!-- Links -->
-        <div>${linksHTML}</div>
-        <!-- Produtos -->
-        ${prodHTML}
-        <!-- Footer -->
-        <p style="text-align:center;font-size:${isPreview ? '.45rem' : '.72rem'};color:${t.text2};margin-top:${isPreview ? '12px' : '32px'};opacity:.6">
-          ⚡ Criado com LinkVitrine Pro
-        </p>
-      </div>
-    </body>
-    </html>
-  `;
+function aplicarCor(cor) {
+    dados.config.cor = cor;
+    salvarDados();
+    renderPreviewCelular();
+    toast('🎨 Cor atualizada!');
 }
 
 // ===== PREVIEW =====
-function abrirPreview() {
-  const modal = document.getElementById('previewModal');
-  modal.classList.add('show');
-  const html = generatePublicPageHTML(false);
-  const frame = document.getElementById('previewFrame');
-  frame.srcdoc = html;
+function renderPreviewRapido() {
+    const tela = document.getElementById('previewRapido');
+    if (!tela) return;
+    tela.innerHTML = gerarHTMLPublico(true);
+}
+
+function renderPreviewCelular() {
+    const tela = document.getElementById('telaCelular');
+    if (!tela) return;
+    tela.innerHTML = gerarHTMLPublico(true);
+}
+
+function verPagina() {
+    const modal = document.getElementById('modalPreview');
+    modal.classList.remove('hidden');
+
+    const iframe = document.getElementById('iframePreview');
+    iframe.srcdoc = gerarHTMLPublico(false);
 }
 
 function fecharPreview() {
-  document.getElementById('previewModal').classList.remove('show');
+    document.getElementById('modalPreview').classList.add('hidden');
 }
 
-function setPreviewDevice(device) {
-  const frame = document.getElementById('pmFrame');
-  frame.className = `pm-frame ${device}`;
-  document.querySelectorAll('.pmc').forEach(b => b.classList.remove('active'));
-  document.getElementById(`pmc-${device}`)?.classList.add('active');
+function mudarDevice(device) {
+    const frame = document.getElementById('deviceFrame');
+    frame.className = `device-frame ${device}`;
+
+    document.querySelectorAll('.device-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById(`btn${device.charAt(0).toUpperCase() + device.slice(1)}`).classList.add('active');
 }
 
-// ===== MINI PREVIEW ===== 
-function renderMiniPreview() {
-  const miniLinks = document.getElementById('miniLinks');
-  const miniName = document.getElementById('miniName');
-  const miniBio = document.getElementById('miniBio');
-  const miniAvatar = document.getElementById('miniAvatar');
+function gerarHTMLPublico(mini = false) {
+    const cfg = dados.config;
+    const links = dados.links.filter(l => l.ativo);
+    const produtos = dados.produtos.slice(0, 6);
 
-  if (miniName) miniName.textContent = state.config.name;
-  if (miniBio) miniBio.textContent = state.config.bio;
+    // Temas
+    const temas = {
+        dark: { bg: '#0a0a14', text: '#f1f1ff', text2: '#8888a8', card: '#13131f', border: 'rgba(255,255,255,0.08)' },
+        light: { bg: '#f8f8fc', text: '#1a1a2e', text2: '#5a5a7a', card: '#ffffff', border: 'rgba(0,0,0,0.08)' },
+        gradient: { bg: 'linear-gradient(135deg,#6366f1,#ec4899)', text: '#ffffff', text2: 'rgba(255,255,255,.75)', card: 'rgba(255,255,255,0.12)', border: 'rgba(255,255,255,0.2)' },
+        neon: { bg: '#000', text: '#00ff88', text2: '#00aa55', card: '#0a0a0a', border: 'rgba(0,255,136,0.2)' },
+        ocean: { bg: 'linear-gradient(135deg,#0c3547,#1a6b8a)', text: '#e0f4ff', text2: 'rgba(224,244,255,.7)', card: 'rgba(255,255,255,0.08)', border: 'rgba(255,255,255,0.12)' },
+        sunset: { bg: 'linear-gradient(135deg,#1a0533,#6b1a1a)', text: '#ffe4d6', text2: 'rgba(255,228,214,.7)', card: 'rgba(255,255,255,0.08)', border: 'rgba(255,150,100,0.2)' }
+    };
 
-  if (miniAvatar && state.config.avatar) {
-    miniAvatar.innerHTML = `<img src="${state.config.avatar}" style="width:100%;height:100%;object-fit:cover;border-radius:50%">`;
-  } else if (miniAvatar) {
-    miniAvatar.textContent = state.config.name.charAt(0).toUpperCase();
-  }
+    const t = temas[cfg.tema] || temas.dark;
+    const cor = cfg.cor || '#6366f1';
 
-  if (miniLinks) {
-    const activeLinks = state.links.filter(l => l.active).slice(0, 4);
-    if (!activeLinks.length) {
-      miniLinks.innerHTML = '<div class="mini-link-placeholder"><i class="fas fa-link"></i> Adicione seus links</div>';
-    } else {
-      miniLinks.innerHTML = activeLinks.map(l => `
-        <div class="mini-link" style="background:${l.color || state.config.primaryColor}">
-          ${l.title}
+    // Estilos de botão
+    const btnR = { rounded: '12px', pill: '50px', square: '2px', outline: '12px' };
+    const btnBg = { rounded: cor, pill: cor, square: cor, outline: 'transparent' };
+    const btnBorder = { rounded: 'none', pill: 'none', square: 'none', outline: `2px solid ${cor}` };
+    const btnColor = { rounded: '#fff', pill: '#fff', square: '#fff', outline: cor };
+    const e = cfg.estilo || 'rounded';
+
+    // Avatar
+    const avatarHTML = cfg.avatar
+        ? `<img src="${cfg.avatar}" style="width:100%;height:100%;object-fit:cover;border-radius:50%">`
+        : `<span style="font-size:${mini ? '1rem' : '1.8rem'};font-weight:800;color:#fff">${cfg.nome.charAt(0).toUpperCase()}</span>`;
+
+    // Links HTML
+    const linksHTML = links.length
+        ? links.map(l => `
+            <a href="${mini ? '#' : l.url}" ${!mini ? 'target="_blank"' : ''}
+                style="display:flex;align-items:center;gap:12px;
+                    padding:${mini ? '7px 10px' : '14px 18px'};
+                    background:${btnBg[e]};
+                    border:${btnBorder[e]};
+                    color:${btnColor[e]};
+                    border-radius:${btnR[e]};
+                    text-decoration:none;
+                    font-weight:600;
+                    font-size:${mini ? '.55rem' : '.92rem'};
+                    margin-bottom:${mini ? '5px' : '10px'};
+                    transition:opacity .2s;
+                    ${l.destaque ? `box-shadow:0 0 16px ${cor}50;` : ''}">
+                <i class="${l.icone}" style="font-size:${mini ? '.7rem' : '1rem'}"></i>
+                ${l.titulo}
+            </a>
+        `).join('')
+        : `<p style="text-align:center;color:${t.text2};font-size:${mini ? '.6rem' : '.88rem'}">Nenhum link ainda</p>`;
+
+    // Produtos HTML
+    const prodsHTML = produtos.length ? `
+        <div style="margin-top:${mini ? '10px' : '24px'}">
+            <h3 style="text-align:center;font-size:${mini ? '.6rem' : '.9rem'};font-weight:800;color:${t.text};margin-bottom:${mini ? '6px' : '14px'}">🔥 Ofertas</h3>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:${mini ? '4px' : '10px'}">
+                ${produtos.map(p => {
+                    const il = getInfoLoja(p.loja);
+                    return `
+                        <a href="${mini ? '#' : p.afiliado}" ${!mini ? 'target="_blank"' : ''}
+                            style="background:${t.card};border:1px solid ${t.border};border-radius:${mini ? '5px' : '10px'};text-decoration:none;display:block">
+                            <div style="height:${mini ? '30px' : '70px'};background:rgba(0,0,0,.2);display:flex;align-items:center;justify-content:center;font-size:${mini ? '.9rem' : '1.6rem'}">
+                                ${p.imagem ? `<img src="${p.imagem}" style="width:100%;height:100%;object-fit:cover">` : il.icone}
+                            </div>
+                            <div style="padding:${mini ? '3px' : '8px'}">
+                                <p style="font-size:${mini ? '.45rem' : '.75rem'};color:${t.text};font-weight:600;overflow:hidden;white-space:nowrap;text-overflow:ellipsis">${p.nome}</p>
+                                <p style="font-size:${mini ? '.5rem' : '.82rem'};color:#10b981;font-weight:800">${p.preco > 0 ? `R$ ${fmt(p.preco)}` : 'Ver'}</p>
+                            </div>
+                        </a>
+                    `;
+                }).join('')}
+            </div>
         </div>
-      `).join('');
-    }
-  }
+    ` : '';
 
-  // Update Live preview
-  if (document.getElementById('page-aparencia')?.classList.contains('active')) {
-    renderLivePreview();
-  }
-}
-
-// ===== ANALYTICS ===== 
-function regClick(key) {
-  state.clicks[key] = (state.clicks[key] || 0) + 1;
-  saveState();
-  renderAnalytics();
-}
-
-function renderAnalytics() {
-  const list = document.getElementById('clickList');
-  const totalEl = document.getElementById('an-total');
-  const linksEl = document.getElementById('an-links');
-  const prodEl = document.getElementById('an-prod');
-
-  const total = Object.values(state.clicks).reduce((a, b) => a + b, 0);
-  if (totalEl) totalEl.textContent = total;
-  if (linksEl) linksEl.textContent = state.links.length;
-  if (prodEl) prodEl.textContent = state.produtos.length;
-
-  if (!list) return;
-
-  const entries = Object.entries(state.clicks).sort((a, b) => b[1] - a[1]).slice(0, 10);
-  const max = entries[0]?.[1] || 1;
-
-  if (!entries.length) {
-    list.innerHTML = '<p class="no-data">Nenhum clique ainda. Abra o preview e clique em seus links!</p>';
-    return;
-  }
-
-  list.innerHTML = entries.map(([key, count]) => {
-    const link = state.links.find(l => l.id === key || `prod_${l.id}` === key);
-    const name = link?.title || key;
-    const pct = Math.round((count / max) * 100);
-    return `
-      <div class="click-item">
-        <span class="cl-name">${name}</span>
-        <div class="cl-bar-wrap">
-          <div class="cl-bar" style="width:${pct}%"></div>
-        </div>
-        <span class="cl-count">${count}</span>
+    return `<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>${cfg.nome}</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:'Inter',sans-serif;min-height:100vh;background:${t.bg};padding:${mini ? '12px 10px' : '40px 16px'};display:flex;align-items:flex-start;justify-content:center}
+  a:hover{opacity:.85}
+  ${mini ? 'body{overflow:hidden}' : ''}
+</style>
+</head>
+<body>
+  <div style="width:100%;max-width:${mini ? '100%' : '460px'}">
+    <div style="text-align:center;margin-bottom:${mini ? '10px' : '24px'}">
+      <div style="width:${mini ? '44px' : '80px'};height:${mini ? '44px' : '80px'};border-radius:50%;background:linear-gradient(135deg,${cor},#ec4899);margin:0 auto ${mini ? '6px' : '12px'};display:flex;align-items:center;justify-content:center;overflow:hidden">
+        ${avatarHTML}
       </div>
-    `;
-  }).join('');
+      <h1 style="font-size:${mini ? '.7rem' : '1.2rem'};font-weight:800;color:${t.text};margin-bottom:${mini ? '3px' : '6px'}">${cfg.nome}</h1>
+      <p style="font-size:${mini ? '.55rem' : '.85rem'};color:${t.text2};line-height:1.5">${cfg.bio}</p>
+    </div>
+    ${linksHTML}
+    ${prodsHTML}
+    <p style="text-align:center;font-size:${mini ? '.4rem' : '.7rem'};color:${t.text2};margin-top:${mini ? '10px' : '24px'};opacity:.5">⚡ LinkVitrine Pro</p>
+  </div>
+</body>
+</html>`;
 }
 
 // ===== CONFIG =====
 function salvarConfig() {
-  state.config.name = document.getElementById('cfgName').value.trim() || 'Usuário';
-  state.config.username = document.getElementById('cfgUser').value.trim().toLowerCase()
-    .replace(/[^a-z0-9-]/g, '') || 'usuario';
-  state.config.bio = document.getElementById('cfgBio').value.trim();
-  state.config.email = document.getElementById('cfgEmail').value.trim();
+    dados.config.nome = document.getElementById('cfgNome').value.trim() || 'Usuário';
+    dados.config.usuario = document.getElementById('cfgUsuario').value.trim().toLowerCase()
+        .replace(/[^a-z0-9-]/g, '') || 'usuario';
+    dados.config.bio = document.getElementById('cfgBio').value.trim() || '';
 
-  saveState();
-  initUI();
-  renderMiniPreview();
-  showToast('✅ Configurações salvas!');
+    salvarDados();
+    iniciarUI();
+    renderPreviewRapido();
+    renderPreviewCelular();
+    toast('✅ Perfil salvo!');
 }
 
-function uploadAvatar(event) {
-  const file = event.target.files[0];
-  if (!file) return;
-  const reader = new FileReader();
-  reader.onload = e => {
-    state.config.avatar = e.target.result;
-    saveState();
+function trocarFoto(event) {
+    const arquivo = event.target.files[0];
+    if (!arquivo) return;
 
-    // Atualizar avatares
-    document.getElementById('peAvatarText').style.display = 'none';
-    const pe = document.getElementById('peAvatar');
-    const img = pe.querySelector('img') || document.createElement('img');
-    img.src = e.target.result;
-    img.style.cssText = 'width:80px;height:80px;border-radius:50%;object-fit:cover';
-    pe.insertBefore(img, pe.firstChild);
+    const reader = new FileReader();
+    reader.onload = e => {
+        dados.config.avatar = e.target.result;
+        salvarDados();
+        atualizarAvatar(e.target.result);
+        renderPreviewRapido();
+        renderPreviewCelular();
+        toast('✅ Foto atualizada!');
+    };
+    reader.readAsDataURL(arquivo);
+}
 
-    document.querySelector('.tb-avatar').innerHTML = `<img src="${e.target.result}" style="width:100%;height:100%;object-fit:cover;border-radius:50%">`;
-
-    renderMiniPreview();
-    showToast('✅ Foto atualizada!');
-  };
-  reader.readAsDataURL(file);
+function atualizarAvatar(src) {
+    const el = document.getElementById('avatarGrande');
+    if (el) {
+        el.innerHTML = `<img src="${src}" style="width:70px;height:70px;object-fit:cover;border-radius:50%">`;
+    }
+    document.getElementById('avatarLetra') &&
+        (document.getElementById('avatarLetra').style.display = 'none');
 }
 
 function resetarTudo() {
-  if (!confirm('⚠️ Isso apagará TODOS os seus dados. Tem certeza?')) return;
-  if (!confirm('Esta ação não pode ser desfeita! Confirmar?')) return;
-  localStorage.removeItem(DB);
-  location.reload();
+    if (!confirm('⚠️ Apagar TODOS os dados?')) return;
+    if (!confirm('Esta ação não pode ser desfeita!')) return;
+    localStorage.removeItem(CHAVE);
+    location.reload();
 }
 
 // ===== STATS =====
-function updateStats() {
-  document.getElementById('stat-links').textContent = state.links.length;
-  document.getElementById('stat-produtos').textContent = state.produtos.length;
-  document.getElementById('stat-social').textContent = Object.keys(state.sociais).length;
-
-  const totalClicks = Object.values(state.clicks).reduce((a, b) => a + b, 0);
-  document.getElementById('stat-clicks').textContent = totalClicks;
-
-  document.getElementById('badgeLinks').textContent = state.links.length;
-  document.getElementById('badgeProdutos').textContent = state.produtos.length;
-  document.getElementById('countProdutos') &&
-    (document.getElementById('countProdutos').textContent = state.links.length);
+function atualizarStats() {
+    const total = Object.values(dados.cliques || {}).reduce((a, b) => a + b, 0);
+    document.getElementById('totalLinks').textContent = dados.links.length;
+    document.getElementById('totalProdutos').textContent = dados.produtos.length;
+    document.getElementById('totalCliques').textContent = total;
+    document.getElementById('totalRedes').textContent =
+        dados.links.filter(l => l.categoria === 'social' || ['instagram','tiktok','youtube','twitter','facebook'].some(r => l.url.includes(r))).length;
 }
 
 // ===== COMPARTILHAR =====
 function compartilhar() {
-  const url = `https://linkvitrine.pro/${state.config.username}`;
-  if (navigator.share) {
-    navigator.share({
-      title: `${state.config.name} | LinkVitrine Pro`,
-      text: state.config.bio,
-      url
-    });
-  } else {
-    navigator.clipboard.writeText(url).then(() => {
-      showToast('✅ Link copiado!');
-    });
-  }
+    const url = `https://linkvitrine.pro/${dados.config.usuario}`;
+    if (navigator.share) {
+        navigator.share({ title: dados.config.nome, text: dados.config.bio, url });
+    } else {
+        navigator.clipboard.writeText(url).then(() => toast('✅ Link copiado!'));
+    }
 }
 
 function copiarUrl() {
-  const url = `https://linkvitrine.pro/${state.config.username}`;
-  navigator.clipboard.writeText(url).then(() => showToast('✅ URL copiada!'));
-}
-
-// ===== TEMA ===== 
-function toggleTheme() {
-  state.config.theme = state.config.theme === 'light' ? 'dark' : 'light';
-  saveState();
-  document.body.className = `theme-${state.config.theme === 'light' ? 'light' : 'dark'}`;
-  document.getElementById('themeIcon').className =
-    state.config.theme === 'light' ? 'fas fa-sun' : 'fas fa-moon';
+    const url = `https://linkvitrine.pro/${dados.config.usuario}`;
+    navigator.clipboard.writeText(url).then(() => toast('✅ URL copiada!'));
 }
 
 // ===== UTILS =====
 function fmt(n) {
-  return parseFloat(n).toLocaleString('pt-BR', { minimumFractionDigits: 2 });
-}
-
-function formatCat(c) {
-  const m = { tecnologia: 'Tech', moda: 'Moda', casa: 'Casa', esporte: 'Esporte', beleza: 'Beleza', outros: 'Outros' };
-  return m[c] || c;
+    return parseFloat(n).toLocaleString('pt-BR', { minimumFractionDigits: 2 });
 }
 
 let toastTimer;
-function showToast(msg) {
-  const t = document.getElementById('toast');
-  document.getElementById('toastMsg').textContent = msg;
-  t.classList.add('show');
-  clearTimeout(toastTimer);
-  toastTimer = setTimeout(() => t.classList.remove('show'), 3000);
+function toast(msg) {
+    const el = document.getElementById('toast');
+    document.getElementById('toastTexto').textContent = msg;
+    el.classList.remove('hidden');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => el.classList.add('hidden'), 3000);
 }
 
 // ===== DEMO DATA =====
-function addDemoData() {
-  state.config.name = 'Seu Nome';
-  state.config.bio = '🔥 Melhores links e ofertas | Afiliado';
+function addDadosDemo() {
+    dados.config.nome = 'Seu Nome';
+    dados.config.bio = '🔥 Meus melhores links e ofertas!';
 
-  state.links = [
-    { id: 'demo_ig', url: 'https://instagram.com', title: 'Instagram', icon: 'fab fa-instagram', color: '#E1306C', category: 'social', highlight: true, newTab: true, active: true, clicks: 0, createdAt: new Date().toISOString() },
-    { id: 'demo_yt', url: 'https://youtube.com', title: 'YouTube', icon: 'fab fa-youtube', color: '#FF0000', category: 'social', highlight: false, newTab: true, active: true, clicks: 0, createdAt: new Date().toISOString() },
-    { id: 'demo_tt', url: 'https://tiktok.com', title: 'TikTok', icon: 'fab fa-tiktok', color: '#000000', category: 'social', highlight: false, newTab: true, active: true, clicks: 0, createdAt: new Date().toISOString() },
-    { id: 'demo_wa', url: 'https://wa.me/5511999999999', title: 'WhatsApp', icon: 'fab fa-whatsapp', color: '#25D366', category: 'contato', highlight: false, newTab: true, active: true, clicks: 0, createdAt: new Date().toISOString() },
-  ];
+    dados.links = [
+        { id: 'd1', url: 'https://instagram.com', titulo: 'Instagram', icone: 'fab fa-instagram', cor: '#E1306C', destaque: true, ativo: true, criadoEm: new Date().toISOString() },
+        { id: 'd2', url: 'https://tiktok.com', titulo: 'TikTok', icone: 'fab fa-tiktok', cor: '#000000', destaque: false, ativo: true, criadoEm: new Date().toISOString() },
+        { id: 'd3', url: 'https://youtube.com', titulo: 'YouTube', icone: 'fab fa-youtube', cor: '#FF0000', destaque: false, ativo: true, criadoEm: new Date().toISOString() },
+        { id: 'd4', url: 'https://wa.me/5511999999999', titulo: 'WhatsApp', icone: 'fab fa-whatsapp', cor: '#25D366', destaque: false, ativo: true, criadoEm: new Date().toISOString() },
+    ];
 
-  state.produtos = [
-    { id: 'dp1', title: 'Fone Bluetooth Premium', image: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=300&q=80', currentPrice: 199.90, oldPrice: 349.90, store: 'amazon', category: 'tecnologia', affLink: '#', rating: 4.5, reviews: 234, createdAt: new Date().toISOString() },
-    { id: 'dp2', title: 'Smartwatch Esportivo', image: 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=300&q=80', currentPrice: 149.90, oldPrice: 299.90, store: 'shopee', category: 'tecnologia', affLink: '#', rating: 4.3, reviews: 189, createdAt: new Date().toISOString() },
-  ];
+    dados.produtos = [
+        { id: 'p1', nome: 'Fone Bluetooth Premium', imagem: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=300&q=80', preco: 199.90, precoOld: 349.90, loja: 'amazon', categoria: 'tecnologia', afiliado: '#', criadoEm: new Date().toISOString() },
+        { id: 'p2', nome: 'Smartwatch Esportivo', imagem: 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=300&q=80', preco: 149.90, precoOld: 299.90, loja: 'shopee', categoria: 'tecnologia', afiliado: '#', criadoEm: new Date().toISOString() },
+    ];
 
-  saveState();
-  renderAll();
-  initUI();
+    salvarDados();
+    renderizarTudo();
+    iniciarUI();
 }
