@@ -3,435 +3,319 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LinkVitrine Pro | Seu Hub de Links e Ofertas</title>
-    <meta name="description" content="Centralize todos seus links, redes sociais e produtos afiliados em um só lugar">
+    <title>LinkVitrine Pro</title>
     <link rel="stylesheet" href="style.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 </head>
-<body class="theme-dark">
+<body>
 
-<!-- ===== SPLASH SCREEN ===== -->
-<div class="splash" id="splash">
-    <div class="splash-logo">
-        <div class="splash-icon">⚡</div>
-        <span>LinkVitrine<strong>Pro</strong></span>
+<!-- SIDEBAR -->
+<div class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+        <span class="logo">⚡ LinkVitrine</span>
+        <button class="close-sidebar" onclick="fecharSidebar()">
+            <i class="fas fa-times"></i>
+        </button>
     </div>
-    <div class="splash-bar"><div class="splash-fill"></div></div>
+    <nav>
+        <a href="#" class="nav-item active" onclick="irPara('dashboard')">
+            <i class="fas fa-home"></i> Dashboard
+        </a>
+        <a href="#" class="nav-item" onclick="irPara('links')">
+            <i class="fas fa-link"></i> Meus Links
+        </a>
+        <a href="#" class="nav-item" onclick="irPara('produtos')">
+            <i class="fas fa-fire"></i> Produtos
+        </a>
+        <a href="#" class="nav-item" onclick="irPara('importar')">
+            <i class="fas fa-download"></i> Importar
+        </a>
+        <a href="#" class="nav-item" onclick="irPara('aparencia')">
+            <i class="fas fa-palette"></i> Aparência
+        </a>
+        <a href="#" class="nav-item" onclick="irPara('config')">
+            <i class="fas fa-cog"></i> Configurações
+        </a>
+    </nav>
+    <div class="sidebar-footer">
+        <button class="btn-preview" onclick="verPagina()">
+            <i class="fas fa-eye"></i> Ver Minha Página
+        </button>
+    </div>
 </div>
 
-<!-- ===== APP WRAPPER ===== -->
-<div class="app" id="app">
+<!-- OVERLAY -->
+<div class="overlay" id="overlay" onclick="fecharSidebar()"></div>
 
-    <!-- ===== SIDEBAR ===== -->
-    <aside class="sidebar" id="sidebar">
-        <div class="sidebar-logo">
-            <span class="s-icon">⚡</span>
-            <span class="s-name">LinkVitrine<strong>Pro</strong></span>
-        </div>
-        <nav class="sidebar-nav">
-            <a href="#" class="snav-item active" data-page="dashboard">
-                <i class="fas fa-th-large"></i><span>Dashboard</span>
-            </a>
-            <a href="#" class="snav-item" data-page="links">
-                <i class="fas fa-link"></i><span>Meus Links</span>
-                <span class="snav-badge" id="badgeLinks">0</span>
-            </a>
-            <a href="#" class="snav-item" data-page="produtos">
-                <i class="fas fa-fire"></i><span>Produtos</span>
-                <span class="snav-badge" id="badgeProdutos">0</span>
-            </a>
-            <a href="#" class="snav-item" data-page="redes">
-                <i class="fas fa-share-nodes"></i><span>Redes Sociais</span>
-            </a>
-            <a href="#" class="snav-item" data-page="import">
-                <i class="fas fa-cloud-download-alt"></i><span>Importar</span>
-                <span class="snav-new">NEW</span>
-            </a>
-            <a href="#" class="snav-item" data-page="aparencia">
-                <i class="fas fa-palette"></i><span>Aparência</span>
-            </a>
-            <a href="#" class="snav-item" data-page="analytics">
-                <i class="fas fa-chart-line"></i><span>Analytics</span>
-            </a>
-            <a href="#" class="snav-item" data-page="config">
-                <i class="fas fa-cog"></i><span>Configurações</span>
-            </a>
-        </nav>
-        <div class="sidebar-bottom">
-            <button class="preview-btn" onclick="abrirPreview()">
-                <i class="fas fa-eye"></i> Ver Minha Página
+<!-- MAIN -->
+<div class="main" id="main">
+
+    <!-- TOPBAR -->
+    <div class="topbar">
+        <button class="menu-btn" onclick="abrirSidebar()">
+            <i class="fas fa-bars"></i>
+        </button>
+        <span class="page-title" id="pageTitle">Dashboard</span>
+        <div class="topbar-right">
+            <button class="btn-icon" onclick="verPagina()">
+                <i class="fas fa-eye"></i>
             </button>
-            <button class="share-btn" onclick="compartilhar()">
-                <i class="fas fa-share-alt"></i> Compartilhar
+            <button class="btn-icon" onclick="irPara('config')">
+                <i class="fas fa-cog"></i>
             </button>
         </div>
-    </aside>
+    </div>
 
-    <!-- ===== MAIN CONTENT ===== -->
-    <main class="main" id="main">
+    <!-- CONTEÚDO -->
+    <div class="content">
 
-        <!-- TOP BAR -->
-        <header class="topbar">
-            <button class="burger" id="burger" onclick="toggleSidebar()">
-                <i class="fas fa-bars"></i>
-            </button>
-            <div class="topbar-title" id="topbarTitle">Dashboard</div>
-            <div class="topbar-right">
-                <button class="tb-btn" onclick="toggleTheme()" title="Tema">
-                    <i class="fas fa-moon" id="themeIcon"></i>
+        <!-- ===== DASHBOARD ===== -->
+        <div class="page" id="dashboard">
+            <div class="welcome-box">
+                <div class="welcome-text">
+                    <h1>Olá, <span id="nomeUsuario">Usuário</span>! 👋</h1>
+                    <p>Gerencie seus links e produtos afiliados</p>
+                </div>
+                <button class="btn-primary" onclick="verPagina()">
+                    <i class="fas fa-eye"></i> Ver Página
                 </button>
-                <button class="tb-btn" onclick="abrirPreview()" title="Preview">
+            </div>
+
+            <div class="cards-grid">
+                <div class="card-stat">
+                    <div class="card-stat-icon" style="background:#6366f122">
+                        <i class="fas fa-link" style="color:#6366f1"></i>
+                    </div>
+                    <div>
+                        <div class="card-stat-num" id="totalLinks">0</div>
+                        <div class="card-stat-label">Links</div>
+                    </div>
+                </div>
+                <div class="card-stat">
+                    <div class="card-stat-icon" style="background:#ec489922">
+                        <i class="fas fa-fire" style="color:#ec4899"></i>
+                    </div>
+                    <div>
+                        <div class="card-stat-num" id="totalProdutos">0</div>
+                        <div class="card-stat-label">Produtos</div>
+                    </div>
+                </div>
+                <div class="card-stat">
+                    <div class="card-stat-icon" style="background:#10b98122">
+                        <i class="fas fa-mouse-pointer" style="color:#10b981"></i>
+                    </div>
+                    <div>
+                        <div class="card-stat-num" id="totalCliques">0</div>
+                        <div class="card-stat-label">Cliques</div>
+                    </div>
+                </div>
+                <div class="card-stat">
+                    <div class="card-stat-icon" style="background:#f59e0b22">
+                        <i class="fas fa-share-alt" style="color:#f59e0b"></i>
+                    </div>
+                    <div>
+                        <div class="card-stat-num" id="totalRedes">0</div>
+                        <div class="card-stat-label">Redes Sociais</div>
+                    </div>
+                </div>
+            </div>
+
+            <h2 class="section-title">Ações Rápidas</h2>
+            <div class="acoes-grid">
+                <button class="acao-card" onclick="irPara('links')">
+                    <i class="fas fa-plus"></i>
+                    <span>Adicionar Link</span>
+                </button>
+                <button class="acao-card" onclick="irPara('produtos')">
+                    <i class="fas fa-tag"></i>
+                    <span>Adicionar Produto</span>
+                </button>
+                <button class="acao-card" onclick="irPara('importar')">
+                    <i class="fas fa-download"></i>
+                    <span>Importar Linktree</span>
+                </button>
+                <button class="acao-card" onclick="irPara('aparencia')">
+                    <i class="fas fa-palette"></i>
+                    <span>Mudar Tema</span>
+                </button>
+                <button class="acao-card" onclick="verPagina()">
                     <i class="fas fa-eye"></i>
+                    <span>Ver Página</span>
                 </button>
-                <div class="tb-avatar" onclick="showPage('config')">
-                    <span id="avatarInitial">U</span>
-                </div>
-            </div>
-        </header>
-
-        <!-- ===== PAGES ===== -->
-        <div class="pages">
-
-            <!-- PAGE: DASHBOARD -->
-            <div class="page active" id="page-dashboard">
-                <div class="page-header">
-                    <div>
-                        <h1>Olá, <span id="greetName">usuário</span>! 👋</h1>
-                        <p>Gerencie seus links e produtos em um só lugar</p>
-                    </div>
-                    <button class="btn btn-primary" onclick="showPage('import')">
-                        <i class="fas fa-cloud-download-alt"></i> Importar Links
-                    </button>
-                </div>
-
-                <!-- Stats -->
-                <div class="stats-grid">
-                    <div class="stat-card">
-                        <div class="stat-icon" style="--c:#6366f1">
-                            <i class="fas fa-link"></i>
-                        </div>
-                        <div class="stat-info">
-                            <strong id="stat-links">0</strong>
-                            <span>Links</span>
-                        </div>
-                        <div class="stat-chart blue"></div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-icon" style="--c:#ec4899">
-                            <i class="fas fa-fire"></i>
-                        </div>
-                        <div class="stat-info">
-                            <strong id="stat-produtos">0</strong>
-                            <span>Produtos</span>
-                        </div>
-                        <div class="stat-chart pink"></div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-icon" style="--c:#10b981">
-                            <i class="fas fa-mouse-pointer"></i>
-                        </div>
-                        <div class="stat-info">
-                            <strong id="stat-clicks">0</strong>
-                            <span>Cliques Hoje</span>
-                        </div>
-                        <div class="stat-chart green"></div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-icon" style="--c:#f59e0b">
-                            <i class="fas fa-share-nodes"></i>
-                        </div>
-                        <div class="stat-info">
-                            <strong id="stat-social">0</strong>
-                            <span>Redes Sociais</span>
-                        </div>
-                        <div class="stat-chart yellow"></div>
-                    </div>
-                </div>
-
-                <!-- Quick Actions -->
-                <div class="section-title">Ações Rápidas</div>
-                <div class="quick-grid">
-                    <button class="quick-card" onclick="showPage('import')">
-                        <div class="qc-icon" style="--c:#6366f1"><i class="fab fa-instagram"></i></div>
-                        <span>Importar do Linktree</span>
-                        <small>Cole seu link</small>
-                    </button>
-                    <button class="quick-card" onclick="showPage('links');openAddLink()">
-                        <div class="qc-icon" style="--c:#ec4899"><i class="fas fa-plus"></i></div>
-                        <span>Adicionar Link</span>
-                        <small>Link personalizado</small>
-                    </button>
-                    <button class="quick-card" onclick="showPage('produtos');openAddProduto()">
-                        <div class="qc-icon" style="--c:#f59e0b"><i class="fas fa-tag"></i></div>
-                        <span>Adicionar Produto</span>
-                        <small>Amazon, Shopee, ML</small>
-                    </button>
-                    <button class="quick-card" onclick="showPage('aparencia')">
-                        <div class="qc-icon" style="--c:#10b981"><i class="fas fa-palette"></i></div>
-                        <span>Personalizar</span>
-                        <small>Tema e aparência</small>
-                    </button>
-                    <button class="quick-card" onclick="showPage('redes')">
-                        <div class="qc-icon" style="--c:#8b5cf6"><i class="fas fa-share-nodes"></i></div>
-                        <span>Redes Sociais</span>
-                        <small>Conectar perfis</small>
-                    </button>
-                    <button class="quick-card" onclick="abrirPreview()">
-                        <div class="qc-icon" style="--c:#06b6d4"><i class="fas fa-mobile-alt"></i></div>
-                        <span>Ver Preview</span>
-                        <small>Como ficou sua página</small>
-                    </button>
-                </div>
-
-                <!-- Preview Rápido -->
-                <div class="section-title">Preview da Página</div>
-                <div class="dash-preview">
-                    <div class="dash-preview-phone">
-                        <div class="phone-frame">
-                            <div class="phone-screen" id="dashPhoneScreen">
-                                <div class="mini-profile">
-                                    <div class="mini-avatar" id="miniAvatar">U</div>
-                                    <div class="mini-name" id="miniName">Seu Nome</div>
-                                    <div class="mini-bio" id="miniBio">Sua bio aqui</div>
-                                </div>
-                                <div class="mini-links" id="miniLinks">
-                                    <div class="mini-link-placeholder">
-                                        <i class="fas fa-link"></i> Adicione seus links
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="dash-preview-actions">
-                        <h3>Sua Página Pública</h3>
-                        <p>Veja como seus seguidores verão sua vitrine de links e produtos</p>
-                        <div class="preview-url">
-                            <i class="fas fa-globe"></i>
-                            <span id="previewUrl">linkvitrine.pro/seu-usuario</span>
-                            <button onclick="copiarUrl()"><i class="fas fa-copy"></i></button>
-                        </div>
-                        <div class="preview-actions">
-                            <button class="btn btn-primary" onclick="abrirPreview()">
-                                <i class="fas fa-eye"></i> Abrir Preview
-                            </button>
-                            <button class="btn btn-ghost" onclick="compartilhar()">
-                                <i class="fas fa-share-alt"></i> Compartilhar
-                            </button>
-                        </div>
-                    </div>
-                </div>
+                <button class="acao-card" onclick="compartilhar()">
+                    <i class="fas fa-share-alt"></i>
+                    <span>Compartilhar</span>
+                </button>
             </div>
 
-            <!-- PAGE: LINKS -->
-            <div class="page" id="page-links">
-                <div class="page-header">
-                    <div>
-                        <h1>Meus Links</h1>
-                        <p>Gerencie e organize seus links</p>
-                    </div>
-                    <button class="btn btn-primary" id="addLinkBtn" onclick="openAddLink()">
-                        <i class="fas fa-plus"></i> Novo Link
-                    </button>
+            <h2 class="section-title">Preview Rápido</h2>
+            <div class="preview-box">
+                <div class="preview-phone">
+                    <div class="preview-screen" id="previewRapido"></div>
                 </div>
-
-                <!-- Add Link Form -->
-                <div class="form-card" id="addLinkForm" style="display:none">
-                    <div class="form-card-header">
-                        <h3><i class="fas fa-link"></i> Adicionar Link</h3>
-                        <button onclick="closeAddLink()"><i class="fas fa-times"></i></button>
+                <div class="preview-info">
+                    <h3>Sua Página Pública</h3>
+                    <p>Compartilhe com seus seguidores</p>
+                    <div class="url-box">
+                        <i class="fas fa-globe"></i>
+                        <span id="urlPublica">linkvitrine.pro/usuario</span>
+                        <button onclick="copiarUrl()"><i class="fas fa-copy"></i></button>
                     </div>
-                    <div class="form-grid">
-                        <div class="fg full">
-                            <label>URL do Link *</label>
-                            <div class="url-input-wrap">
-                                <input type="url" id="linkUrl" placeholder="https://..." oninput="detectLinkInfo(this.value)">
-                                <div class="url-favicon" id="urlFavicon">🔗</div>
-                            </div>
-                        </div>
-                        <div class="fg">
-                            <label>Título *</label>
-                            <input type="text" id="linkTitle" placeholder="Ex: Meu Instagram">
-                        </div>
-                        <div class="fg">
-                            <label>Ícone</label>
-                            <div class="icon-picker">
-                                <input type="text" id="linkIcon" placeholder="fas fa-link" value="fas fa-link">
-                                <div class="icon-preview"><i id="linkIconPreview" class="fas fa-link"></i></div>
-                            </div>
-                        </div>
-                        <div class="fg">
-                            <label>Cor do Botão</label>
-                            <div class="color-row">
-                                <input type="color" id="linkColor" value="#6366f1">
-                                <div class="color-presets">
-                                    <span onclick="setColor('#6366f1','linkColor')" style="background:#6366f1"></span>
-                                    <span onclick="setColor('#ec4899','linkColor')" style="background:#ec4899"></span>
-                                    <span onclick="setColor('#10b981','linkColor')" style="background:#10b981"></span>
-                                    <span onclick="setColor('#f59e0b','linkColor')" style="background:#f59e0b"></span>
-                                    <span onclick="setColor('#ef4444','linkColor')" style="background:#ef4444"></span>
-                                    <span onclick="setColor('#06b6d4','linkColor')" style="background:#06b6d4"></span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="fg">
-                            <label>Categoria</label>
-                            <select id="linkCat">
-                                <option value="geral">Geral</option>
-                                <option value="social">Redes Sociais</option>
-                                <option value="loja">Loja</option>
-                                <option value="conteudo">Conteúdo</option>
-                                <option value="contato">Contato</option>
-                            </select>
-                        </div>
-                        <div class="fg">
-                            <label>Destaque</label>
-                            <div class="toggle-row">
-                                <label class="tgl">
-                                    <input type="checkbox" id="linkHighlight">
-                                    <span class="tgl-s"></span>
-                                    Destacar link
-                                </label>
-                                <label class="tgl">
-                                    <input type="checkbox" id="linkNewTab" checked>
-                                    <span class="tgl-s"></span>
-                                    Abrir nova aba
-                                </label>
-                            </div>
-                        </div>
-                        <div class="fg full actions-row">
-                            <button class="btn btn-primary" onclick="adicionarLink()">
-                                <i class="fas fa-plus"></i> Adicionar
-                            </button>
-                            <button class="btn btn-ghost" onclick="closeAddLink()">Cancelar</button>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Links List -->
-                <div class="links-list" id="linksList">
-                    <div class="empty-box" id="emptyLinks">
-                        <div class="eb-icon">🔗</div>
-                        <h3>Nenhum link ainda</h3>
-                        <p>Adicione links ou importe do Linktree</p>
-                        <button class="btn btn-primary" onclick="openAddLink()">
-                            <i class="fas fa-plus"></i> Adicionar Primeiro Link
+                    <div class="preview-btns">
+                        <button class="btn-primary" onclick="verPagina()">
+                            <i class="fas fa-eye"></i> Abrir Preview
+                        </button>
+                        <button class="btn-ghost" onclick="compartilhar()">
+                            <i class="fas fa-share-alt"></i> Compartilhar
                         </button>
                     </div>
                 </div>
             </div>
+        </div>
 
-            <!-- PAGE: PRODUTOS -->
-            <div class="page" id="page-produtos">
-                <div class="page-header">
-                    <div>
-                        <h1>Produtos Afiliados</h1>
-                        <p>Amazon, Shopee, Mercado Livre e mais</p>
+        <!-- ===== LINKS ===== -->
+        <div class="page hidden" id="links">
+            <div class="page-header">
+                <div>
+                    <h1>Meus Links</h1>
+                    <p>Adicione e organize seus links</p>
+                </div>
+                <button class="btn-primary" onclick="toggleFormLink()">
+                    <i class="fas fa-plus"></i> Novo Link
+                </button>
+            </div>
+
+            <!-- Formulário Add Link -->
+            <div class="form-box hidden" id="formLink">
+                <div class="form-box-header">
+                    <h3>Adicionar Link</h3>
+                    <button onclick="toggleFormLink()"><i class="fas fa-times"></i></button>
+                </div>
+                <div class="form-grid">
+                    <div class="campo">
+                        <label>URL *</label>
+                        <input type="url" id="linkUrl" placeholder="https://..."
+                            oninput="autoDetectarLink(this.value)">
                     </div>
-                    <button class="btn btn-primary" onclick="openAddProduto()">
-                        <i class="fas fa-plus"></i> Novo Produto
+                    <div class="campo">
+                        <label>Título *</label>
+                        <input type="text" id="linkTitulo" placeholder="Ex: Instagram">
+                    </div>
+                    <div class="campo">
+                        <label>Ícone (Font Awesome)</label>
+                        <input type="text" id="linkIcone" placeholder="fab fa-instagram"
+                            oninput="document.getElementById('iconePreview').className=this.value">
+                        <i id="iconePreview" class="fas fa-link" style="margin-top:8px;font-size:1.2rem;color:var(--primary)"></i>
+                    </div>
+                    <div class="campo">
+                        <label>Cor</label>
+                        <div class="cor-row">
+                            <input type="color" id="linkCor" value="#6366f1">
+                            <div class="cores-rapidas">
+                                <span style="background:#6366f1" onclick="definirCor('#6366f1')"></span>
+                                <span style="background:#ec4899" onclick="definirCor('#ec4899')"></span>
+                                <span style="background:#10b981" onclick="definirCor('#10b981')"></span>
+                                <span style="background:#f59e0b" onclick="definirCor('#f59e0b')"></span>
+                                <span style="background:#ef4444" onclick="definirCor('#ef4444')"></span>
+                                <span style="background:#E1306C" onclick="definirCor('#E1306C')"></span>
+                                <span style="background:#FF0000" onclick="definirCor('#FF0000')"></span>
+                                <span style="background:#25D366" onclick="definirCor('#25D366')"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="campo full">
+                        <label class="toggle-label">
+                            <input type="checkbox" id="linkDestaque">
+                            <span class="toggle-switch"></span>
+                            Destacar este link
+                        </label>
+                    </div>
+                </div>
+                <div class="form-actions">
+                    <button class="btn-primary" onclick="salvarLink()">
+                        <i class="fas fa-check"></i> Salvar Link
+                    </button>
+                    <button class="btn-ghost" onclick="toggleFormLink()">Cancelar</button>
+                </div>
+            </div>
+
+            <!-- Lista de Links -->
+            <div id="listaLinks">
+                <div class="empty-state" id="semLinks">
+                    <div class="empty-icon">🔗</div>
+                    <h3>Nenhum link ainda</h3>
+                    <p>Adicione seus primeiros links ou importe do Linktree</p>
+                    <button class="btn-primary" onclick="toggleFormLink()">
+                        <i class="fas fa-plus"></i> Adicionar Link
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== PRODUTOS ===== -->
+        <div class="page hidden" id="produtos">
+            <div class="page-header">
+                <div>
+                    <h1>Produtos Afiliados</h1>
+                    <p>Amazon, Shopee, Mercado Livre e mais</p>
+                </div>
+                <button class="btn-primary" onclick="toggleFormProduto()">
+                    <i class="fas fa-plus"></i> Novo Produto
+                </button>
+            </div>
+
+            <!-- Formulário -->
+            <div class="form-box hidden" id="formProduto">
+                <div class="form-box-header">
+                    <h3>Adicionar Produto</h3>
+                    <button onclick="toggleFormProduto()"><i class="fas fa-times"></i></button>
+                </div>
+
+                <div class="tabs-mini">
+                    <button class="tab-mini active" onclick="trocarTabProd('auto', this)">
+                        🔗 Cole o Link
+                    </button>
+                    <button class="tab-mini" onclick="trocarTabProd('manual', this)">
+                        ✏️ Manual
                     </button>
                 </div>
 
-                <!-- Add Produto -->
-                <div class="form-card" id="addProdutoForm" style="display:none">
-                    <div class="form-card-header">
-                        <h3><i class="fas fa-tag"></i> Adicionar Produto</h3>
-                        <button onclick="closeAddProduto()"><i class="fas fa-times"></i></button>
-                    </div>
-
-                    <div class="prod-tabs">
-                        <button class="ptab active" data-ptab="auto">🔗 Cole o Link</button>
-                        <button class="ptab" data-ptab="manual">✏️ Manual</button>
-                    </div>
-
-                    <!-- Auto -->
-                    <div class="ptab-content active" id="ptab-auto">
-                        <div class="fg full">
-                            <label>Link do Produto *</label>
-                            <div class="link-detect-wrap">
-                                <div class="store-detect" id="storeDetect">🔗</div>
-                                <input type="url" id="prodUrl" placeholder="Cole o link do produto (Amazon, Shopee, ML, Americanas...)">
-                                <button class="btn-fetch" onclick="fetchProduto()">
-                                    <i class="fas fa-magic"></i> Buscar
-                                </button>
-                            </div>
-                        </div>
-                        <div class="fetch-result" id="fetchResult" style="display:none">
-                            <div class="fr-img">
-                                <img id="frImg" src="" alt="">
-                                <div class="fr-store" id="frStore"></div>
-                            </div>
-                            <div class="fr-info">
-                                <input type="text" id="frTitle" class="fr-title-input" placeholder="Nome do produto">
-                                <div class="fr-prices">
-                                    <div class="fg">
-                                        <label>Preço Original</label>
-                                        <input type="number" id="frOldPrice" placeholder="0,00" step="0.01">
-                                    </div>
-                                    <div class="fg">
-                                        <label>Preço Atual *</label>
-                                        <input type="number" id="frCurrentPrice" placeholder="0,00" step="0.01">
-                                    </div>
-                                </div>
-                                <div class="fg">
-                                    <label>Link de Afiliado</label>
-                                    <input type="url" id="frAffLink" placeholder="Seu link de afiliado">
-                                </div>
-                                <div class="fg">
-                                    <label>Categoria</label>
-                                    <select id="frCat">
-                                        <option value="tecnologia">Tecnologia</option>
-                                        <option value="moda">Moda</option>
-                                        <option value="casa">Casa & Deco</option>
-                                        <option value="esporte">Esportes</option>
-                                        <option value="beleza">Beleza</option>
-                                        <option value="outros">Outros</option>
-                                    </select>
-                                </div>
-                                <div class="fr-actions">
-                                    <button class="btn btn-primary" onclick="salvarProdutoAuto()">
-                                        <i class="fas fa-check"></i> Salvar Produto
-                                    </button>
-                                    <button class="btn btn-ghost" onclick="cancelFetch()">Cancelar</button>
-                                </div>
-                            </div>
+                <!-- Auto -->
+                <div id="tabAuto">
+                    <div class="campo">
+                        <label>Link do Produto *</label>
+                        <div class="link-row">
+                            <span id="lojaIcone">🔗</span>
+                            <input type="url" id="prodUrl"
+                                placeholder="Cole o link da Amazon, Shopee, Mercado Livre..."
+                                oninput="detectarLoja(this.value)">
+                            <button class="btn-buscar" onclick="buscarProduto()">
+                                <i class="fas fa-search"></i> Buscar
+                            </button>
                         </div>
                     </div>
-
-                    <!-- Manual -->
-                    <div class="ptab-content" id="ptab-manual">
+                    <div id="resultadoBusca" class="hidden">
                         <div class="form-grid">
-                            <div class="fg full">
-                                <label>Nome do Produto *</label>
-                                <input type="text" id="mpTitle" placeholder="Ex: Fone Bluetooth JBL">
+                            <div class="campo full">
+                                <label>Nome do Produto</label>
+                                <input type="text" id="prodNome" placeholder="Nome do produto">
                             </div>
-                            <div class="fg full">
+                            <div class="campo">
                                 <label>URL da Imagem</label>
-                                <input type="url" id="mpImage" placeholder="https://...">
+                                <input type="url" id="prodImagem" placeholder="https://...">
                             </div>
-                            <div class="fg">
-                                <label>Preço De</label>
-                                <input type="number" id="mpOldPrice" step="0.01" placeholder="0,00">
+                            <div class="campo">
+                                <label>Preço De (R$)</label>
+                                <input type="number" id="prodPrecoOld" placeholder="0,00" step="0.01">
                             </div>
-                            <div class="fg">
-                                <label>Preço Por *</label>
-                                <input type="number" id="mpCurrentPrice" step="0.01" placeholder="0,00">
+                            <div class="campo">
+                                <label>Preço Por (R$) *</label>
+                                <input type="number" id="prodPreco" placeholder="0,00" step="0.01">
                             </div>
-                            <div class="fg">
-                                <label>Loja</label>
-                                <select id="mpStore">
-                                    <option value="amazon">Amazon</option>
-                                    <option value="shopee">Shopee</option>
-                                    <option value="mercadolivre">Mercado Livre</option>
-                                    <option value="americanas">Americanas</option>
-                                    <option value="outros">Outros</option>
-                                </select>
-                            </div>
-                            <div class="fg">
+                            <div class="campo">
                                 <label>Categoria</label>
-                                <select id="mpCat">
+                                <select id="prodCat">
                                     <option value="tecnologia">Tecnologia</option>
                                     <option value="moda">Moda</option>
                                     <option value="casa">Casa</option>
@@ -440,439 +324,441 @@
                                     <option value="outros">Outros</option>
                                 </select>
                             </div>
-                            <div class="fg full">
-                                <label>Link de Afiliado *</label>
-                                <input type="url" id="mpAffLink" placeholder="Seu link de afiliado">
+                            <div class="campo">
+                                <label>Link de Afiliado</label>
+                                <input type="url" id="prodAfiliado" placeholder="Seu link de afiliado">
                             </div>
-                            <div class="fg full actions-row">
-                                <button class="btn btn-primary" onclick="salvarProdutoManual()">
-                                    <i class="fas fa-plus"></i> Adicionar
-                                </button>
-                                <button class="btn btn-ghost" onclick="closeAddProduto()">Cancelar</button>
-                            </div>
+                        </div>
+                        <div class="form-actions">
+                            <button class="btn-primary" onclick="salvarProdutoAuto()">
+                                <i class="fas fa-check"></i> Salvar Produto
+                            </button>
+                            <button class="btn-ghost" onclick="cancelarBusca()">Cancelar</button>
                         </div>
                     </div>
                 </div>
 
-                <!-- Produtos Grid -->
-                <div class="prod-filter">
-                    <button class="pf-btn active" onclick="filtrarProd('todos',this)">Todos</button>
-                    <button class="pf-btn" onclick="filtrarProd('tecnologia',this)">Tecnologia</button>
-                    <button class="pf-btn" onclick="filtrarProd('moda',this)">Moda</button>
-                    <button class="pf-btn" onclick="filtrarProd('casa',this)">Casa</button>
-                    <button class="pf-btn" onclick="filtrarProd('esporte',this)">Esporte</button>
-                    <button class="pf-btn" onclick="filtrarProd('beleza',this)">Beleza</button>
+                <!-- Manual -->
+                <div id="tabManual" class="hidden">
+                    <div class="form-grid">
+                        <div class="campo full">
+                            <label>Nome *</label>
+                            <input type="text" id="mpNome" placeholder="Nome do produto">
+                        </div>
+                        <div class="campo full">
+                            <label>URL da Imagem</label>
+                            <input type="url" id="mpImagem" placeholder="https://...">
+                        </div>
+                        <div class="campo">
+                            <label>Preço De</label>
+                            <input type="number" id="mpPrecoOld" step="0.01" placeholder="0,00">
+                        </div>
+                        <div class="campo">
+                            <label>Preço Por *</label>
+                            <input type="number" id="mpPreco" step="0.01" placeholder="0,00">
+                        </div>
+                        <div class="campo">
+                            <label>Loja</label>
+                            <select id="mpLoja">
+                                <option value="amazon">Amazon</option>
+                                <option value="shopee">Shopee</option>
+                                <option value="mercadolivre">Mercado Livre</option>
+                                <option value="americanas">Americanas</option>
+                                <option value="outros">Outros</option>
+                            </select>
+                        </div>
+                        <div class="campo">
+                            <label>Categoria</label>
+                            <select id="mpCat">
+                                <option value="tecnologia">Tecnologia</option>
+                                <option value="moda">Moda</option>
+                                <option value="casa">Casa</option>
+                                <option value="esporte">Esportes</option>
+                                <option value="beleza">Beleza</option>
+                                <option value="outros">Outros</option>
+                            </select>
+                        </div>
+                        <div class="campo full">
+                            <label>Link de Afiliado *</label>
+                            <input type="url" id="mpAfiliado" placeholder="https://...">
+                        </div>
+                    </div>
+                    <div class="form-actions">
+                        <button class="btn-primary" onclick="salvarProdutoManual()">
+                            <i class="fas fa-check"></i> Adicionar
+                        </button>
+                        <button class="btn-ghost" onclick="toggleFormProduto()">Cancelar</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Filtros -->
+            <div class="filtros" id="filtrosProd">
+                <button class="filtro active" onclick="filtrarProd('todos', this)">Todos</button>
+                <button class="filtro" onclick="filtrarProd('tecnologia', this)">Tech</button>
+                <button class="filtro" onclick="filtrarProd('moda', this)">Moda</button>
+                <button class="filtro" onclick="filtrarProd('casa', this)">Casa</button>
+                <button class="filtro" onclick="filtrarProd('esporte', this)">Esporte</button>
+                <button class="filtro" onclick="filtrarProd('beleza', this)">Beleza</button>
+            </div>
+
+            <!-- Grid de Produtos -->
+            <div class="prod-grid" id="gridProdutos">
+                <div class="empty-state" id="semProdutos">
+                    <div class="empty-icon">📦</div>
+                    <h3>Nenhum produto ainda</h3>
+                    <p>Adicione produtos afiliados</p>
+                    <button class="btn-primary" onclick="toggleFormProduto()">
+                        <i class="fas fa-plus"></i> Adicionar Produto
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== IMPORTAR ===== -->
+        <div class="page hidden" id="importar">
+            <div class="page-header">
+                <div>
+                    <h1>Importar Links</h1>
+                    <p>Puxe links de outros apps automaticamente</p>
+                </div>
+            </div>
+
+            <div class="import-grid">
+
+                <!-- Linktree -->
+                <div class="import-card destaque">
+                    <div class="import-card-header">
+                        <div class="import-logo" style="background:#000;padding:8px;border-radius:10px">
+                            <svg width="24" height="24" viewBox="0 0 24 24">
+                                <path fill="#43E660" d="M7.953 15.066c-.08.163-.08.324 0 .486l2.645 4.744c.08.163.244.244.406.244h2.075c.163 0 .325-.08.406-.244l2.645-4.744c.08-.163.08-.324 0-.486l-2.645-4.744c-.08-.163-.243-.244-.406-.244h-2.075c-.162 0-.325.08-.406.244zm-5.953 0c-.08.163-.08.324 0 .486l2.645 4.744c.08.163.243.244.406.244h2.075c.162 0 .325-.08.406-.244l2.645-4.744c.08-.163.08-.324 0-.486L7.487 10.322c-.08-.163-.244-.244-.406-.244H5.006c-.163 0-.325.08-.406.244zm11.906 0c-.08.163-.08.324 0 .486l2.645 4.744c.08.163.243.244.406.244h2.075c.163 0 .325-.08.406-.244l2.645-4.744c.08-.163.08-.324 0-.486l-2.645-4.744c-.08-.163-.244-.244-.406-.244h-2.075c-.163 0-.325.08-.406.244zM12 0c-.162 0-.325.08-.406.244L9.06 4.663c-.08.162-.08.324 0 .487l2.534 4.419c.08.162.244.244.406.244s.325-.082.406-.244l2.534-4.419c.08-.163.08-.325 0-.487L12.406.244C12.325.08 12.162 0 12 0z"/>
+                            </svg>
+                        </div>
+                        <div>
+                            <h3>Linktree</h3>
+                            <span class="badge-verde">Mais Popular</span>
+                        </div>
+                    </div>
+                    <p>Cole o link do seu Linktree para importar todos os links</p>
+                    <input type="url" id="urlLinktree"
+                        placeholder="https://linktr.ee/seu-usuario" class="input-import">
+                    <button class="btn-primary btn-block" onclick="importarLinktree()">
+                        <i class="fas fa-download"></i> Importar do Linktree
+                    </button>
+                    <div id="resultLinktree" class="resultado-import hidden"></div>
                 </div>
 
-                <div class="prod-grid" id="prodGrid">
-                    <div class="empty-box" id="emptyProd">
-                        <div class="eb-icon">📦</div>
-                        <h3>Nenhum produto ainda</h3>
-                        <p>Adicione produtos afiliados da Amazon, Shopee e mais</p>
-                        <button class="btn btn-primary" onclick="openAddProduto()">
-                            <i class="fas fa-plus"></i> Adicionar Produto
+                <!-- Instagram -->
+                <div class="import-card">
+                    <div class="import-card-header">
+                        <div class="import-logo" style="background:linear-gradient(45deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888)">
+                            <i class="fab fa-instagram" style="color:#fff;font-size:1.3rem"></i>
+                        </div>
+                        <div><h3>Instagram</h3></div>
+                    </div>
+                    <p>Adicione seu perfil do Instagram</p>
+                    <input type="text" id="igUser" placeholder="@seu-usuario" class="input-import">
+                    <button class="btn-primary btn-block" onclick="importarRedeSocial('instagram')">
+                        <i class="fas fa-plus"></i> Adicionar
+                    </button>
+                </div>
+
+                <!-- TikTok -->
+                <div class="import-card">
+                    <div class="import-card-header">
+                        <div class="import-logo" style="background:#000">
+                            <i class="fab fa-tiktok" style="color:#fff;font-size:1.3rem"></i>
+                        </div>
+                        <div><h3>TikTok</h3></div>
+                    </div>
+                    <p>Adicione seu perfil do TikTok</p>
+                    <input type="text" id="ttUser" placeholder="@seu-usuario" class="input-import">
+                    <button class="btn-primary btn-block" onclick="importarRedeSocial('tiktok')">
+                        <i class="fas fa-plus"></i> Adicionar
+                    </button>
+                </div>
+
+                <!-- YouTube -->
+                <div class="import-card">
+                    <div class="import-card-header">
+                        <div class="import-logo" style="background:#FF0000">
+                            <i class="fab fa-youtube" style="color:#fff;font-size:1.3rem"></i>
+                        </div>
+                        <div><h3>YouTube</h3></div>
+                    </div>
+                    <p>Adicione seu canal do YouTube</p>
+                    <input type="text" id="ytUser" placeholder="@seu-canal" class="input-import">
+                    <button class="btn-primary btn-block" onclick="importarRedeSocial('youtube')">
+                        <i class="fas fa-plus"></i> Adicionar
+                    </button>
+                </div>
+
+                <!-- WhatsApp -->
+                <div class="import-card">
+                    <div class="import-card-header">
+                        <div class="import-logo" style="background:#25D366">
+                            <i class="fab fa-whatsapp" style="color:#fff;font-size:1.3rem"></i>
+                        </div>
+                        <div><h3>WhatsApp</h3></div>
+                    </div>
+                    <p>Adicione seu WhatsApp</p>
+                    <input type="text" id="waUser" placeholder="+55 11 99999-9999" class="input-import">
+                    <button class="btn-primary btn-block" onclick="importarRedeSocial('whatsapp')">
+                        <i class="fas fa-plus"></i> Adicionar
+                    </button>
+                </div>
+
+                <!-- Telegram -->
+                <div class="import-card">
+                    <div class="import-card-header">
+                        <div class="import-logo" style="background:#26A5E4">
+                            <i class="fab fa-telegram" style="color:#fff;font-size:1.3rem"></i>
+                        </div>
+                        <div><h3>Telegram</h3></div>
+                    </div>
+                    <p>Adicione seu canal do Telegram</p>
+                    <input type="text" id="tgUser" placeholder="@seu-canal" class="input-import">
+                    <button class="btn-primary btn-block" onclick="importarRedeSocial('telegram')">
+                        <i class="fas fa-plus"></i> Adicionar
+                    </button>
+                </div>
+
+                <!-- Qualquer link -->
+                <div class="import-card">
+                    <div class="import-card-header">
+                        <div class="import-logo" style="background:#6366f1">
+                            <i class="fas fa-link" style="color:#fff;font-size:1.3rem"></i>
+                        </div>
+                        <div><h3>Qualquer Link</h3></div>
+                    </div>
+                    <p>Cole qualquer URL e detectamos automaticamente</p>
+                    <input type="url" id="anyUrl" placeholder="https://..." class="input-import">
+                    <button class="btn-primary btn-block" onclick="importarQualquerLink()">
+                        <i class="fas fa-magic"></i> Detectar e Adicionar
+                    </button>
+                </div>
+
+                <!-- JSON -->
+                <div class="import-card">
+                    <div class="import-card-header">
+                        <div class="import-logo" style="background:#334155">
+                            <i class="fas fa-file-code" style="color:#fff;font-size:1.3rem"></i>
+                        </div>
+                        <div><h3>Backup JSON</h3></div>
+                    </div>
+                    <p>Importe ou exporte seus dados</p>
+                    <div class="form-actions" style="margin-top:12px">
+                        <button class="btn-primary" onclick="document.getElementById('arquivoJson').click()">
+                            <i class="fas fa-upload"></i> Importar
+                        </button>
+                        <button class="btn-ghost" onclick="exportarDados()">
+                            <i class="fas fa-download"></i> Exportar
+                        </button>
+                    </div>
+                    <input type="file" id="arquivoJson" accept=".json"
+                        style="display:none" onchange="importarJson(event)">
+                </div>
+
+            </div>
+        </div>
+
+        <!-- ===== APARÊNCIA ===== -->
+        <div class="page hidden" id="aparencia">
+            <div class="page-header">
+                <div>
+                    <h1>Aparência</h1>
+                    <p>Personalize sua página pública</p>
+                </div>
+                <button class="btn-primary" onclick="verPagina()">
+                    <i class="fas fa-eye"></i> Preview
+                </button>
+            </div>
+
+            <div class="aparencia-layout">
+                <div class="aparencia-opcoes">
+
+                    <div class="opcao-section">
+                        <h3>🎨 Tema</h3>
+                        <div class="temas-grid">
+                            <div class="tema-card active" onclick="aplicarTema('dark')" data-tema="dark">
+                                <div class="tema-preview dark-tema"></div>
+                                <span>Dark</span>
+                            </div>
+                            <div class="tema-card" onclick="aplicarTema('light')" data-tema="light">
+                                <div class="tema-preview light-tema"></div>
+                                <span>Light</span>
+                            </div>
+                            <div class="tema-card" onclick="aplicarTema('gradient')" data-tema="gradient">
+                                <div class="tema-preview gradient-tema"></div>
+                                <span>Gradient</span>
+                            </div>
+                            <div class="tema-card" onclick="aplicarTema('neon')" data-tema="neon">
+                                <div class="tema-preview neon-tema"></div>
+                                <span>Neon</span>
+                            </div>
+                            <div class="tema-card" onclick="aplicarTema('ocean')" data-tema="ocean">
+                                <div class="tema-preview ocean-tema"></div>
+                                <span>Ocean</span>
+                            </div>
+                            <div class="tema-card" onclick="aplicarTema('sunset')" data-tema="sunset">
+                                <div class="tema-preview sunset-tema"></div>
+                                <span>Sunset</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="opcao-section">
+                        <h3>🔘 Estilo dos Botões</h3>
+                        <div class="estilos-grid">
+                            <button class="estilo-btn active" onclick="aplicarEstilo('rounded')" data-estilo="rounded">
+                                <div style="padding:8px 16px;background:#6366f1;color:#fff;border-radius:10px;font-size:.8rem">Link</div>
+                                <span>Arredondado</span>
+                            </button>
+                            <button class="estilo-btn" onclick="aplicarEstilo('pill')" data-estilo="pill">
+                                <div style="padding:8px 16px;background:#6366f1;color:#fff;border-radius:50px;font-size:.8rem">Link</div>
+                                <span>Pílula</span>
+                            </button>
+                            <button class="estilo-btn" onclick="aplicarEstilo('square')" data-estilo="square">
+                                <div style="padding:8px 16px;background:#6366f1;color:#fff;border-radius:2px;font-size:.8rem">Link</div>
+                                <span>Quadrado</span>
+                            </button>
+                            <button class="estilo-btn" onclick="aplicarEstilo('outline')" data-estilo="outline">
+                                <div style="padding:8px 16px;background:transparent;color:#6366f1;border:2px solid #6366f1;border-radius:10px;font-size:.8rem">Link</div>
+                                <span>Outline</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="opcao-section">
+                        <h3>🎯 Cor Principal</h3>
+                        <div class="cores-grid">
+                            <div class="cor-op" style="background:#6366f1" onclick="aplicarCor('#6366f1')"></div>
+                            <div class="cor-op" style="background:#ec4899" onclick="aplicarCor('#ec4899')"></div>
+                            <div class="cor-op" style="background:#10b981" onclick="aplicarCor('#10b981')"></div>
+                            <div class="cor-op" style="background:#f59e0b" onclick="aplicarCor('#f59e0b')"></div>
+                            <div class="cor-op" style="background:#ef4444" onclick="aplicarCor('#ef4444')"></div>
+                            <div class="cor-op" style="background:#06b6d4" onclick="aplicarCor('#06b6d4')"></div>
+                            <div class="cor-op" style="background:#8b5cf6" onclick="aplicarCor('#8b5cf6')"></div>
+                            <div class="cor-op" style="background:#f97316" onclick="aplicarCor('#f97316')"></div>
+                            <input type="color" id="corPersonalizada"
+                                onchange="aplicarCor(this.value)" title="Cor personalizada"
+                                style="width:36px;height:36px;border-radius:50%;border:2px solid var(--border);cursor:pointer">
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- Preview ao Vivo -->
+                <div class="aparencia-preview">
+                    <h3>📱 Preview ao Vivo</h3>
+                    <div class="celular-frame">
+                        <div class="celular-tela" id="telaCelular"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== CONFIG ===== -->
+        <div class="page hidden" id="config">
+            <div class="page-header">
+                <div>
+                    <h1>Configurações</h1>
+                    <p>Edite seu perfil</p>
+                </div>
+            </div>
+
+            <div class="config-layout">
+                <div class="config-card">
+                    <h3>👤 Seu Perfil</h3>
+
+                    <div class="avatar-edit">
+                        <div class="avatar-grande" id="avatarGrande">
+                            <span id="avatarLetra">U</span>
+                        </div>
+                        <button class="btn-foto" onclick="document.getElementById('fotoUpload').click()">
+                            <i class="fas fa-camera"></i> Mudar Foto
+                        </button>
+                        <input type="file" id="fotoUpload" accept="image/*"
+                            style="display:none" onchange="trocarFoto(event)">
+                    </div>
+
+                    <div class="form-grid">
+                        <div class="campo full">
+                            <label>Nome</label>
+                            <input type="text" id="cfgNome" placeholder="Seu nome">
+                        </div>
+                        <div class="campo full">
+                            <label>Usuário (aparece na URL)</label>
+                            <div class="url-usuario">
+                                <span>linkvitrine.pro/</span>
+                                <input type="text" id="cfgUsuario" placeholder="seu-usuario">
+                            </div>
+                        </div>
+                        <div class="campo full">
+                            <label>Bio</label>
+                            <textarea id="cfgBio" rows="3"
+                                placeholder="Fale um pouco sobre você..."></textarea>
+                        </div>
+                        <div class="campo full">
+                            <button class="btn-primary btn-block" onclick="salvarConfig()">
+                                <i class="fas fa-save"></i> Salvar Perfil
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="config-card">
+                    <h3>💾 Dados</h3>
+                    <p style="color:var(--t2);font-size:.9rem;margin-bottom:16px">
+                        Faça backup ou redefina seus dados
+                    </p>
+                    <div class="form-actions">
+                        <button class="btn-ghost" onclick="exportarDados()">
+                            <i class="fas fa-download"></i> Exportar Backup
+                        </button>
+                        <button class="btn-danger" onclick="resetarTudo()">
+                            <i class="fas fa-trash"></i> Resetar Tudo
                         </button>
                     </div>
                 </div>
             </div>
-
-            <!-- PAGE: REDES SOCIAIS -->
-            <div class="page" id="page-redes">
-                <div class="page-header">
-                    <div>
-                        <h1>Redes Sociais</h1>
-                        <p>Conecte seus perfis sociais</p>
-                    </div>
-                </div>
-                <div class="social-grid" id="socialGrid">
-                    <!-- Gerado pelo JS -->
-                </div>
-            </div>
-
-            <!-- PAGE: IMPORTAR -->
-            <div class="page" id="page-import">
-                <div class="page-header">
-                    <div>
-                        <h1>Importar Links</h1>
-                        <p>Puxe links automaticamente de outros apps</p>
-                    </div>
-                </div>
-
-                <div class="import-grid">
-
-                    <!-- Linktree -->
-                    <div class="import-card featured">
-                        <div class="ic-header">
-                            <div class="ic-logo linktree-logo">
-                                <svg viewBox="0 0 24 24" width="28"><path fill="#43E660" d="M7.953 15.066c-.08.163-.08.324 0 .486l2.645 4.744c.08.163.244.244.406.244h2.075c.163 0 .325-.08.406-.244l2.645-4.744c.08-.163.08-.324 0-.486l-2.645-4.744c-.08-.163-.243-.244-.406-.244h-2.075c-.162 0-.325.08-.406.244zm-5.953 0c-.08.163-.08.324 0 .486l2.645 4.744c.08.163.243.244.406.244h2.075c.162 0 .325-.08.406-.244l2.645-4.744c.08-.163.08-.324 0-.486L7.487 10.322c-.08-.163-.244-.244-.406-.244H5.006c-.163 0-.325.08-.406.244zm11.906 0c-.08.163-.08.324 0 .486l2.645 4.744c.08.163.243.244.406.244h2.075c.163 0 .325-.08.406-.244l2.645-4.744c.08-.163.08-.324 0-.486l-2.645-4.744c-.08-.163-.244-.244-.406-.244h-2.075c-.163 0-.325.08-.406.244zM12 0c-.162 0-.325.08-.406.244L9.06 4.663c-.08.162-.08.324 0 .487l2.534 4.419c.08.162.244.244.406.244s.325-.082.406-.244l2.534-4.419c.08-.163.08-.325 0-.487L12.406.244C12.325.08 12.162 0 12 0z"/></svg>
-                            </div>
-                            <div>
-                                <h3>Linktree</h3>
-                                <span class="ic-badge">Popular</span>
-                            </div>
-                        </div>
-                        <p>Cole o link do seu Linktree e importe todos os links automaticamente</p>
-                        <div class="ic-input">
-                            <input type="url" id="linktreeUrl" placeholder="https://linktr.ee/seu-usuario">
-                            <button class="btn btn-primary" onclick="importarLinktree()">
-                                <i class="fas fa-download"></i> Importar
-                            </button>
-                        </div>
-                        <div class="ic-result" id="linktreeResult" style="display:none"></div>
-                    </div>
-
-                    <!-- Instagram -->
-                    <div class="import-card">
-                        <div class="ic-header">
-                            <div class="ic-logo" style="background:linear-gradient(45deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888)">
-                                <i class="fab fa-instagram"></i>
-                            </div>
-                            <div>
-                                <h3>Instagram</h3>
-                                <span class="ic-badge">Bio Link</span>
-                            </div>
-                        </div>
-                        <p>Importe o link da bio do Instagram</p>
-                        <div class="ic-input">
-                            <input type="text" id="igUser" placeholder="@seu-usuario">
-                            <button class="btn btn-primary" onclick="importarInstagram()">
-                                <i class="fas fa-download"></i> Importar
-                            </button>
-                        </div>
-                    </div>
-
-                    <!-- TikTok -->
-                    <div class="import-card">
-                        <div class="ic-header">
-                            <div class="ic-logo" style="background:#000">
-                                <i class="fab fa-tiktok"></i>
-                            </div>
-                            <div>
-                                <h3>TikTok</h3>
-                                <span class="ic-badge">Perfil</span>
-                            </div>
-                        </div>
-                        <p>Conecte seu perfil do TikTok</p>
-                        <div class="ic-input">
-                            <input type="text" id="ttUser" placeholder="@seu-usuario">
-                            <button class="btn btn-primary" onclick="importarTikTok()">
-                                <i class="fas fa-download"></i> Importar
-                            </button>
-                        </div>
-                    </div>
-
-                    <!-- YouTube -->
-                    <div class="import-card">
-                        <div class="ic-header">
-                            <div class="ic-logo" style="background:#FF0000">
-                                <i class="fab fa-youtube"></i>
-                            </div>
-                            <div>
-                                <h3>YouTube</h3>
-                                <span class="ic-badge">Canal</span>
-                            </div>
-                        </div>
-                        <p>Importe o link do seu canal</p>
-                        <div class="ic-input">
-                            <input type="text" id="ytUser" placeholder="@seu-canal ou URL">
-                            <button class="btn btn-primary" onclick="importarYoutube()">
-                                <i class="fas fa-download"></i> Importar
-                            </button>
-                        </div>
-                    </div>
-
-                    <!-- Beacons / Bio.link -->
-                    <div class="import-card">
-                        <div class="ic-header">
-                            <div class="ic-logo" style="background:#7c3aed">
-                                <i class="fas fa-broadcast-tower"></i>
-                            </div>
-                            <div>
-                                <h3>Beacons / Bio.link</h3>
-                                <span class="ic-badge">URL</span>
-                            </div>
-                        </div>
-                        <p>Cole a URL de qualquer página de links</p>
-                        <div class="ic-input">
-                            <input type="url" id="beaconsUrl" placeholder="https://beacons.ai/usuario">
-                            <button class="btn btn-primary" onclick="importarGenerico()">
-                                <i class="fas fa-download"></i> Importar
-                            </button>
-                        </div>
-                    </div>
-
-                    <!-- Importar JSON -->
-                    <div class="import-card">
-                        <div class="ic-header">
-                            <div class="ic-logo" style="background:#1e293b">
-                                <i class="fas fa-file-code"></i>
-                            </div>
-                            <div>
-                                <h3>Arquivo JSON</h3>
-                                <span class="ic-badge">Backup</span>
-                            </div>
-                        </div>
-                        <p>Importe um backup JSON do LinkVitrine</p>
-                        <div class="ic-actions">
-                            <button class="btn btn-primary" onclick="document.getElementById('jsonFile').click()">
-                                <i class="fas fa-upload"></i> Importar JSON
-                            </button>
-                            <button class="btn btn-ghost" onclick="exportarDados()">
-                                <i class="fas fa-download"></i> Exportar
-                            </button>
-                        </div>
-                        <input type="file" id="jsonFile" accept=".json" style="display:none" onchange="importarJSON(event)">
-                    </div>
-                </div>
-            </div>
-
-            <!-- PAGE: APARÊNCIA -->
-            <div class="page" id="page-aparencia">
-                <div class="page-header">
-                    <div>
-                        <h1>Aparência</h1>
-                        <p>Personalize sua página pública</p>
-                    </div>
-                    <button class="btn btn-primary" onclick="abrirPreview()">
-                        <i class="fas fa-eye"></i> Preview
-                    </button>
-                </div>
-
-                <div class="aparencia-grid">
-                    <div class="ap-section">
-                        <h3>Temas</h3>
-                        <div class="themes-grid">
-                            <div class="theme-card active" onclick="setThemePage('dark')" data-theme="dark">
-                                <div class="tc-preview dark-prev">
-                                    <div class="tc-bar"></div>
-                                    <div class="tc-link"></div>
-                                    <div class="tc-link"></div>
-                                </div>
-                                <span>Dark</span>
-                                <i class="fas fa-check tc-check"></i>
-                            </div>
-                            <div class="theme-card" onclick="setThemePage('light')" data-theme="light">
-                                <div class="tc-preview light-prev">
-                                    <div class="tc-bar"></div>
-                                    <div class="tc-link"></div>
-                                    <div class="tc-link"></div>
-                                </div>
-                                <span>Light</span>
-                                <i class="fas fa-check tc-check"></i>
-                            </div>
-                            <div class="theme-card" onclick="setThemePage('gradient')" data-theme="gradient">
-                                <div class="tc-preview grad-prev">
-                                    <div class="tc-bar"></div>
-                                    <div class="tc-link"></div>
-                                    <div class="tc-link"></div>
-                                </div>
-                                <span>Gradient</span>
-                                <i class="fas fa-check tc-check"></i>
-                            </div>
-                            <div class="theme-card" onclick="setThemePage('neon')" data-theme="neon">
-                                <div class="tc-preview neon-prev">
-                                    <div class="tc-bar"></div>
-                                    <div class="tc-link"></div>
-                                    <div class="tc-link"></div>
-                                </div>
-                                <span>Neon</span>
-                                <i class="fas fa-check tc-check"></i>
-                            </div>
-                            <div class="theme-card" onclick="setThemePage('ocean')" data-theme="ocean">
-                                <div class="tc-preview ocean-prev">
-                                    <div class="tc-bar"></div>
-                                    <div class="tc-link"></div>
-                                    <div class="tc-link"></div>
-                                </div>
-                                <span>Ocean</span>
-                                <i class="fas fa-check tc-check"></i>
-                            </div>
-                            <div class="theme-card" onclick="setThemePage('sunset')" data-theme="sunset">
-                                <div class="tc-preview sunset-prev">
-                                    <div class="tc-bar"></div>
-                                    <div class="tc-link"></div>
-                                    <div class="tc-link"></div>
-                                </div>
-                                <span>Sunset</span>
-                                <i class="fas fa-check tc-check"></i>
-                            </div>
-                        </div>
-
-                        <h3 style="margin-top:28px">Estilo dos Botões</h3>
-                        <div class="btn-styles">
-                            <button class="bstyle active" onclick="setBtnStyle('rounded')" data-style="rounded">
-                                <div class="bs-preview rounded-btn">Link</div>
-                                <span>Arredondado</span>
-                            </button>
-                            <button class="bstyle" onclick="setBtnStyle('pill')" data-style="pill">
-                                <div class="bs-preview pill-btn">Link</div>
-                                <span>Pílula</span>
-                            </button>
-                            <button class="bstyle" onclick="setBtnStyle('square')" data-style="square">
-                                <div class="bs-preview square-btn">Link</div>
-                                <span>Quadrado</span>
-                            </button>
-                            <button class="bstyle" onclick="setBtnStyle('outline')" data-style="outline">
-                                <div class="bs-preview outline-btn">Link</div>
-                                <span>Outline</span>
-                            </button>
-                        </div>
-
-                        <h3 style="margin-top:28px">Cor Principal</h3>
-                        <div class="color-grid">
-                            <div class="cg-item" onclick="setPrimaryColor('#6366f1')" style="background:#6366f1"></div>
-                            <div class="cg-item" onclick="setPrimaryColor('#ec4899')" style="background:#ec4899"></div>
-                            <div class="cg-item" onclick="setPrimaryColor('#10b981')" style="background:#10b981"></div>
-                            <div class="cg-item" onclick="setPrimaryColor('#f59e0b')" style="background:#f59e0b"></div>
-                            <div class="cg-item" onclick="setPrimaryColor('#ef4444')" style="background:#ef4444"></div>
-                            <div class="cg-item" onclick="setPrimaryColor('#06b6d4')" style="background:#06b6d4"></div>
-                            <div class="cg-item" onclick="setPrimaryColor('#8b5cf6')" style="background:#8b5cf6"></div>
-                            <div class="cg-item" onclick="setPrimaryColor('#f97316')" style="background:#f97316"></div>
-                            <input type="color" id="customColor" onchange="setPrimaryColor(this.value)" title="Cor personalizada">
-                        </div>
-                    </div>
-
-                    <!-- Live Preview -->
-                    <div class="ap-preview">
-                        <h3>Preview ao Vivo</h3>
-                        <div class="live-phone">
-                            <div class="lp-screen" id="liveScreen"></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- PAGE: ANALYTICS -->
-            <div class="page" id="page-analytics">
-                <div class="page-header">
-                    <div>
-                        <h1>Analytics</h1>
-                        <p>Acompanhe o desempenho dos seus links</p>
-                    </div>
-                </div>
-                <div class="analytics-grid">
-                    <div class="an-card big">
-                        <h3>Cliques por Link</h3>
-                        <div class="click-list" id="clickList">
-                            <p class="no-data">Nenhum clique registrado ainda</p>
-                        </div>
-                    </div>
-                    <div class="an-card">
-                        <h3>Resumo</h3>
-                        <div class="an-stats">
-                            <div class="an-stat">
-                                <strong id="an-total">0</strong>
-                                <span>Total de Cliques</span>
-                            </div>
-                            <div class="an-stat">
-                                <strong id="an-links">0</strong>
-                                <span>Links Ativos</span>
-                            </div>
-                            <div class="an-stat">
-                                <strong id="an-prod">0</strong>
-                                <span>Produtos</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- PAGE: CONFIGURAÇÕES -->
-            <div class="page" id="page-config">
-                <div class="page-header">
-                    <div>
-                        <h1>Configurações</h1>
-                        <p>Perfil e preferências</p>
-                    </div>
-                </div>
-                <div class="config-grid">
-                    <div class="config-section">
-                        <h3>Seu Perfil</h3>
-                        <div class="profile-edit">
-                            <div class="pe-avatar" id="peAvatar">
-                                <span id="peAvatarText">U</span>
-                                <button class="pe-edit-btn" onclick="document.getElementById('avatarUpload').click()">
-                                    <i class="fas fa-camera"></i>
-                                </button>
-                                <input type="file" id="avatarUpload" accept="image/*" style="display:none" onchange="uploadAvatar(event)">
-                            </div>
-                            <div class="pe-fields">
-                                <div class="fg">
-                                    <label>Nome</label>
-                                    <input type="text" id="cfgName" placeholder="Seu nome">
-                                </div>
-                                <div class="fg">
-                                    <label>Usuário (URL)</label>
-                                    <div class="user-url">
-                                        <span>linkvitrine.pro/</span>
-                                        <input type="text" id="cfgUser" placeholder="seu-usuario">
-                                    </div>
-                                </div>
-                                <div class="fg full">
-                                    <label>Bio</label>
-                                    <textarea id="cfgBio" placeholder="Conte um pouco sobre você..." rows="3"></textarea>
-                                </div>
-                                <div class="fg">
-                                    <label>Email</label>
-                                    <input type="email" id="cfgEmail" placeholder="seu@email.com">
-                                </div>
-                                <button class="btn btn-primary" onclick="salvarConfig()">
-                                    <i class="fas fa-save"></i> Salvar
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="config-section">
-                        <h3>Dados</h3>
-                        <div class="data-actions">
-                            <button class="btn btn-ghost" onclick="exportarDados()">
-                                <i class="fas fa-download"></i> Exportar Backup
-                            </button>
-                            <button class="btn btn-danger" onclick="resetarTudo()">
-                                <i class="fas fa-trash"></i> Resetar Tudo
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-        </div><!-- /pages -->
-    </main>
-</div><!-- /app -->
-
-<!-- ===== PREVIEW MODAL ===== -->
-<div class="preview-modal" id="previewModal">
-    <div class="pm-bar">
-        <span>Preview da Página Pública</span>
-        <div class="pm-controls">
-            <button onclick="setPreviewDevice('mobile')" class="pmc active" id="pmc-mobile">
-                <i class="fas fa-mobile-alt"></i>
-            </button>
-            <button onclick="setPreviewDevice('tablet')" class="pmc" id="pmc-tablet">
-                <i class="fas fa-tablet-alt"></i>
-            </button>
-            <button onclick="setPreviewDevice('desktop')" class="pmc" id="pmc-desktop">
-                <i class="fas fa-desktop"></i>
-            </button>
-            <button onclick="fecharPreview()" class="pm-close">
-                <i class="fas fa-times"></i>
-            </button>
         </div>
-    </div>
-    <div class="pm-content" id="pmContent">
-        <div class="pm-frame mobile" id="pmFrame">
-            <iframe id="previewFrame" src="about:blank"></iframe>
+
+    </div><!-- /content -->
+</div><!-- /main -->
+
+<!-- MODAL PREVIEW -->
+<div class="modal-overlay hidden" id="modalPreview">
+    <div class="modal-preview">
+        <div class="modal-top">
+            <span>📱 Preview da Página</span>
+            <div class="modal-devices">
+                <button class="device-btn active" onclick="mudarDevice('mobile')" id="btnMobile">
+                    <i class="fas fa-mobile-alt"></i>
+                </button>
+                <button class="device-btn" onclick="mudarDevice('tablet')" id="btnTablet">
+                    <i class="fas fa-tablet-alt"></i>
+                </button>
+                <button class="device-btn" onclick="mudarDevice('desktop')" id="btnDesktop">
+                    <i class="fas fa-desktop"></i>
+                </button>
+                <button class="modal-fechar" onclick="fecharPreview()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+        </div>
+        <div class="modal-corpo">
+            <div class="device-frame mobile" id="deviceFrame">
+                <iframe id="iframePreview"></iframe>
+            </div>
         </div>
     </div>
 </div>
 
 <!-- TOAST -->
-<div class="toast" id="toast">
-    <span id="toastMsg">✅ Sucesso!</span>
+<div class="toast hidden" id="toast">
+    <span id="toastTexto">✅ Sucesso!</span>
 </div>
-
-<!-- OVERLAY SIDEBAR MOBILE -->
-<div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
 
 <script src="script.js"></script>
 </body>
